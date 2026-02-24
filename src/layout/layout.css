@@ -1,0 +1,44 @@
+.arcade-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: rgba(5, 7, 18, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 0 20px rgba(255,0,128,0.15);
+}
+
+.arcade-logo {
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow:
+    0 0 6px #ff0080,
+    0 0 12px #00d4ff;
+}
+
+.arcade-nav a {
+  margin: 0 12px;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.arcade-nav a:hover {
+  color: #ff0080;
+}
+
+.arcade-profile {
+  font-weight: 700;
+  color: #ffd166;
+}
+
+.arcade-nav a.active {
+  color: #ff0080;
+  text-shadow: 0 0 8px #ff0080;
+}

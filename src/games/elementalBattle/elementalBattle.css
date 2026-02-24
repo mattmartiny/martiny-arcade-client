@@ -1,0 +1,55 @@
+/* Layout */
+.eb-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+/* Base Button */
+.eb-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  color: white;
+  font-size: 0.95rem;
+}
+
+.eb-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.eb-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Element Colors */
+.eb-btn.fire {
+  background: linear-gradient(135deg, #ff512f, #dd2476);
+}
+
+.eb-btn.water {
+  background: linear-gradient(135deg, #2193b0, #6dd5ed);
+}
+
+.eb-btn.earth {
+  background: linear-gradient(135deg, #836953, #5a3e36);
+}
+
+.eb-btn.metal {
+  background: linear-gradient(135deg, #9ea7b8, #5f6b7a);
+}
+
+.eb-btn.wood {
+  background: linear-gradient(135deg, #3ca55c, #b5ac49);
+}
+
+.eb-btn.active {
+  box-shadow: 0 0 20px rgba(255,255,255,0.4);
+}

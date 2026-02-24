@@ -1,0 +1,64 @@
+.war-cards {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 30px;
+  transition: opacity 0.3s ease;
+}
+
+.war-card {
+  position: relative;
+  width: 130px;
+  height: 180px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  font-weight: 700;
+  transition: transform 0.25s ease, opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111;
+}
+
+.war-card.red {
+  color: #c62828;
+}
+
+.war-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-corner {
+  position: absolute;
+  font-size: 16px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.card-corner span {
+  display: block;
+  font-size: 14px;
+}
+
+.card-corner.top {
+  top: 8px;
+  left: 10px;
+}
+
+.card-corner.bottom {
+  bottom: 8px;
+  right: 10px;
+  transform: rotate(180deg);
+}
+
+.card-center {
+  font-size: 48px;
+}
+
+.button-container {
+  margin: 30px auto 0px;
+  text-align: center;
+}
