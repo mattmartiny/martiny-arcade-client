@@ -1,15 +1,26 @@
 type XpEvent = {
-  gameId: string;
+  clientEventId: string;
+  source: string; // 👈 game identifier
   amount: number;
   multiplier?: number;
   reason?: string;
   timestamp: number;
 };
 
+type FlushResponse = {
+  totalXP: number;
+  level: number;
+  xpIntoLevel: number;
+  xpForNextLevel: number;
+  xpAdded: number;
+};
+
 let sessionBuffer: XpEvent[] = [];
 let sessionGainedXP = 0;
 
-export function addXpToSession(event: XpEvent) {
+export function addXpToSession(
+  event: Omit<XpEvent, "clientEventId" | "timestamp">
+) {
   const finalAmount = Math.round(
     event.amount * (event.multiplier ?? 1)
   );
@@ -18,6 +29,7 @@ export function addXpToSession(event: XpEvent) {
 
   sessionBuffer.push({
     ...event,
+    clientEventId: crypto.randomUUID(),
     amount: finalAmount,
     timestamp: Date.now(),
   });
@@ -36,4 +48,57 @@ export function getSessionEvents() {
 export function clearSessionXP() {
   sessionBuffer = [];
   sessionGainedXP = 0;
+}
+
+export function getSessionSummary() {
+  const perGame: Record<string, number> = {};
+
+  for (const event of sessionBuffer) {
+    if (!perGame[event.source]) {
+      perGame[event.source] = 0;
+    }
+
+    perGame[event.source] += event.amount;
+  }
+
+  return {
+    total: sessionGainedXP,
+    perGame,
+    events: [...sessionBuffer],
+  };
+}
+
+export async function flushXP(
+  token: string
+): Promise<FlushResponse | null> {
+  if (sessionBuffer.length === 0) return null;
+
+  const payload = {
+    events: sessionBuffer.map(e => ({
+      clientEventId: e.clientEventId,
+      amount: e.amount,
+      reason: e.reason ?? e.source,
+      source: e.source // 👈 THIS WAS MISSING
+    }))
+  };
+
+  try {
+    const res = await fetch("/api/xp/flush", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) return null;
+
+    const data: FlushResponse = await res.json();
+
+    clearSessionXP();
+    return data;
+  } catch {
+    return null;
+  }
 }

@@ -34,24 +34,14 @@ export function saveProfile(profile: ArcadeProfile) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
 }
 
-type XPAward = {
-  amount: number;
-  multiplier?: number;
-  source?: string;
-  reason?: string;
-};
-
-
 export function awardXP({
-  gameId,
-  //source,
+  source,
   amount,
   multiplier = 1,
   reason,
 }: {
-  gameId: string;
   amount: number;
-  source?: string;
+  source: string;
   multiplier?: number;
   reason?: string;
 }) {
@@ -61,12 +51,10 @@ export function awardXP({
 
   // 1️⃣ Store in session buffer
   addXpToSession({
-    gameId,
-    //: source ?? gameId,
+    source: source,
     amount: finalAmount,
     multiplier: 1,
     reason,
-    timestamp: Date.now(),
   });
 
   // 2️⃣ Update UI immediately

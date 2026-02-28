@@ -1,0 +1,9 @@
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.csproj.AssemblyReference.cache
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.AssemblyInfoInputs.cache
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.AssemblyInfo.cs
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.csproj.CoreCompileInputs.cache
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Student\Desktop\Websites\martiny-arcade-client\MartinyArcadeApi\obj\Debug\net9.0\MartinyArcadeApi.sourcelink.json

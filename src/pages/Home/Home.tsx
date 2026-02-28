@@ -1,12 +1,12 @@
 import GameCard from "../../components/GameCard";
 import "./home.css";
-
+import Logo from "../../assets/ArcadeLogo.png"
 
 export default function Home() {
   return (
     <div>
       <section className="home-hero">
-        <h1>Martiny Arcade</h1>
+<img src={Logo} style={{ height: "auto", width: "35%" }} />
         <p>Play. Earn XP. Climb Levels.</p>
       </section>
 

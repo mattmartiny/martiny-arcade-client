@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getSessionEvents, clearSessionXP } from "./xpSession";
+import { getSessionEvents, flushXP } from "./xpSession";
+import { useAuth } from "./AuthContext";
+
 
 type Profile = {
   xp: number;
@@ -14,6 +16,7 @@ const ArcadeProfileContext = createContext<Profile>({
   xpIntoLevel: 0,
   xpForNextLevel: 100,
 });
+
 
 export function useArcadeProfile() {
   return useContext(ArcadeProfileContext);
@@ -46,35 +49,90 @@ export function ArcadeProfileProvider({
 }) {
   const [xp, setXp] = useState(0);
   const [displayXP, setDisplayXP] = useState(0);
-
-  // ✅ Listen for in-session XP events (local only)
+  const { user } = useAuth();
   useEffect(() => {
-    const handleXPUpdate = (e: Event) => {
-      const ce = e as CustomEvent<number>;
-      setXp((prev) => prev + (ce.detail ?? 0));
-    };
+    function handleXPUpdate(e: CustomEvent<number>) {
+      if (!user) {
+        window.dispatchEvent(
+          new CustomEvent("arcade:xp-blocked")
+        );
+        return;
+      }
 
-    window.addEventListener("arcade:xp", handleXPUpdate);
+      setXp((prev) => prev + e.detail);
+    }
+
+    window.addEventListener("arcade:xp", handleXPUpdate as EventListener);
 
     return () => {
-      window.removeEventListener("arcade:xp", handleXPUpdate);
+      window.removeEventListener("arcade:xp", handleXPUpdate as EventListener);
     };
-  }, []);
+  }, [user]);
 
-  // ✅ Periodic sync (stub for now)
+
+
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      const events = getSessionEvents();
-      if (events.length === 0) return;
+    if (!user) return;
 
-      console.log("Syncing XP to server (stub):", events);
+    console.log("XP sync effect mounted");
 
-      // TODO: replace with real API call later
-      clearSessionXP();
+    const interval = window.setInterval(async () => {
+      console.log("XP interval tick");
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.log("No token found");
+        return;
+      }
+
+      const result = await flushXP(token);
+      console.log("Flush result:", result);
+
+    }, 5000); // 5 sec for testing
+
+    return () => window.clearInterval(interval);
+  }, [user]);
+
+
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = window.setInterval(async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const result = await flushXP(token);
+
+      if (result) {
+        setXp(result.totalXP); // backend is source of truth
+      }
     }, 60000);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function loadProfile() {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch("http://localhost:5173/api/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      setXp(data.totalXP);
+    }
+
+    loadProfile();
+  }, [user]);
 
   // ✅ Sync on tab close / refresh
   useEffect(() => {

@@ -1,5 +1,9 @@
+import { useEffect, useState } from "react";
 import { useArcadeProfile } from "../platform/ArcadeProfileContext";
 import { formatNumber } from "../utils/format";
+import { flushXP } from "../platform/xpSession";
+import { useAuth } from "../platform/AuthContext";
+import { Link } from "react-router-dom";
 
 type GameShellProps = {
     title: string;
@@ -20,7 +24,7 @@ export default function GameShell({
     children,
     sidebar,
 }: GameShellProps) {
-
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const { xp, level, xpIntoLevel, xpForNextLevel } = useArcadeProfile();
     const percent =
         xpForNextLevel > 0
@@ -28,8 +32,53 @@ export default function GameShell({
             : 0;
 
     const xpRemaining = xpForNextLevel - xpIntoLevel;
+
+    const { user, logout } = useAuth();
+
+    useEffect(() => {
+        function handleBlockedXP() {
+            setShowLoginPrompt(true);
+
+            setTimeout(() => {
+                setShowLoginPrompt(false);
+            }, 3000);
+        }
+
+        window.addEventListener("arcade:xp-blocked", handleBlockedXP);
+
+        return () => {
+            window.removeEventListener("arcade:xp-blocked", handleBlockedXP);
+        };
+    }, []);
+
+    // useEffect(() => {
+    //     const handleBeforeUnload = () => {
+    //         const token = localStorage.getItem("token");
+    //         if (!token) return;
+
+    //         flushXP(token);
+    //     };
+
+    //     window.addEventListener("beforeunload", handleBeforeUnload);
+
+    //     return () => {
+    //         window.removeEventListener("beforeunload", handleBeforeUnload);
+    //     };
+    // }, []);
+
     return (
         <div className="game-shell">
+
+            <div className="auth-area">
+                {!user ? (
+                    <Link to="/login">Login</Link>
+                ) : (
+                    <>
+                        <span>{user.username}</span>
+                        <button onClick={logout}>Logout</button>
+                    </>
+                )}
+            </div>
             <section className="game-hero">
                 <div className="game-headline">
                     <div>
@@ -40,6 +89,11 @@ export default function GameShell({
                 </div>
                 <div className="profile-bar">
                     <div className="profile-top">
+                        {showLoginPrompt && (
+                            <div className="login-warning">
+                                Login or create an account to gain XP.
+                            </div>
+                        )}
                         <span>Level {level}</span>
                         <span>{formatNumber(xp)} XP</span>
                     </div>

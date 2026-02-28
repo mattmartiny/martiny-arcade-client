@@ -1,0 +1,48 @@
+.leaderboard {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 100px 120px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #1e1e1e;
+  border-radius: 8px;
+  align-items: center;
+  transition: transform 0.15s ease;
+}
+
+.leaderboard-row:hover {
+  transform: scale(1.02);
+}
+
+.rank {
+  font-weight: bold;
+}
+
+.username {
+  font-weight: 600;
+}
+
+.level {
+  color: #00d4ff;
+}
+
+.xp {
+  text-align: right;
+}
+
+/* Top 3 glow */
+.rank-1 {
+  background: linear-gradient(90deg, #ffd70033, #1e1e1e);
+}
+
+.rank-2 {
+  background: linear-gradient(90deg, #c0c0c033, #1e1e1e);
+}
+
+.rank-3 {
+  background: linear-gradient(90deg, #cd7f3233, #1e1e1e);
+}

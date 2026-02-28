@@ -3,6 +3,8 @@ import GameShell from "../../components/GameShell";
 import { awardXP } from "../../platform/arcadeProfile";
 import { getGameConfig } from "../../platform/gameRegistry";
 import "./coinFlip.css";
+import { recordGameSession } from "../../platform/gameService";
+import { useAuth } from "../../platform/AuthContext";
 const GAME_ID = "coin-flip";
 
 export default function CoinFlip() {
@@ -15,6 +17,7 @@ export default function CoinFlip() {
   const [isFlipping, setIsFlipping] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
+  const { token } = useAuth();
 
   async function flip(choice: "Heads" | "Tails") {
     if (isFlipping) return;
@@ -42,15 +45,23 @@ export default function CoinFlip() {
       setWins((w) => w + 1);
       setStatus(`It landed on ${landed}. You WON!`);
 
+
+
+let xpEarned = 2 
       awardXP({
-        gameId: GAME_ID,
-        amount: 2,
+        amount: xpEarned,
+        source: "Coin Flip",
         multiplier: config?.multiplier,
         reason: "Coin Flip Win",
       });
-    } else {
+
+      recordGameSession(token, "Coin Flip", 1, (xpEarned));
+
+
+  } else {
       setLosses((l) => l + 1);
       setStatus(`It landed on ${landed}. You lost.`);
+        recordGameSession(token, "Coin Flip", 0, (0));
     }
 
     setIsFlipping(false);

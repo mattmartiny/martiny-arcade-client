@@ -3,11 +3,12 @@ import { getGameConfig } from "./gameRegistry";
 import { calculateLevel } from "./leveling";
 
 type XPEvent = {
-  gameId: string;
+  clientEventId: string;
   amount: number;
   reason?: string;
-  source?: string;
- multiplier?: number;
+  source: string;
+  multiplier?: number;
+  timestamp: number;
 };
 
 type XPListener = (data: {
@@ -32,7 +33,7 @@ function notifyXPListeners(data: Parameters<XPListener>[0]) {
 }
 
 export function awardGameXP(event: XPEvent) {
-  const config = getGameConfig(event.gameId);
+  const config = getGameConfig(event.source);
   if (!config || !config.awardsXP) return;
   if (event.amount <= 0) return;
 
@@ -40,11 +41,10 @@ export function awardGameXP(event: XPEvent) {
   const levelBefore = calculateLevel(profileBefore.totalXP).level;
 
   awardXP({
-    gameId: event.gameId,
     amount: event.amount,
     multiplier: event.multiplier ?? 1,
-    source: event.gameId,
-    reason: event.reason
+    source: event.source,
+    reason: event.reason,
   });
 
   const profileAfter = loadProfile();

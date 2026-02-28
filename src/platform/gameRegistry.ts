@@ -43,6 +43,9 @@ export const games: GameConfig[] = [
         multiplier: 1,
         allowLossPenalty: false,
     }
+
+
+    
     //     id: "reaction",
     //     title: "Reaction Test",
     //     requiresLoginToPlay: false,

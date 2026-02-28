@@ -3,6 +3,8 @@ import GameShell from "../../components/GameShell";
 import { awardXP } from "../../platform/arcadeProfile";
 import { getGameConfig } from "../../platform/gameRegistry";
 import "./war.css";
+import { useAuth } from "../../platform/AuthContext";
+import { recordGameSession } from "../../platform/gameService";
 const GAME_ID = "war";
 
 type Card = {
@@ -73,6 +75,7 @@ export default function War() {
   const config = getGameConfig(GAME_ID);
   if (!config) throw new Error("Game config missing");
 
+  const { token } = useAuth();
   const [player, setPlayer] = useState<Card[]>([]);
   const [opp, setOpp] = useState<Card[]>([]);
   const [index, setIndex] = useState(0);
@@ -132,21 +135,26 @@ export default function War() {
 
     // Phase 3 — Calculate outcome
     const roundValue = pCard.numVal + oCard.numVal + tieCarry;
-
+    const playerWon = pCard.numVal > oCard.numVal;
     if (pCard.numVal === oCard.numVal) {
       setStatus("WAR! It's a tie.");
       setTieCarry(roundValue);
     } else if (pCard.numVal > oCard.numVal) {
+
       setStatus("You WON the round!");
       setPlayerPoints((prev) => prev + roundValue);
       setTieCarry(0);
+      const xpEarned = playerWon ? 3 : 0;
+
 
       awardXP({
-        gameId: GAME_ID,
-        amount: 2,
+        amount: xpEarned,
+        source: "War",
         multiplier: config?.multiplier,
         reason: "War: Round Win",
       });
+
+
     } else {
       setStatus("You LOST the round.");
       setOppPoints((prev) => prev + roundValue);
@@ -169,25 +177,57 @@ export default function War() {
   }
 
   function finishGame() {
-    setGameOver(true);
+  setGameOver(true);
 
-    if (playerPoints > oppPoints) {
-      setStatus(`You Won the War ${playerPoints} to ${oppPoints}!`);
-      awardXP({
-        gameId: GAME_ID,
-        amount: 20,
-        multiplier: config?.multiplier,
-        reason: "War: Game Win",
-      });
-    } else if (playerPoints < oppPoints) {
-      setStatus(`You Lost the War ${playerPoints} to ${oppPoints}.`);
-    } else {
-      setStatus("It's a draw!");
-    }
+  let xpEarned = 0;
 
-    setSubStatus("Press Start to play again.");
+  if (playerPoints > oppPoints) {
+    setStatus(`You Won the War ${playerPoints} to ${oppPoints}!`);
+    xpEarned = 20;
+
+    awardXP({
+      source: "war",
+      amount: xpEarned,
+      multiplier: config?.multiplier,
+      reason: "War: Game Win",
+    });
+
+  } else if (playerPoints < oppPoints) {
+    setStatus(`You Lost the War ${playerPoints} to ${oppPoints}.`);
+
+    // Optional participation XP
+    xpEarned = 2;
+
+    awardXP({
+      source: "war",
+      amount: xpEarned,
+      multiplier: config?.multiplier,
+      reason: "War: Game Loss",
+    });
+
+  } else {
+    setStatus("It's a draw!");
+
+    xpEarned = 5;
+
+    awardXP({
+      source: "war",
+      amount: xpEarned,
+      multiplier: config?.multiplier,
+      reason: "War: Draw",
+    });
   }
 
+  // 👇 Record the session no matter what
+  recordGameSession(
+    token,
+    "war",
+    playerPoints,  // score
+    xpEarned
+  );
+
+  setSubStatus("Press Start to play again.");
+}
   const sidebar = (
     <>
       <h2>Scoreboard</h2>
@@ -216,63 +256,61 @@ export default function War() {
       sidebar={sidebar}
     >
 
-    <div className={`war-cards ${isFading ? "fade-out" : ""}`}>
-  <div
-    className={`war-card ${
-      revealedPlayerCard && isRedSuit(revealedPlayerCard.Suit)
-        ? "red"
-        : ""
-    }`}
-  >
-    {revealedPlayerCard ? (
-      <>
-        <div className="card-corner top">
-          {revealedPlayerCard.Value}
-          <span>{suitToSymbol(revealedPlayerCard.Suit)}</span>
+      <div className={`war-cards ${isFading ? "fade-out" : ""}`}>
+        <div
+          className={`war-card ${revealedPlayerCard && isRedSuit(revealedPlayerCard.Suit)
+            ? "red"
+            : ""
+            }`}
+        >
+          {revealedPlayerCard ? (
+            <>
+              <div className="card-corner top">
+                {revealedPlayerCard.Value}
+                <span>{suitToSymbol(revealedPlayerCard.Suit)}</span>
+              </div>
+
+              <div className="card-center">
+                {suitToSymbol(revealedPlayerCard.Suit)}
+              </div>
+
+              <div className="card-corner bottom">
+                {revealedPlayerCard.Value}
+                <span>{suitToSymbol(revealedPlayerCard.Suit)}</span>
+              </div>
+            </>
+          ) : (
+            "?"
+          )}
         </div>
 
-        <div className="card-center">
-          {suitToSymbol(revealedPlayerCard.Suit)}
-        </div>
+        <div
+          className={`war-card ${revealedOppCard && isRedSuit(revealedOppCard.Suit)
+            ? "red"
+            : ""
+            }`}
+        >
+          {revealedOppCard ? (
+            <>
+              <div className="card-corner top">
+                {revealedOppCard.Value}
+                <span>{suitToSymbol(revealedOppCard.Suit)}</span>
+              </div>
 
-        <div className="card-corner bottom">
-          {revealedPlayerCard.Value}
-          <span>{suitToSymbol(revealedPlayerCard.Suit)}</span>
-        </div>
-      </>
-    ) : (
-      "?"
-    )}
-  </div>
+              <div className="card-center">
+                {suitToSymbol(revealedOppCard.Suit)}
+              </div>
 
-  <div
-    className={`war-card ${
-      revealedOppCard && isRedSuit(revealedOppCard.Suit)
-        ? "red"
-        : ""
-    }`}
-  >
-    {revealedOppCard ? (
-      <>
-        <div className="card-corner top">
-          {revealedOppCard.Value}
-          <span>{suitToSymbol(revealedOppCard.Suit)}</span>
+              <div className="card-corner bottom">
+                {revealedOppCard.Value}
+                <span>{suitToSymbol(revealedOppCard.Suit)}</span>
+              </div>
+            </>
+          ) : (
+            "?"
+          )}
         </div>
-
-        <div className="card-center">
-          {suitToSymbol(revealedOppCard.Suit)}
-        </div>
-
-        <div className="card-corner bottom">
-          {revealedOppCard.Value}
-          <span>{suitToSymbol(revealedOppCard.Suit)}</span>
-        </div>
-      </>
-    ) : (
-      "?"
-    )}
-  </div>
-</div>
+      </div>
 
 
       <div className="button-container" style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>

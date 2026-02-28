@@ -4,8 +4,7 @@ export default function Home() {
   return (
     <div>
       <section className="home-hero">
-        <h1>Martiny Arcade</h1>
-        <p>Play. Earn XP. Climb Levels.</p>
+
       </section>
 
       <section className="game-grid">
@@ -29,7 +28,20 @@ export default function Home() {
           to="/war"
           accent="blue"
         />
+        <GameCard
+          title="Precision Grid"
+          description="Tap the glowing tile. Speed increases."
+          to="/precision-grid"
+          accent="purple"
+        />
+
+
+
       </section>
     </div>
+
+
+
+
   );
 }

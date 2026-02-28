@@ -1,0 +1,6 @@
+@MartinyArcadeApi_HostAddress = http://localhost:5189
+
+GET {{MartinyArcadeApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

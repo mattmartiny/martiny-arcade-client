@@ -2,6 +2,9 @@ import { useState } from "react";
 import GameShell from "../../components/GameShell";
 import { awardXP } from "../../platform/arcadeProfile";
 import { getGameConfig } from "../../platform/gameRegistry";
+import { useAuth } from "../../platform/AuthContext";
+import { recordGameSession } from "../../platform/gameService";
+
 import "./elementalBattle.css";
 const GAME_ID = "elemental-battle";
 
@@ -12,6 +15,7 @@ export default function ElementalBattle() {
   const config = getGameConfig(GAME_ID);
   if (!config) throw new Error("Game config missing");
 
+  const { token } = useAuth();
   const [wins, setWins] = useState(0);
   const [losses, setLosses] = useState(0);
   const [seriesWins, setSeriesWins] = useState(0);
@@ -63,37 +67,63 @@ export default function ElementalBattle() {
     }
 
     setTimeout(() => {
-      setCurrentSeriesW((w) => {
-        if (w + (result === "win" ? 0 : 0) >= 3) return w;
-        return w;
-      });
+      const nextW = result === "win" ? currentSeriesW + 1 : currentSeriesW;
+      const nextL = result === "loss" ? currentSeriesL + 1 : currentSeriesL;
 
-      setCurrentSeriesL((l) => {
-        if (l + (result === "loss" ? 0 : 0) >= 3) return l;
-        return l;
-      });
-
-      if (result === "win" && currentSeriesW + 1 >= 3) {
+      // SERIES WIN
+      if (nextW >= 3) {
         setSeriesWins((s) => s + 1);
         setCurrentSeriesW(0);
         setCurrentSeriesL(0);
 
+        const xpEarned = 3;
+
         awardXP({
-          gameId: GAME_ID,
-          amount: 3,
+          source: "elemental-battle",
+          amount: xpEarned,
           multiplier: config?.multiplier,
           reason: "Series Win",
         });
 
+        if (token) {
+          recordGameSession(
+            token,
+            "elemental-battle",
+            3,           // score
+            xpEarned
+          );
+        }
+
         setStatus("You WON the series!");
       }
 
-      if (result === "loss" && currentSeriesL + 1 >= 3) {
+      // SERIES LOSS
+      else if (nextL >= 3) {
         setSeriesLosses((s) => s + 1);
         setCurrentSeriesW(0);
         setCurrentSeriesL(0);
+
+        const xpEarned = 1; // optional participation XP
+
+        awardXP({
+          source: "elemental-battle",
+          amount: xpEarned,
+          multiplier: config?.multiplier,
+          reason: "Series Loss",
+        });
+
+        if (token) {
+          recordGameSession(
+            token,
+            "elemental-battle",
+            nextW,   // score = how many rounds they won
+            xpEarned
+          );
+        }
+
         setStatus("You LOST the series.");
       }
+
       setLastChoice(choice);
       setIsLocked(false);
     }, 500);
@@ -126,17 +156,17 @@ export default function ElementalBattle() {
       sidebar={sidebar}
     >
       <div className="eb-choices">
-  {elements.map((el) => (
-    <button
-      key={el}
-      className={`eb-btn ${el.toLowerCase()}`}
-      disabled={isLocked}
-      onClick={() => play(el)}
-    >
-      {el}
-    </button>
-  ))}
-</div>
+        {elements.map((el) => (
+          <button
+            key={el}
+            className={`eb-btn ${el.toLowerCase()}`}
+            disabled={isLocked}
+            onClick={() => play(el)}
+          >
+            {el}
+          </button>
+        ))}
+      </div>
     </GameShell>
   );
 }
