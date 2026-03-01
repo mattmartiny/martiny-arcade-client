@@ -46,3 +46,7 @@
 .rank-3 {
   background: linear-gradient(90deg, #cd7f3233, #1e1e1e);
 }
+
+.leaderboard-header{
+  text-transform: capitalize;
+}

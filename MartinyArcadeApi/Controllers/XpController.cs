@@ -25,92 +25,98 @@ public class XpController : ControllerBase
         _xpService = xpService;
     }
 
-    [HttpPost("flush")]
-    public async Task<IActionResult> Flush(FlushXpBatchDto dto)
-    {
-        try
-        {
-            if (dto.Events == null || dto.Events.Count == 0)
-                return BadRequest("No events provided");
-
-            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userIdStr == null)
-                return Unauthorized();
-
-            var userId = Guid.Parse(userIdStr);
-
-            var profile = await _db.UserProfiles.FindAsync(userId);
-            if (profile == null)
-                return NotFound("Profile not found");
-
-            await using var tx = await _db.Database.BeginTransactionAsync();
-
-            int totalNewXp = 0;
-
-          foreach (var ev in dto.Events)
+   [HttpPost("flush")]
+public async Task<IActionResult> Flush(FlushXpBatchDto dto)
 {
-    if (ev.Amount <= 0) continue;
-
-    var newEvent = new XpEvent
-    {
-        UserId = userId,
-        ClientEventId = ev.ClientEventId,
-        Amount = ev.Amount,
-        Reason = ev.Reason ?? "action",
-        Source = ev.Source,
-        CreatedAt = DateTime.UtcNow
-    };
-
-    _db.XpEvents.Add(newEvent);
-
     try
     {
-        await _db.SaveChangesAsync();
-        totalNewXp += ev.Amount;
+        if (dto.Events == null || dto.Events.Count == 0)
+            return BadRequest("No events provided");
+
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdStr == null)
+            return Unauthorized();
+
+        var userId = Guid.Parse(userIdStr);
+
+        var profile = await _db.UserProfiles.FindAsync(userId);
+        if (profile == null)
+            return NotFound("Profile not found");
+
+        await using var tx = await _db.Database.BeginTransactionAsync();
+
+        int totalNewXp = 0;
+
+        // 🔹 Get level once per flush (prevents level-jumping mid-batch)
+        var currentProgress = _xpService.GetProgress(profile.TotalXP);
+        var levelMultiplier = _xpService.GetLevelXpMultiplier(currentProgress.level);
+
+        foreach (var ev in dto.Events)
+        {
+            if (ev.Amount <= 0) continue;
+
+            var scaledAmount = (int)Math.Floor(ev.Amount * levelMultiplier);
+
+            var newEvent = new XpEvent
+            {
+                UserId = userId,
+                ClientEventId = ev.ClientEventId,
+                Amount = scaledAmount,  // ✅ store scaled XP
+                Reason = ev.Reason ?? "action",
+                Source = ev.Source ?? "unknown",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _db.XpEvents.Add(newEvent);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                totalNewXp += scaledAmount;
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is SqlException sqlEx &&
+                    (sqlEx.Number == 2601 || sqlEx.Number == 2627))
+                {
+                    // Duplicate event — ignore
+                    _db.Entry(newEvent).State = EntityState.Detached;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        if (totalNewXp > 0)
+        {
+            profile.TotalXP += totalNewXp;
+            profile.LastUpdated = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+        }
+
+        await tx.CommitAsync();
+
+        var finalProgress = _xpService.GetProgress(profile.TotalXP);
+
+        return Ok(new
+        {
+            totalXP = profile.TotalXP,
+            level = finalProgress.level,
+            xpIntoLevel = finalProgress.xpIntoLevel,
+            xpForNextLevel = finalProgress.xpForNextLevel,
+            xpAdded = totalNewXp
+        });
     }
-    catch (DbUpdateException ex)
+    catch (Exception ex)
     {
-        if (ex.InnerException is SqlException sqlEx &&
-            (sqlEx.Number == 2601 || sqlEx.Number == 2627))
-        {
-            // Duplicate key — ignore
-            _db.Entry(newEvent).State = EntityState.Detached;
-        }
-        else
-        {
-            throw;
-        }
+        Console.WriteLine("XP Flush Error:");
+        Console.WriteLine(ex.Message);
+        Console.WriteLine(ex.StackTrace);
+        return StatusCode(500, ex.Message);
     }
 }
-
-            if (totalNewXp > 0)
-            {
-                profile.TotalXP += totalNewXp;
-                profile.LastUpdated = DateTime.UtcNow;
-            }
-
-            await _db.SaveChangesAsync();
-            await tx.CommitAsync();
-
-            var progress = _xpService.GetProgress(profile.TotalXP);
-
-            return Ok(new
-            {
-                totalXP = profile.TotalXP,
-                level = progress.level,
-                xpIntoLevel = progress.xpIntoLevel,
-                xpForNextLevel = progress.xpForNextLevel,
-                xpAdded = totalNewXp
-            });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("XP Flush Error:");
-            Console.WriteLine(ex.Message);
-            Console.WriteLine(ex.StackTrace);
-            return StatusCode(500, ex.Message);
-        }
-    }
 
     [HttpGet("history")]
     public async Task<IActionResult> History([FromQuery] int take = 25)

@@ -19,4 +19,13 @@ public class XpService
             nextLevelXP - prevLevelXP
         );
     }
+
+
+    public decimal GetLevelXpMultiplier(int level)
+{
+    // Smooth scaling
+    // +2% per level
+
+    return 1m + (level * 0.02m);
+}
 }

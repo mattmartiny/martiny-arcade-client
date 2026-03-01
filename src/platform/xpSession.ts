@@ -68,17 +68,21 @@ export function getSessionSummary() {
   };
 }
 
+let isFlushing = false;
 export async function flushXP(
   token: string
 ): Promise<FlushResponse | null> {
   if (sessionBuffer.length === 0) return null;
+  if (isFlushing) return null;
+
+  isFlushing = true;
 
   const payload = {
     events: sessionBuffer.map(e => ({
       clientEventId: e.clientEventId,
       amount: e.amount,
       reason: e.reason ?? e.source,
-      source: e.source // 👈 THIS WAS MISSING
+      source: e.source
     }))
   };
 
@@ -87,18 +91,23 @@ export async function flushXP(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      isFlushing = false;
+      return null;
+    }
 
     const data: FlushResponse = await res.json();
 
     clearSessionXP();
+    isFlushing = false;
     return data;
   } catch {
+    isFlushing = false;
     return null;
   }
 }

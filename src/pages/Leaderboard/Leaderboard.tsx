@@ -23,10 +23,8 @@ export default function Leaderboard() {
     }, []);
 
     return (
-        <GameShell
-            title="Global Leaderboard"
-            subtitle="Top players in Martiny Arcade"
-        >
+     <div className="page-container">
+        <h1>Global Leaderboard</h1>
             {loading ? (
                 <p>Loading...</p>
             ) : (
@@ -46,6 +44,6 @@ export default function Leaderboard() {
                     ))}
                 </div>
             )}
-        </GameShell>
+        </div>
     );
 }

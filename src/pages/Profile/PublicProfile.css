@@ -1,0 +1,18 @@
+.profile-card {
+  background: #111;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.xp-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #222;
+}
+.multiplier {
+  font-weight: bold;
+  color: gold;
+  margin-top: 6px;
+}

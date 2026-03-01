@@ -8,15 +8,15 @@ type Profile = {
   level: number;
   xpIntoLevel: number;
   xpForNextLevel: number;
+  multiplier: number;
 };
-
 const ArcadeProfileContext = createContext<Profile>({
   xp: 0,
   level: 1,
   xpIntoLevel: 0,
   xpForNextLevel: 100,
+  multiplier: 1,
 });
-
 
 export function useArcadeProfile() {
   return useContext(ArcadeProfileContext);
@@ -25,8 +25,6 @@ export function useArcadeProfile() {
 function calculateLevelData(totalXP: number) {
   const safeXP = Math.max(0, Math.floor(totalXP));
 
-  // Find level such that:
-  // (level-1)^2 * 100 <= xp < level^2 * 100
   let level = 1;
   while (safeXP >= level * level * 100) {
     level++;
@@ -35,10 +33,14 @@ function calculateLevelData(totalXP: number) {
   const currentLevelXP = (level - 1) * (level - 1) * 100;
   const nextLevelXP = level * level * 100;
 
+  // 🔥 Must match backend multiplier logic
+  const multiplier = 1 + level * 0.02;
+
   return {
     level,
     xpIntoLevel: safeXP - currentLevelXP,
     xpForNextLevel: nextLevelXP - currentLevelXP,
+    multiplier
   };
 }
 
@@ -167,18 +169,19 @@ export function ArcadeProfileProvider({
 
     return () => window.clearInterval(interval);
   }, [xp, displayXP]);
+const { level, xpIntoLevel, xpForNextLevel, multiplier } =
+  calculateLevelData(displayXP);
 
-  const { level, xpIntoLevel, xpForNextLevel } = calculateLevelData(displayXP);
-
-  return (
-    <ArcadeProfileContext.Provider
-      value={{
-        xp: displayXP,
-        level,
-        xpIntoLevel,
-        xpForNextLevel,
-      }}
-    >
+return (
+  <ArcadeProfileContext.Provider
+    value={{
+      xp: displayXP,
+      level,
+      xpIntoLevel,
+      xpForNextLevel,
+      multiplier,
+    }}
+  >
       {children}
     </ArcadeProfileContext.Provider>
   );

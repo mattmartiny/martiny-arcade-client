@@ -19,11 +19,13 @@
 }
 
 .game-headline {
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: space-between;
     gap: 14px;
+    text-align: center;
     flex-wrap: wrap;
+    width:100%;
 }
 
 .eyebrow {
@@ -50,7 +52,7 @@ h1 {
     font-size: 1.1rem;
     font-weight: 700;
     color: #ffd166;
-    width: 90%;
+    width: 100%;
     min-height: 28px;
 }
 
@@ -78,13 +80,6 @@ h1 {
     }
 }
 
-.profile-bar {
-    margin-top: 10px;
-    display: flex;
-    gap: 20px;
-    font-weight: 600;
-    color: #ffd166;
-}
 
 .profile-stat strong {
     margin-left: 6px;
@@ -92,9 +87,13 @@ h1 {
 
 .profile-bar {
     margin-top: 16px;
+    width: 50%;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    margin-top: 10px;
+    gap: 20px;
+    font-weight: 600;
+    color: #ffd166;
 }
 
 .profile-top {
@@ -103,11 +102,11 @@ h1 {
     font-weight: 600;
     color: #ffd166;
     margin-bottom: 6px;
-    width: 100%;
+    width: 50%;
 }
 
 .xp-bar {
-    width: 25%;
+    width: 50%;
     height: 12px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 999px;
@@ -138,7 +137,8 @@ h1 {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
-    color: black;
+    color: white;
+    width:50%;
     margin-top: 6px;
 }
 
@@ -160,4 +160,15 @@ h1 {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.xp-multiplier {
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.auth-area{
+    padding-bottom:10px;
+    margin: 0px 15px 15x 15px;
 }

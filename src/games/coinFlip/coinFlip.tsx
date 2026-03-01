@@ -5,6 +5,7 @@ import { getGameConfig } from "../../platform/gameRegistry";
 import "./coinFlip.css";
 import { recordGameSession } from "../../platform/gameService";
 import { useAuth } from "../../platform/AuthContext";
+
 const GAME_ID = "coin-flip";
 
 export default function CoinFlip() {

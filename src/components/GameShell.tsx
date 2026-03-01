@@ -3,7 +3,9 @@ import { useArcadeProfile } from "../platform/ArcadeProfileContext";
 import { formatNumber } from "../utils/format";
 import { flushXP } from "../platform/xpSession";
 import { useAuth } from "../platform/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import "../styles/gameShell.css"
+
 
 type GameShellProps = {
     title: string;
@@ -25,7 +27,8 @@ export default function GameShell({
     sidebar,
 }: GameShellProps) {
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-    const { xp, level, xpIntoLevel, xpForNextLevel } = useArcadeProfile();
+    const { xp, level, xpIntoLevel, xpForNextLevel, multiplier } =
+        useArcadeProfile();
     const percent =
         xpForNextLevel > 0
             ? Math.max(0, Math.min(100, (xpIntoLevel / xpForNextLevel) * 100))
@@ -74,7 +77,7 @@ export default function GameShell({
                     <Link to="/login">Login</Link>
                 ) : (
                     <>
-                        <span>{user.username}</span>
+                        <span style={{margin: '15px', padding: '10px'}} >{user.username}</span>
                         <button onClick={logout}>Logout</button>
                     </>
                 )}
@@ -85,6 +88,9 @@ export default function GameShell({
                         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
                         <h1>{title}</h1>
                         {subtitle && <p className="subline">{subtitle}</p>}
+
+        <NavLink to={`/leaderboard/${title}`}>{title} Leaderboard</NavLink>
+                
                     </div>
                 </div>
                 <div className="profile-bar">
@@ -96,6 +102,10 @@ export default function GameShell({
                         )}
                         <span>Level {level}</span>
                         <span>{formatNumber(xp)} XP</span>
+                        <span className="xp-multiplier">
+                            x{multiplier.toFixed(2)}
+                            (+{Math.round((multiplier - 1) * 100)}%)
+                        </span>
                     </div>
 
                     <div className="xp-bar">

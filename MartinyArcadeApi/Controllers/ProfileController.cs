@@ -37,6 +37,8 @@ public class ProfileController : ControllerBase
             return NotFound();
 
         var progress = _xpService.GetProgress(profile.TotalXP);
+        var levelMultiplier = _xpService.GetLevelXpMultiplier(progress.level);
+
 
         // 🔹 Global Rank
         var rank = await _db.UserProfiles
@@ -71,6 +73,7 @@ public class ProfileController : ControllerBase
             level = progress.level,
             xpIntoLevel = progress.xpIntoLevel,
             xpForNextLevel = progress.xpForNextLevel,
+            multiplier = levelMultiplier,
             rank,
             mostPlayedGame,
             recentEvents
