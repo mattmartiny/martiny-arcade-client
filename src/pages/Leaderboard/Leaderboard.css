@@ -59,3 +59,10 @@
   margin-bottom: 15px;
   font-size: 1.4rem;
 }
+
+.no-leaders{
+
+  color:chartreuse;
+
+  font-weight:bolder
+}

@@ -17,8 +17,9 @@ export type GameConfig = {
     hasGlobalLeaderboard?: boolean;
     hasGameProfile?: boolean;
     allowLossPenalty?: boolean;
-    leaderboardType:LeaderboardType;
+    leaderboardType: LeaderboardType;
     hasBestScore?: boolean;
+    scoreDirection?: string;
 };
 
 export const games: GameConfig[] = [
@@ -63,7 +64,22 @@ export const games: GameConfig[] = [
         multiplier: 1,
         allowLossPenalty: false,
         hasBestScore: true,
-        leaderboardType: "best-score"
+        leaderboardType: "best-score",
+        scoreDirection: "desc" //higher is better
+    },
+
+    {
+        id: "reaction-arena",
+        title: "Reaction Time Arena",
+        xpCommitStrategy: "immediate",
+        requiresLoginToPlay: false,
+        allowLossPenalty: false,
+        awardsXP: true,
+        multiplier: 1,
+        hasBestScore: true,
+        leaderboardType: "best-score",
+         scoreDirection: "asc" //lower is better
+
     }
 
 

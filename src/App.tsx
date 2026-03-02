@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./layout/layout";
 import Home from "./pages/Home/Home";
-import ElementalBattle from "./games/elementalBattle/Elemental_Battle";
+import ElementalBattle from "./games/elementalBattle/ElementalBattle";
 import CoinFlip from "./games/coinFlip/coinFlip";
 import War from "./games/war/war";
 import Games from "./pages/Games/Games";
@@ -15,6 +15,7 @@ import PrecisionGrid from "./games/PrecisionGrid/PrecisionGrid";
 import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import PublicProfile from "./pages/Profile/PublicProfile";
 import LeaderboardGame from "./pages/Leaderboard/LeaderboardGame";
+import ReactionArena from "./games/reaction/ReactionArena";
 // import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
@@ -30,11 +31,13 @@ export default function App() {
             <Route path="/coin-flip" element={<CoinFlip />} />
             <Route path="/elemental-battle" element={<ElementalBattle />} />
             <Route path="/precision-grid" element={<PrecisionGrid />} />
+            <Route path = "/reaction-arena" element={<ReactionArena />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path = "/register" element = { <Register /> } />   
             <Route path="/login" element={<Login />} />
             <Route path="/profile/:username" element={<PublicProfile />} />
             <Route path="/leaderboard/:gameKey" element={<LeaderboardGame />} />
+
              {/* <Route path="/aroundTheWorld" element={<ProtectedRoute><AroundTheWorld /></ProtectedRoute>} /> */}
             <Route path="/war" element={<War />} />
           </Route>

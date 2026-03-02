@@ -38,8 +38,6 @@ export default function GameShell({
 
     const xpRemaining = xpForNextLevel - xpIntoLevel;
 
-    const { user, logout } = useAuth();
-
     useEffect(() => {
         function handleBlockedXP() {
             setShowLoginPrompt(true);
@@ -74,7 +72,7 @@ export default function GameShell({
     return (
         <div className="game-shell">
 
-            <div className="auth-area">
+            {/* <div className="auth-area">
                 {!user ? (
                     <Link to="/login">Login</Link>
                 ) : (
@@ -83,7 +81,7 @@ export default function GameShell({
                         <button onClick={logout}>Logout</button>
                     </>
                 )}
-            </div>
+            </div> */}
             <section className="game-hero">
                 <div className="game-headline">
                     <div>

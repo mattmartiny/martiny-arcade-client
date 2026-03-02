@@ -19,6 +19,7 @@ public class ArcadeDbContext : DbContext
     public DbSet<UserRanking> UserRankings => Set<UserRanking>();
     public DbSet<GameSession> GameSessions => Set<GameSession>();
 
+public DbSet<Game> Games => Set<Game>();
     public DbSet<GameLeaderboardEntry> GameLeaderboard => Set<GameLeaderboardEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

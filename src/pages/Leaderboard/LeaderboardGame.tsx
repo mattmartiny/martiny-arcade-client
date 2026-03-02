@@ -60,8 +60,11 @@ export default function LeaderboardGame() {
       {/* 🥇 XP Leaderboard */}
       <div className="leaderboard-section">
         <h2>Total XP</h2>
-
-        {xpData.map((entry) => (
+< hr />
+        {xpData.length == 0 ?  (<div className="no-leaders">No one yet...</div>) :
+        
+        
+        xpData.map((entry) => (
           <div key={entry.rank} className="leaderboard-row">
             <span>#{entry.rank}</span>
             <span>{entry.username}</span>
@@ -74,8 +77,9 @@ export default function LeaderboardGame() {
       {config?.hasBestScore && (
         <div className="leaderboard-section">
           <h2>Best Score</h2>
-
-          {bestScoreData.map((entry, i) => (
+          <hr />
+{bestScoreData.length == 0 ?  (<div className="no-leaders">No one yet...</div>) :
+          bestScoreData.map((entry, i) => (
             <div key={i} className="leaderboard-row">
               <span>#{i + 1}</span>
               <span>{entry.username}</span>

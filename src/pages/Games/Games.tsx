@@ -35,7 +35,12 @@ export default function Home() {
           accent="purple"
         />
 
-
+        <GameCard
+          title="Reaction Arena"
+          description="React quickly. Climb the leaderboard"
+          to="/reaction-arena"
+          accent="green"
+        />
 
       </section>
     </div>

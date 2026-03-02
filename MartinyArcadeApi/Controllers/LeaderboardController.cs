@@ -68,4 +68,49 @@ public async Task<IActionResult> GetGameLeaderboard(string gameKey)
 
     return Ok(leaderboard);
 }
+
+[HttpGet("game/{gameKey}/best-scores")]
+public async Task<IActionResult> GetBestScores(string gameKey)
+{
+    var game = await _db.Games
+        .FirstOrDefaultAsync(g => g.GameKey == gameKey);
+
+    if (game == null)
+        return NotFound("Game not found");
+
+    bool lowerIsBetter = game.ScoreDirection == "asc";
+
+    var grouped = _db.GameSessions
+        .Where(g => g.GameKey == gameKey && g.Score > 0)
+        .GroupBy(g => g.UserId);
+
+    var bestScores = lowerIsBetter
+        ? grouped.Select(g => new
+          {
+              UserId = g.Key,
+              BestScore = g.Min(x => x.Score)
+          })
+        : grouped.Select(g => new
+          {
+              UserId = g.Key,
+              BestScore = g.Max(x => x.Score)
+          });
+
+    var result = await bestScores
+        .Join(_db.Users,
+            g => g.UserId,
+            u => u.UserId,
+            (g, u) => new
+            {
+                username = u.Username,
+                bestScore = g.BestScore
+            })
+        .OrderBy(x => lowerIsBetter ? x.bestScore : -x.bestScore)
+        .Take(50)
+        .ToListAsync();
+
+    return Ok(result);
+}
+
+
 }
