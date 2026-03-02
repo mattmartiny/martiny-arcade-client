@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using MartinyArcadeApi.Dtos;
 using MartinyArcadeApi.Models;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 
 [ApiController]
@@ -39,4 +40,32 @@ public class GameController : ControllerBase
 
         return Ok();
     }
+
+[HttpGet("game/{gameKey}/best-scores")]
+public async Task<IActionResult> GetBestScores(string gameKey)
+{
+    var leaderboard = await _db.GameSessions
+        .Where(g => g.GameKey == gameKey)
+        .GroupBy(g => g.UserId)
+        .Select(g => new
+        {
+            UserId = g.Key,
+            BestScore = g.Max(x => x.Score)
+        })
+        .OrderByDescending(g => g.BestScore)
+        .Take(50)
+        .Join(_db.Users,
+            g => g.UserId,
+            u => u.UserId,
+            (g, u) => new
+            {
+                username = u.Username,
+                bestScore = g.BestScore
+            })
+        .ToListAsync();
+
+    return Ok(leaderboard);
+}
+
+
 }

@@ -50,3 +50,12 @@
 .leaderboard-header{
   text-transform: capitalize;
 }
+
+.leaderboard-section {
+  margin-top: 40px;
+}
+
+.leaderboard-section h2 {
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}

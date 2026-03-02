@@ -16,7 +16,11 @@ public class ArcadeDbContext : DbContext
     public DbSet<XpLedger> XpLedger => Set<XpLedger>();
     public DbSet<XpEvent> XpEvents => Set<XpEvent>();
 
+    public DbSet<UserRanking> UserRankings => Set<UserRanking>();
     public DbSet<GameSession> GameSessions => Set<GameSession>();
+
+    public DbSet<GameLeaderboardEntry> GameLeaderboard => Set<GameLeaderboardEntry>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -54,7 +58,16 @@ public class ArcadeDbContext : DbContext
         .HasIndex(e => new { e.UserId, e.CreatedAt });
 
 
+        modelBuilder.Entity<GameLeaderboardEntry>()
+            .HasNoKey()
+            .ToView("GameLeaderboard");
 
+        modelBuilder.Entity<UserRanking>()
+               .HasNoKey()
+               .ToView("UserRankings");
+
+        modelBuilder.Entity<UserProfile>()
+            .HasIndex(p => p.TotalXP);
 
         modelBuilder.Entity<XpEvent>()
             .HasOne(e => e.User)
@@ -62,6 +75,12 @@ public class ArcadeDbContext : DbContext
             .HasForeignKey(e => e.UserId)
             .IsRequired();
 
+
+        modelBuilder.Entity<GameSession>()
+            .HasIndex(g => new { g.GameKey, g.UserId });
+
+        modelBuilder.Entity<GameSession>()
+            .HasIndex(g => new { g.GameKey, g.Score });
     }
 
 

@@ -79,7 +79,7 @@ export default function ElementalBattle() {
         const xpEarned = 3;
 
         awardXP({
-          source: "Elemental Battle",
+          source: "elemental-battle",
           amount: xpEarned,
           multiplier: config?.multiplier,
           reason: "Series Win",
@@ -88,7 +88,7 @@ export default function ElementalBattle() {
         if (token) {
           recordGameSession(
             token,
-            "elemental battle",
+            "elemental-battle",
             3,           // score
             xpEarned
           );
@@ -106,7 +106,7 @@ export default function ElementalBattle() {
         const xpEarned = 1; // optional participation XP
 
         awardXP({
-          source: "elemental battle",
+          source: "elemental-battle",
           amount: xpEarned,
           multiplier: config?.multiplier,
           reason: "Series Loss",
@@ -149,6 +149,8 @@ export default function ElementalBattle() {
 
   return (
     <GameShell
+      
+      gameKey={GAME_ID}
       eyebrow="Elemental Showdown"
       title="Elemental Battle"
       subtitle="First to 3 wins the series."

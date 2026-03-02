@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useAuth } from "../../platform/AuthContext";
 import "./PublicProfile.css";
+
+type RecentEvent = {
+  amount: number;
+  reason: string;
+  createdAt: string;
+};
 
 type ProfileResponse = {
   username: string;
@@ -11,46 +18,79 @@ type ProfileResponse = {
   multiplier: number;
   rank: number;
   mostPlayedGame: string | null;
-  recentEvents: {
-    amount: number;
-    reason: string;
-    createdAt: string;
-  }[];
+  recentEvents?: RecentEvent[]; // ✅ optional for safety
 };
 
 export default function Profile() {
   const { token } = useAuth();
+  const { username } = useParams<{ username?: string }>();
+
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // If route has username, we are viewing a public profile
+  const isPublic = useMemo(() => Boolean(username), [username]);
+
   useEffect(() => {
-    if (!token) return;
+    let cancelled = false;
 
     async function loadProfile() {
-      const res = await fetch("/api/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      setLoading(true);
+      setProfile(null);
 
-      if (!res.ok) return;
+      try {
+        let res: Response | null = null;
 
-      const data = await res.json();
-      setProfile(data);
-      setLoading(false);
+        if (username) {
+          // ✅ Public profile
+          res = await fetch(`/api/profile/${encodeURIComponent(username)}`);
+        } else {
+          // ✅ My profile (requires auth)
+          if (!token) {
+            setLoading(false);
+            return;
+          }
+
+          res = await fetch("/api/profile", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        }
+
+        if (!res.ok) {
+          if (!cancelled) setLoading(false);
+          return;
+        }
+
+        const data: ProfileResponse = await res.json();
+        if (!cancelled) {
+          setProfile(data);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) setLoading(false);
+      }
     }
 
     loadProfile();
-  }, [token]);
 
-  if (!token) return <div className="page-container">Please login.</div>;
+    return () => {
+      cancelled = true;
+    };
+  }, [token, username]);
+
+  if (!isPublic && !token) {
+    return <div className="page-container">Please login.</div>;
+  }
+
   if (loading) return <div className="page-container">Loading...</div>;
   if (!profile) return <div className="page-container">Profile not found.</div>;
 
-  const percent = Math.min(
-    100,
-    Math.round((profile.xpIntoLevel / profile.xpForNextLevel) * 100)
-  );
+  const percent =
+    profile.xpForNextLevel > 0
+      ? Math.min(100, Math.round((profile.xpIntoLevel / profile.xpForNextLevel) * 100))
+      : 0;
+
+  const recentEvents = profile.recentEvents ?? [];
 
   return (
     <div className="page-container">
@@ -62,13 +102,9 @@ export default function Profile() {
         <p>Level {profile.level}</p>
         <p>Total XP: {profile.totalXP}</p>
         <p>Global Rank: #{profile.rank}</p>
-        <p>  XP Multiplier: x{profile.multiplier.toFixed(2)}
-          (+{Math.round((profile.multiplier - 1) * 100)}%)</p>
+  
         <div className="xp-bar">
-          <div
-            className="xp-fill"
-            style={{ width: `${percent}%` }}
-          />
+          <div className="xp-fill" style={{ width: `${percent}%` }} />
         </div>
 
         <p>
@@ -82,19 +118,17 @@ export default function Profile() {
         <p>Most Played Game: {profile.mostPlayedGame ?? "N/A"}</p>
       </div>
 
-      {/* Recent XP */}
+      {/* ✅ Recent XP */}
       <div className="profile-card">
         <h2>Recent XP</h2>
 
-        {profile.recentEvents.length === 0 && <p>No recent activity.</p>}
+        {recentEvents.length === 0 && <p>No recent activity.</p>}
 
-        {profile.recentEvents.map((xp, i) => (
+        {recentEvents.map((xp, i) => (
           <div key={i} className="xp-row">
             <span>+{xp.amount} XP</span>
             <span>{xp.reason}</span>
-            <span>
-              {new Date(xp.createdAt).toLocaleDateString()}
-            </span>
+            <span>{new Date(xp.createdAt).toLocaleDateString()}</span>
           </div>
         ))}
       </div>

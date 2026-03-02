@@ -4,6 +4,7 @@ using MartinyArcadeApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MartinyArcadeApi.Migrations
 {
     [DbContext(typeof(ArcadeDbContext))]
-    partial class ArcadeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260301191411_AddUserProfileXpIndex")]
+    partial class AddUserProfileXpIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,32 +24,6 @@ namespace MartinyArcadeApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("GameLeaderboardEntry", b =>
-                {
-                    b.Property<int>("BestScore")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GameKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Rank")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalPlays")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalXP")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("GameLeaderboard", (string)null);
-                });
 
             modelBuilder.Entity("MartinyArcadeApi.Models.GameSession", b =>
                 {
@@ -56,7 +33,7 @@ namespace MartinyArcadeApi.Migrations
 
                     b.Property<string>("GameKey")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PlayedAt")
                         .HasColumnType("datetime2");
@@ -73,8 +50,6 @@ namespace MartinyArcadeApi.Migrations
                     b.HasKey("GameSessionId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("GameKey", "UserId");
 
                     b.ToTable("GameSessions");
                 });
@@ -147,8 +122,6 @@ namespace MartinyArcadeApi.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("TotalXP");
-
                     b.ToTable("UserProfiles");
                 });
 
@@ -219,22 +192,6 @@ namespace MartinyArcadeApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("XpLedger");
-                });
-
-            modelBuilder.Entity("UserRanking", b =>
-                {
-                    b.Property<int>("Rank")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalXP")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("UserRankings", (string)null);
                 });
 
             modelBuilder.Entity("MartinyArcadeApi.Models.GameSession", b =>

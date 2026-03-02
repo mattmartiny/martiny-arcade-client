@@ -46,43 +46,26 @@ public class LeaderboardController : ControllerBase
         return Ok(result);
     }
 
-
-    [HttpGet("game/{gameKey}")]
-public async Task<IActionResult> GetGameXpLeaderboard(
-    string gameKey,
-    [FromQuery] int take = 50)
+[HttpGet("game/{gameKey}")]
+public async Task<IActionResult> GetGameLeaderboard(string gameKey)
 {
-    take = Math.Clamp(take, 1, 100);
-
-    var leaderboard = await _db.XpEvents
-        .Where(e => e.Source == gameKey)
-        .GroupBy(e => e.UserId)
-        .Select(g => new
-        {
-            UserId = g.Key,
-            TotalXp = g.Sum(x => x.Amount)
-        })
-        .OrderByDescending(x => x.TotalXp)
-        .Take(take)
+    var leaderboard = await _db.GameLeaderboard
+        .Where(g => g.GameKey == gameKey)
+        .OrderBy(g => g.Rank)
+        .Take(50)
+        .Join(_db.Users,
+            g => g.UserId,
+            u => u.UserId,
+            (g, u) => new
+            {
+                rank = g.Rank,
+                username = u.Username,
+                totalXP = g.TotalXP,
+                bestScore = g.BestScore,
+                totalPlays = g.TotalPlays
+            })
         .ToListAsync();
 
-    // join usernames after query (safe translation)
-    var userIds = leaderboard.Select(x => x.UserId).ToList();
-
-    var users = await _db.Users
-        .Where(u => userIds.Contains(u.UserId))
-        .ToDictionaryAsync(u => u.UserId, u => u.Username);
-
-    var result = leaderboard
-        .Select((entry, index) => new
-        {
-            Rank = index + 1,
-            Username = users.ContainsKey(entry.UserId)
-                ? users[entry.UserId]
-                : "Unknown",
-            TotalXP = entry.TotalXp
-        });
-
-    return Ok(result);
+    return Ok(leaderboard);
 }
 }

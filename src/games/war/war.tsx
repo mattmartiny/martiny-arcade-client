@@ -5,7 +5,7 @@ import { getGameConfig } from "../../platform/gameRegistry";
 import "./war.css";
 import { useAuth } from "../../platform/AuthContext";
 import { recordGameSession } from "../../platform/gameService";
-const GAME_ID = "war";
+
 
 type Card = {
   Value: string;
@@ -14,6 +14,7 @@ type Card = {
 };
 
 const suits = ["Spades", "Diamonds", "Clubs", "Hearts"];
+const GAME_ID = "war";
 
 function suitToSymbol(suit: string) {
   switch (suit) {
@@ -177,57 +178,63 @@ export default function War() {
   }
 
   function finishGame() {
-  setGameOver(true);
+    setGameOver(true);
 
-  let xpEarned = 0;
+    let xpEarned = 0;
 
-  if (playerPoints > oppPoints) {
-    setStatus(`You Won the War ${playerPoints} to ${oppPoints}!`);
-    xpEarned = 20;
+    if (playerPoints > oppPoints) {
+      setStatus(`You Won the War ${playerPoints} to ${oppPoints}!`);
+      xpEarned = 20;
 
-    awardXP({
-      source: "war",
-      amount: xpEarned,
-      multiplier: config?.multiplier,
-      reason: "War: Game Win",
-    });
+      awardXP({
+        source: "war",
+        amount: xpEarned,
+        multiplier: config?.multiplier,
+        reason: "War: Game Win",
+      });
 
-  } else if (playerPoints < oppPoints) {
-    setStatus(`You Lost the War ${playerPoints} to ${oppPoints}.`);
+    } else if (playerPoints < oppPoints) {
+      setStatus(`You Lost the War ${playerPoints} to ${oppPoints}.`);
 
-    // Optional participation XP
-    xpEarned = 2;
+      // Optional participation XP
+      xpEarned = 2;
 
-    awardXP({
-      source: "war",
-      amount: xpEarned,
-      multiplier: config?.multiplier,
-      reason: "War: Game Loss",
-    });
+      awardXP({
+        source: "war",
+        amount: xpEarned,
+        multiplier: config?.multiplier,
+        reason: "War: Game Loss",
+      });
 
-  } else {
-    setStatus("It's a draw!");
+    } else {
+      setStatus("It's a draw!");
 
-    xpEarned = 5;
+      xpEarned = 5;
 
-    awardXP({
-      source: "war",
-      amount: xpEarned,
-      multiplier: config?.multiplier,
-      reason: "War: Draw",
-    });
+      awardXP({
+        source: "war",
+        amount: xpEarned,
+        multiplier: config?.multiplier,
+        reason: "War: Draw",
+      });
+    }
+
+    if (token) {
+      recordGameSession(
+        token,
+        GAME_ID,      // use constant
+        playerPoints,
+        xpEarned
+      );
+    }
+
+    if (index >= player.length - 1) {
+      finishGame();
+      return;
+    }
+    
+    setSubStatus("Press Start to play again.");
   }
-
-  // 👇 Record the session no matter what
-  recordGameSession(
-    token,
-    "war",
-    playerPoints,  // score
-    xpEarned
-  );
-
-  setSubStatus("Press Start to play again.");
-}
   const sidebar = (
     <>
       <h2>Scoreboard</h2>
@@ -248,6 +255,7 @@ export default function War() {
 
   return (
     <GameShell
+      gameKey={GAME_ID}
       eyebrow="Card Duel"
       title="War"
       subtitle="Higher card wins. Ties carry over."

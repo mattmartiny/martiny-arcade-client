@@ -8,6 +8,7 @@ import "../styles/gameShell.css"
 
 
 type GameShellProps = {
+     gameKey?: string; 
     title: string;
     subtitle?: string;
     eyebrow?: string;
@@ -18,6 +19,7 @@ type GameShellProps = {
 };
 
 export default function GameShell({
+   gameKey,
     title,
     subtitle,
     eyebrow,
@@ -88,8 +90,8 @@ export default function GameShell({
                         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
                         <h1>{title}</h1>
                         {subtitle && <p className="subline">{subtitle}</p>}
-
-        <NavLink to={`/leaderboard/${title}`}>{title} Leaderboard</NavLink>
+{gameKey && (
+        <NavLink to={`/leaderboard/${gameKey}`}>{title} Leaderboard</NavLink>)}
                 
                     </div>
                 </div>

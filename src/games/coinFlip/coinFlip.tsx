@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import GameShell from "../../components/GameShell";
 import { awardXP } from "../../platform/arcadeProfile";
 import { getGameConfig } from "../../platform/gameRegistry";
@@ -18,6 +18,7 @@ export default function CoinFlip() {
   const [isFlipping, setIsFlipping] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
+  const rotationRef = useRef(0); // ✅ source of truth
   const { token } = useAuth();
 
   async function flip(choice: "Heads" | "Tails") {
@@ -28,14 +29,21 @@ export default function CoinFlip() {
 
     const landed = Math.random() < 0.5 ? "Heads" : "Tails";
 
+
+
+
     // 3–6 full spins
     const spins = 3 + Math.floor(Math.random() * 4);
+
+    // ✅ pick a clean base each time so we never drift
+    const base = Math.floor(rotationRef.current / 360) * 360;
 
     // Base rotation for result
     const faceRotation = landed === "Tails" ? 180 : 0;
 
-    const totalRotation = rotation + spins * 360 + faceRotation;
+    const totalRotation = base + spins * 360 + faceRotation;
 
+    rotationRef.current = totalRotation;
     setRotation(totalRotation);
 
     await new Promise((r) => setTimeout(r, 900));
@@ -48,21 +56,21 @@ export default function CoinFlip() {
 
 
 
-let xpEarned = 2 
+      let xpEarned = 2
       awardXP({
         amount: xpEarned,
-        source: "Coin Flip",
+        source: "coin-flip",
         multiplier: config?.multiplier,
         reason: "Coin Flip Win",
       });
 
-      recordGameSession(token, "Coin Flip", 1, (xpEarned));
+      if (token) recordGameSession(token, "coin-flip", 1, (xpEarned));
 
 
-  } else {
+    } else {
       setLosses((l) => l + 1);
       setStatus(`It landed on ${landed}. You lost.`);
-        recordGameSession(token, "Coin Flip", 0, (0));
+     if(token) recordGameSession(token, "coin-flip", 0, (0));
     }
 
     setIsFlipping(false);
@@ -88,6 +96,7 @@ let xpEarned = 2
 
   return (
     <GameShell
+      gameKey={GAME_ID}
       eyebrow="Quick Pick"
       title="Coin Flip"
       subtitle="Heads or Tails. Simple luck."

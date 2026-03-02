@@ -30,7 +30,7 @@ export default function PrecisionGrid() {
     const [lastHit, setLastHit] = useState<number | null>(null);
     const [multiplier, setMultiplier] = useState(1);
     const { token } = useAuth();
-
+const GAME_ID = "precision-grid";
 
     function startGame() {
         setScore(0);
@@ -54,7 +54,7 @@ export default function PrecisionGrid() {
             reason: "grid_session",
         });
 
-     recordGameSession(token, "precision-grid", score, xpEarned);
+        recordGameSession(token, "precision-grid", score, xpEarned);
 
     }
 
@@ -171,6 +171,7 @@ export default function PrecisionGrid() {
 
     return (
         <GameShell
+            gameKey={GAME_ID}
             title="Precision Grid"
             subtitle="Tap the glowing tile. Speed increases."
             status={`Score: ${score}`}
