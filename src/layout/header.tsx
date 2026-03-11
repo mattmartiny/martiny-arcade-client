@@ -1,8 +1,9 @@
-import { NavLink, Link, Outlet } from "react-router-dom";
+import { NavLink} from "react-router-dom";
 import { useArcadeProfile } from "../platform/ArcadeProfileContext";
 import "./header.css";
 import { useAuth } from "../platform/AuthContext";
 import Logo from "../assets/ArcadeLogo.png"
+
 
 export default function Header (){
 <NavLink to="/games">Games</NavLink>

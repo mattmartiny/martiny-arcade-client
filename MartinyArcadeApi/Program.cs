@@ -86,6 +86,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<XpService>();
 builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<AchievementService>();
+
 
 var app = builder.Build();
 

@@ -41,7 +41,7 @@ public class ProfileController : ControllerBase
 
 
         // 🔹 Global Rank
-        var rank = await _db.UserProfiles
+        long rank = await _db.UserProfiles
             .CountAsync(p => p.TotalXP > profile.TotalXP) + 1;
 
         // 🔹 Most Played Game (by Source)
@@ -66,6 +66,21 @@ public class ProfileController : ControllerBase
             })
             .ToListAsync();
 
+        var achievements = await _db.UserAchievements
+    .Where(u => u.UserId == user.UserId)
+    .Include(u => u.Achievement)
+    .Select(u => new
+    {
+        key = u.Achievement.AchievementKey,
+        title = u.Achievement.Title,
+        description = u.Achievement.Description,
+        unlockedAt = u.UnlockedAt
+    })
+    .ToListAsync();
+
+
+
+
         return Ok(new
         {
             username = user.Username,
@@ -75,68 +90,83 @@ public class ProfileController : ControllerBase
             xpForNextLevel = progress.xpForNextLevel,
             multiplier = levelMultiplier,
             rank,
+            achievements,
             mostPlayedGame,
             recentEvents
         });
     }
 
-   [AllowAnonymous]
-[HttpGet("{username}")]
-public async Task<IActionResult> GetPublicProfile(string username)
-{
-    var user = await _db.Users
-        .FirstOrDefaultAsync(u => u.Username == username);
-
-    if (user == null)
-        return NotFound();
-
-    var profile = await _db.UserProfiles
-        .FirstOrDefaultAsync(p => p.UserId == user.UserId);
-
-    if (profile == null)
-        return NotFound();
-
-    var progress = _xpService.GetProgress(profile.TotalXP);
-    var levelMultiplier = _xpService.GetLevelXpMultiplier(progress.level);
-
- var rank = await _db.UserRankings
-    .Where(r => r.UserId == profile.UserId)
-    .Select(r => r.Rank)
-    .FirstOrDefaultAsync();
-
-    var mostPlayedGame = await _db.XpEvents
-        .Where(e => e.UserId == user.UserId)
-        .GroupBy(e => e.Source)
-        .OrderByDescending(g => g.Count())
-        .Select(g => g.Key)
-        .FirstOrDefaultAsync();
-
-    var recentEvents = await _db.XpEvents
-        .Where(e => e.UserId == user.UserId)
-        .OrderByDescending(e => e.CreatedAt)
-        .Take(10)
-        .Select(e => new
-        {
-            e.Amount,
-            e.Reason,
-            e.Source,
-            e.CreatedAt
-        })
-        .ToListAsync();
-
-    return Ok(new
+    [AllowAnonymous]
+    [HttpGet("{username}")]
+    public async Task<IActionResult> GetPublicProfile(string username)
     {
-        username = user.Username,
-        totalXP = profile.TotalXP,
-        level = progress.level,
-        xpIntoLevel = progress.xpIntoLevel,
-        xpForNextLevel = progress.xpForNextLevel,
-        multiplier = levelMultiplier,
-        rank,
-        mostPlayedGame,
-        recentEvents
-    });
-}
+        var user = await _db.Users
+            .FirstOrDefaultAsync(u => u.Username == username);
+
+        if (user == null)
+            return NotFound();
+
+        var profile = await _db.UserProfiles
+            .FirstOrDefaultAsync(p => p.UserId == user.UserId);
+
+        if (profile == null)
+            return NotFound();
+
+        var progress = _xpService.GetProgress(profile.TotalXP);
+        var levelMultiplier = _xpService.GetLevelXpMultiplier(progress.level);
+
+        var rank = await _db.UserRankings
+           .Where(r => r.UserId == profile.UserId)
+           .Select(r => r.Rank)
+           .FirstOrDefaultAsync();
+
+        var mostPlayedGame = await _db.XpEvents
+            .Where(e => e.UserId == user.UserId)
+            .GroupBy(e => e.Source)
+            .OrderByDescending(g => g.Count())
+            .Select(g => g.Key)
+            .FirstOrDefaultAsync();
+
+        var recentEvents = await _db.XpEvents
+            .Where(e => e.UserId == user.UserId)
+            .OrderByDescending(e => e.CreatedAt)
+            .Take(10)
+            .Select(e => new
+            {
+                e.Amount,
+                e.Reason,
+                e.Source,
+                e.CreatedAt
+            })
+            .ToListAsync();
+
+        var achievements = await _db.UserAchievements
+    .Where(u => u.UserId == user.UserId)
+    .Include(u => u.Achievement)
+    .Select(u => new
+    {
+        key = u.Achievement.AchievementKey,
+        title = u.Achievement.Title,
+        description = u.Achievement.Description,
+        unlockedAt = u.UnlockedAt
+    })
+    .ToListAsync();
+
+
+        return Ok(new
+        {
+            username = user.Username,
+            totalXP = profile.TotalXP,
+            level = progress.level,
+            xpIntoLevel = progress.xpIntoLevel,
+            xpForNextLevel = progress.xpForNextLevel,
+            multiplier = levelMultiplier,
+            rank,
+            achievements,
+            mostPlayedGame,
+            recentEvents
+        });
+    }
 
 
 

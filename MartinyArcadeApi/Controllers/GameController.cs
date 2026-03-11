@@ -1,4 +1,5 @@
 using MartinyArcadeApi.Data;
+using MartinyArcadeApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using MartinyArcadeApi.Dtos;
@@ -6,17 +7,20 @@ using MartinyArcadeApi.Models;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
-
 [ApiController]
 [Route("api/game")]
 [Authorize]
 public class GameController : ControllerBase
 {
     private readonly ArcadeDbContext _db;
+    private readonly AchievementService _achievementService;
 
-    public GameController(ArcadeDbContext db)
+    public GameController(
+        ArcadeDbContext db,
+        AchievementService achievementService)
     {
         _db = db;
+        _achievementService = achievementService;
     }
 
     [HttpPost("session")]
@@ -37,37 +41,17 @@ public class GameController : ControllerBase
 
         _db.GameSessions.Add(session);
         await _db.SaveChangesAsync();
+        var unlocked = await _achievementService.CheckAchievements(userId, dto.GameKey);
 
-        return Ok();
+        return Ok(new
+        {
+            unlockedAchievements = unlocked.Select(a => new
+            {
+                key = a.AchievementKey,
+                title = a.Title,
+                description = a.Description,
+                xpReward = a.XpReward
+            })
+        });
     }
-
-    // [HttpGet("game/{gameKey}/best-scores")]
-    // public async Task<IActionResult> GetBestScores(string gameKey)
-    // {
-    //     var leaderboard = await _db.GameSessions
-    //         .Where(g => g.GameKey == gameKey)
-    //         .GroupBy(g => g.UserId)
-    //         .Select(g => new
-    //         {
-    //             UserId = g.Key,
-    //             BestScore = g.Max(x => x.Score)
-    //         })
-    //         .OrderByDescending(g => g.BestScore)
-    //         .Take(50)
-    //         .Join(_db.Users,
-    //             g => g.UserId,
-    //             u => u.UserId,
-    //             (g, u) => new
-    //             {
-    //                 username = u.Username,
-    //                 bestScore = g.BestScore
-    //             })
-    //             .OrderBy(x => x.bestScore) // 🔥 lower is better
-    //         .Take(50)
-    //         .ToListAsync();
-
-    //     return Ok(leaderboard);
-    // }
-
-
 }

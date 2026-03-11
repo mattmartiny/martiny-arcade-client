@@ -4,7 +4,7 @@ type GameCardProps = {
   title: string;
   description: string;
   to: string;
-  accent?: "pink" | "blue" | "gold" | "purple" | "green";
+  accent?: "pink" | "blue" | "gold" | "purple" | "green" | "yellow";
 };
 
 export default function GameCard({

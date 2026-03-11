@@ -1,0 +1,25 @@
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 360px;
+  margin: 20px auto;
+}
+
+.pattern-cell {
+  aspect-ratio: 1;
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.pattern-cell.active {
+  background: #22d3ee;
+  box-shadow: 0 0 10px #22d3ee;
+}
+
+.pattern-cell:active {
+  transform: scale(0.95);
+}

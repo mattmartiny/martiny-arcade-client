@@ -64,13 +64,13 @@ export default function CoinFlip() {
         reason: "Coin Flip Win",
       });
 
-      if (token) recordGameSession(token, "coin-flip", 1, (xpEarned));
+      if (token)recordGameSession(token, GAME_ID, 1, (xpEarned));
 
 
     } else {
       setLosses((l) => l + 1);
       setStatus(`It landed on ${landed}. You lost.`);
-     if(token) recordGameSession(token, "coin-flip", 0, (0));
+     if(token) recordGameSession(token, GAME_ID, 0, (0));
     }
 
     setIsFlipping(false);

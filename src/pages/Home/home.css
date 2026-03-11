@@ -81,9 +81,13 @@
 .game-card.green {
   background: linear-gradient(135deg, #39FF14, #2dce11);
   box-shadow: 0 0 20px rgba(37, 169, 14, 0.4);
-
-
 }
+
+.game-card.yellow {
+  background: linear-gradient(135deg, #FFFF00, #b9b900);
+  box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+}
+
 .game-card:hover {
   transform: translateY(-6px) scale(1.02);
   box-shadow:

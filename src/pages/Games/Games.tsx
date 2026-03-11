@@ -3,17 +3,17 @@ import GameCard from "../../components/GameCard";
 export default function Home() {
   return (
     <div>
-      <section className="home-hero">
-
-      </section>
-
       <section className="game-grid">
+
         <GameCard
-          title="Coin Flip"
-          description="Call it right and stack quick wins."
-          to="/coin-flip"
+          title="Homeless Hero"
+          description="Browser Based RPG"
+          to="/homeless-hero"
           accent="gold"
         />
+
+
+
 
         <GameCard
           title="Elemental Battle"
@@ -42,6 +42,20 @@ export default function Home() {
           accent="green"
         />
 
+        <GameCard
+          title="Pattern Memory"
+          description="Repeat the growing pattern."
+          to="/pattern-memory"
+          accent="yellow"
+        />
+
+
+        <GameCard
+          title="Coin Flip"
+          description="Call it right and stack quick wins."
+          to="/coin-flip"
+          accent="gold"
+        />
       </section>
     </div>
 

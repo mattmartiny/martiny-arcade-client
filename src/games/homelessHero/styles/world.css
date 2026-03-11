@@ -1,0 +1,473 @@
+.dungeon-mode {
+  background: #282727;
+  z-index: 0;
+  color: #fff;
+  height: 150%;
+}
+
+.overworld-mode {
+  background: #b7b6b6;
+  z-index: 0;
+  height: 150%;
+}
+
+
+
+/* Optional: make common UI elements readable in dungeon mode */
+dungeon-mode button,
+.dungeon-mode input,
+.dungeon-mode select,
+.dungeon-mode textarea {
+  background-color: #111;
+  color: #fff;
+  border-color: #555;
+}
+
+.dungeon-mode table,
+.dungeon-mode td,
+.dungeon-mode th {
+  border-color: #444;
+}
+
+.dungeon-mode a {
+  color: #7ec8ff;
+}
+
+
+.bmessage {
+  overflow: scroll;
+  height: 165px;
+  border: 1px solid black;
+  margin: 5px auto;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #111;
+  position: relative;
+  display: block;
+  font-size: 0.75em;
+}
+
+
+.fmessage {
+  height: 30%;
+  width: 60%;
+  float: right;
+  font-size: .85em;
+  display: block;
+  z-index: 100;
+  position: relative;
+  padding: 2.5%;
+  background-color: rgba(255, 255, 255, 0.65);
+}
+
+.playerStats2 {
+  margin: 0 auto;
+  float: left;
+  text-align: justify;
+  display: block;
+  width: 22%;
+  position: relative;
+  font-size: 1em;
+}
+
+.playerStats {
+  float: right;
+  margin: 0 5% 0;
+  width: 15%;
+  text-align: justify;
+  display: block;
+  position: relative;
+  font-size: 0.75em;
+}
+
+.opponentStats {
+  float: left;
+  margin: 5px 0;
+  height: 60px;
+  border: 1px red solid;
+  width: 20%;
+  margin-left: 2%;
+  background-color: rgb(255, 255, 255, 0.4);
+}
+
+.myStats {
+  float: left;
+  margin: 5px 0;
+  height: 60px;
+  border: 1px limegreen solid;
+  width: 20%;
+  margin-left: 2%;
+  margin-right: 2%;
+  background-color: rgb(255, 255, 255, 0.4);
+
+}
+
+.currentLocation {
+  text-align: center;
+  height: 90px;
+  /* float: left; */
+  margin-bottom: 5px;
+  font-size: 0.85em;
+  width: 98%;
+}
+
+.navigateWorld {
+  float: left;
+  width: 30%;
+  z-index: 1;
+  position: relative;
+}
+
+.battleSection {
+  width: 45%;
+  float: left;
+  /* margin:0 1%; */
+}
+
+.playerInfo {
+  /* width:30%; */
+  float: left;
+}
+
+.directions {
+  width: 90%;
+  margin: 5px 5% 5px 5%;
+  position: relative;
+  float: left;
+}
+
+button{
+box-shadow: none;
+
+}
+.north {
+  float: left;
+  width: 50%;
+  margin-left: 25%;
+  display: block;
+  position: relative;
+}
+
+.east {
+  float: left;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.west {
+  float: left;
+  width: 50%;
+  margin: 0 auto;
+}
+
+.south {
+  float: left;
+  width: 50%;
+  margin-left: 25%;
+  display: block;
+}
+
+.fight {
+  float: left;
+  margin: 5px 4% 7px 5%;
+}
+
+.proceedDungeon {
+  float: left;
+  margin: 5px 4% 7px 5%;
+}
+
+.upDungeon {
+  margin: 5px 2.5% 7px 2.5%;
+}
+
+.downDungeon {
+  margin: 5px 2.5% 7px 2.5%;
+}
+
+.locationImg {
+  position: absolute;
+  z-index: 0;
+  width: 50%;
+  display: block;
+  left:27.5%;
+}
+
+.npcImg {
+  position: absolute;
+  z-index: 4;
+  height: 110px;
+  top: 150px;
+}
+
+.enemyImg {
+  position: absolute;
+  z-index: 4;
+  height: 250px;
+  left: 2%;
+  top: 20%;
+}
+
+.popup-content {
+  position: absolute;
+  z-index: 5;
+  right: 225px;
+  top: 150px;
+  background-color: #fff;
+  height: 14px;
+  font-size: 10px;
+  margin: 5px;
+  border-radius: 1.5px;
+  box-shadow: 3px 3px 3px #63666a;
+}
+
+.itemName {
+  position: relative;
+}
+
+.popup-content2 {
+  position: fixed;
+  left: 50%;
+  /* Position the popup centered horizontally */
+  z-index: 15;
+  background-color: #fff;
+  transform: translateX(-50%);
+  top: 80px;
+  font-size: 10px;
+  margin: 5px;
+  max-height: 14px;
+  /* Limit maximum height of the popup */
+  max-width: 265px;
+  /* Limit maximum width of the popup */
+  border-radius: 1.5px;
+  box-shadow: 3px 3px 3px #63666a;
+  color: #111;
+}
+
+.status {
+  float: left;
+  margin: 5px 2.5% 7px 2.5%;
+
+}
+
+.shop {
+  margin: 5px 3.5% 7px 5%;
+  float: left;
+}
+
+.inventory {
+  list-style-type: none;
+  float: left;
+  width: 40%;
+  overflow-y: scroll;
+  padding: 2.5%;
+  height: 70%;
+}
+
+
+
+.battleItemsInv {
+  list-style-type: none;
+  float: right;
+  overflow-y: scroll;
+  padding: 2.5%;
+  height: 80%;
+
+
+}
+
+.items {
+  width: 100%;
+  border: 1px solid black;
+}
+
+td.inven {
+  text-align: center;
+  width: 29%;
+}
+
+.invHead {
+  text-align: center;
+}
+
+
+.itemTable {
+  width: 100%;
+
+}
+
+.itemTable td {
+  width: 90%;
+  font-size: 1em;
+}
+
+.invTable {
+  width: 100%;
+}
+
+.invTable td {
+  width: 55%;
+  font-size: 0.75em;
+}
+
+.invBtn {
+  float: right;
+  font-size: 1vw;
+}
+
+.quests {
+  float: left;
+  overflow: scroll;
+  padding: 2.5%;
+  height: 80%;
+  width: 28%;
+}
+
+.quests ul {
+  list-style-type: none;
+  padding: 0;
+  font-size: 0.95em;
+  margin-bottom: -0.45em;
+}
+
+.quests ul ul {
+  list-style-type: none;
+  padding: 0 10%;
+  font-size: 0.75em;
+}
+
+element.style {
+  height: 168.156px;
+}
+
+.dialog {
+  font-size: 0.65em;
+  margin: 15px auto;
+  width: 100%;
+  display: block;
+  color: #111;
+  float: left;
+  z-index: 1;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.7)
+}
+
+.playerDialog {
+  width: 100%;
+  float: left;
+  text-align: center;
+  z-index: 6;
+  position: relative;
+  margin: 0 auto;
+}
+
+.option {
+  cursor: pointer;
+}
+
+.optionBox {
+  width: 100%;
+  float: left;
+  height: 42px;
+}
+
+.optionBox button {
+  float: left;
+  margin: 5px 3.5% 7px 5%;
+}
+
+.accept {
+  padding: 5px 0;
+  float: left;
+  margin: 0 3% 0;
+  color: green;
+  width: 44%;
+}
+
+.options {
+  width: 100%;
+}
+
+.accept:hover {
+  color: black;
+}
+
+.decline {
+  padding: 5px 0;
+  float: left;
+  margin: 0 3% 0;
+  color: red;
+  width: 44%;
+}
+
+.decline:hover {
+  color: black;
+}
+
+.dataWindow {
+  height: 90%;
+  width: 90%;
+  background-color: white;
+  z-index: 1000000;
+  color: #111;
+  position: absolute;
+  display: block;
+  top: 5%;
+  left: 5%;
+  border: 3px solid black;
+}
+
+.battleItemWindow {
+  height: 50%;
+  width: 50%;
+  background-color: white;
+  z-index: 1100000;
+  position: absolute;
+  display: block;
+  bottom: 2.5%;
+  right: 0;
+  border: 3px solid black;
+}
+
+.shopWindow {
+  height: 90%;
+  width: 90%;
+  background-color: white;
+  color:#111;
+  z-index: 1000000;
+  position: absolute;
+  display: block;
+  top: 5%;
+  left: 5%;
+  border: 3px solid black;
+}
+
+.shopItems {
+  width: 50%;
+  float: left;
+  overflow-x: scroll;
+  height: 60%;
+  display: block;
+}
+
+.shopItems tr {
+  text-align: center;
+  width: 50%;
+}
+
+.shopItems td {
+  padding: 0 5px;
+}
+
+.buttons {
+
+  z-index: 5;
+  display: block;
+  position: relative;
+}
+
+.chat {
+  z-index: 5;
+  position: relative;
+
+}

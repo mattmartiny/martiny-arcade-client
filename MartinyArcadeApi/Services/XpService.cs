@@ -2,12 +2,12 @@ namespace MartinyArcadeApi.Services;
 
 public class XpService
 {
-    public int CalculateLevel(int xp)
+    public int CalculateLevel(long xp)
     {
         return (int)Math.Floor(Math.Sqrt(xp / 100.0)) + 1;
     }
 
-    public (int level, int xpIntoLevel, int xpForNextLevel) GetProgress(int xp)
+    public (long level, long xpIntoLevel, long xpForNextLevel) GetProgress(long xp)
     {
         var level = CalculateLevel(xp);
         var nextLevelXP = (int)Math.Pow(level, 2) * 100;
@@ -21,7 +21,7 @@ public class XpService
     }
 
 
-    public decimal GetLevelXpMultiplier(int level)
+    public decimal GetLevelXpMultiplier(long level)
 {
     // Smooth scaling
     // +2% per level

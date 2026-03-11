@@ -19,6 +19,9 @@ public class ArcadeDbContext : DbContext
     public DbSet<UserRanking> UserRankings => Set<UserRanking>();
     public DbSet<GameSession> GameSessions => Set<GameSession>();
 
+    public DbSet<Achievement> Achievements => Set<Achievement>();
+public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
+
 public DbSet<Game> Games => Set<Game>();
     public DbSet<GameLeaderboardEntry> GameLeaderboard => Set<GameLeaderboardEntry>();
 
@@ -82,6 +85,15 @@ public DbSet<Game> Games => Set<Game>();
 
         modelBuilder.Entity<GameSession>()
             .HasIndex(g => new { g.GameKey, g.Score });
+
+            modelBuilder.Entity<UserAchievement>()
+    .HasIndex(u => new { u.UserId, u.AchievementId })
+    .IsUnique();
+
+modelBuilder.Entity<UserAchievement>()
+    .HasOne(u => u.Achievement)
+    .WithMany(a => a.UserAchievements)
+    .HasForeignKey(u => u.AchievementId);
     }
 
 

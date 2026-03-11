@@ -3,8 +3,8 @@ namespace MartinyArcadeApi.Dtos.Profile;
 public class ProfileDto
 {
     public string Username { get; set; } = string.Empty;
-    public int TotalXP { get; set; }
-    public int Level { get; set; }
+    public long TotalXP { get; set; }
+    public long Level { get; set; }
     public int Rank { get; set; }
 
     public string? MostPlayedGame { get; set; }

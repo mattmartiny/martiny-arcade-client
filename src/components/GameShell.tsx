@@ -1,138 +1,151 @@
 import { useEffect, useState } from "react";
 import { useArcadeProfile } from "../platform/ArcadeProfileContext";
 import { formatNumber } from "../utils/format";
-import { flushXP } from "../platform/xpSession";
-import { useAuth } from "../platform/AuthContext";
-import { Link, NavLink } from "react-router-dom";
-import "../styles/gameShell.css"
+import { NavLink } from "react-router-dom";
+import { useAchievements } from "../platform/AchievementContext";
+import AchievementToast from "./AchievementToast/AchievementToast";
 
+import "../styles/gameShell.css";
 
 type GameShellProps = {
-     gameKey?: string; 
-    title: string;
-    subtitle?: string;
-    eyebrow?: string;
-    status?: string;
-    subStatus?: string;
-    children: React.ReactNode;
-    sidebar?: React.ReactNode;
+  gameKey?: string;
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  status?: string;
+  subStatus?: string;
+  sidebar?: React.ReactNode;
+  children: React.ReactNode;
 };
 
 export default function GameShell({
-   gameKey,
-    title,
-    subtitle,
-    eyebrow,
-    status,
-    subStatus,
-    children,
-    sidebar,
+  gameKey,
+  title,
+  subtitle,
+  eyebrow,
+  status,
+  subStatus,
+  children,
+  sidebar,
 }: GameShellProps) {
-    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-    const { xp, level, xpIntoLevel, xpForNextLevel, multiplier } =
-        useArcadeProfile();
-    const percent =
-        xpForNextLevel > 0
-            ? Math.max(0, Math.min(100, (xpIntoLevel / xpForNextLevel) * 100))
-            : 0;
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-    const xpRemaining = xpForNextLevel - xpIntoLevel;
+  const { xp, level, xpIntoLevel, xpForNextLevel, multiplier } =
+    useArcadeProfile();
 
-    useEffect(() => {
-        function handleBlockedXP() {
-            setShowLoginPrompt(true);
+  const { unlocked, clear, pushAchievements } = useAchievements();
 
-            setTimeout(() => {
-                setShowLoginPrompt(false);
-            }, 3000);
-        }
+  const percent =
+    xpForNextLevel > 0
+      ? Math.max(0, Math.min(100, (xpIntoLevel / xpForNextLevel) * 100))
+      : 0;
 
-        window.addEventListener("arcade:xp-blocked", handleBlockedXP);
+  const xpRemaining = xpForNextLevel - xpIntoLevel;
 
-        return () => {
-            window.removeEventListener("arcade:xp-blocked", handleBlockedXP);
-        };
-    }, []);
+  // 🚀 Listen for achievement events globally
+  useEffect(() => {
+    function handleAchievement(event: any) {
+      if (event.detail?.length) {
+        pushAchievements(event.detail);
+      }
+    }
 
-    // useEffect(() => {
-    //     const handleBeforeUnload = () => {
-    //         const token = localStorage.getItem("token");
-    //         if (!token) return;
+    window.addEventListener("achievementUnlocked", handleAchievement);
 
-    //         flushXP(token);
-    //     };
+    return () => {
+      window.removeEventListener("achievementUnlocked", handleAchievement);
+    };
+  }, [pushAchievements]);
 
-    //     window.addEventListener("beforeunload", handleBeforeUnload);
+  // 🔔 Auto clear toasts
+  useEffect(() => {
+    if (!unlocked.length) return;
 
-    //     return () => {
-    //         window.removeEventListener("beforeunload", handleBeforeUnload);
-    //     };
-    // }, []);
+    const timer = setTimeout(() => {
+      clear();
+    }, 4000);
 
-    return (
-        <div className="game-shell">
+    return () => clearTimeout(timer);
+  }, [unlocked, clear]);
 
-            {/* <div className="auth-area">
-                {!user ? (
-                    <Link to="/login">Login</Link>
-                ) : (
-                    <>
-                        <span style={{margin: '15px', padding: '10px'}} >{user.username}</span>
-                        <button onClick={logout}>Logout</button>
-                    </>
-                )}
-            </div> */}
-            <section className="game-hero">
-                <div className="game-headline">
-                    <div>
-                        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-                        <h1>{title}</h1>
-                        {subtitle && <p className="subline">{subtitle}</p>}
-{gameKey && (
-        <NavLink to={`/leaderboard/${gameKey}`}>{title} Leaderboard</NavLink>)}
-                
-                    </div>
-                </div>
-                <div className="profile-bar">
-                    <div className="profile-top">
-                        {showLoginPrompt && (
-                            <div className="login-warning">
-                                Login or create an account to gain XP.
-                            </div>
-                        )}
-                        <span>Level {level}</span>
-                        <span>{formatNumber(xp)} XP</span>
-                        <span className="xp-multiplier">
-                            x{multiplier.toFixed(2)}
-                            (+{Math.round((multiplier - 1) * 100)}%)
-                        </span>
-                    </div>
+  // 🚫 XP blocked listener
+  useEffect(() => {
+    function handleBlockedXP() {
+      setShowLoginPrompt(true);
+      setTimeout(() => setShowLoginPrompt(false), 3000);
+    }
 
-                    <div className="xp-bar">
-                        <div
-                            className="xp-fill"
-                            style={{ width: `${percent}%` }}
-                        />
-                    </div>
+    window.addEventListener("arcade:xp-blocked", handleBlockedXP);
 
-                    <div className="xp-meta">
-                        <span>
-                            {formatNumber(xpIntoLevel)} / {formatNumber(xpForNextLevel)} XP
-                        </span>
-                        <span>
-                            {formatNumber(xpRemaining)} XP to next level
-                        </span>
-                    </div>
-                </div>
-                {status && <p className="status">{status}</p>}
-                {subStatus && <p className="status-sub">{subStatus}</p>}
+    return () => {
+      window.removeEventListener("arcade:xp-blocked", handleBlockedXP);
+    };
+  }, []);
 
-                <div className="game-grid">
-                    <div className="panel">{children}</div>
-
-                    {sidebar && <div className="panel">{sidebar}</div>}
-                </div>
-            </section>
+  return (
+    <div className="game-shell">
+      <section className="game-hero">
+        <div className="game-headline">
+          <div>
+            {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+            <h1>{title}</h1>
+            {subtitle && <p className="subline">{subtitle}</p>}
+            {gameKey && (
+              <NavLink to={`/leaderboard/${gameKey}`}>
+                {title} Leaderboard
+              </NavLink>
+            )}
+          </div>
         </div>
-    );
+
+        <div className="profile-bar">
+          <div className="profile-top">
+            {showLoginPrompt && (
+              <div className="login-warning">
+                Login or create an account to gain XP.
+              </div>
+            )}
+            <span>Level {level}</span>
+            <span>{formatNumber(xp)} XP</span>
+            <span className="xp-multiplier">
+              x{multiplier.toFixed(2)}
+              (+{Math.round((multiplier - 1) * 100)}%)
+            </span>
+          </div>
+
+          <div className="xp-bar">
+            <div className="xp-fill" style={{ width: `${percent}%` }} />
+          </div>
+
+          <div className="xp-meta">
+            <span>
+              {formatNumber(xpIntoLevel)} /{" "}
+              {formatNumber(xpForNextLevel)} XP
+            </span>
+            <span>
+              {formatNumber(xpRemaining)} XP to next level
+            </span>
+          </div>
+        </div>
+
+        {status && <p className="status">{status}</p>}
+        {subStatus && <p className="status-sub">{subStatus}</p>}
+
+        <div className="game-grid">
+          <div className="panel">{children}</div>
+          {sidebar && <div className="panel">{sidebar}</div>}
+        </div>
+      </section>
+
+      {/* 🎉 Achievement Toasts */}
+      {unlocked.map((a) => (
+        <AchievementToast
+          key={a.key}
+          title={a.title}
+          description={a.description}
+          xpReward={a.xpReward}
+        />
+      ))}
+    </div>
+  );
 }

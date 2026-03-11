@@ -78,9 +78,36 @@ export const games: GameConfig[] = [
         multiplier: 1,
         hasBestScore: true,
         leaderboardType: "best-score",
-         scoreDirection: "asc" //lower is better
+        scoreDirection: "asc" //lower is better
 
+    },
+    {
+        id: "pattern-memory",
+        title: "Pattern Memory",
+        xpCommitStrategy: "immediate",
+        multiplier: 1,
+        hasBestScore: true,
+        requiresLoginToPlay: false,
+        allowLossPenalty: false,
+        awardsXP: true,
+        leaderboardType: "best-score",
+        scoreDirection: "desc" //higher is better
+    },
+    {
+        id: "homeless-hero",
+        title: "Homeless Hero",
+        xpCommitStrategy: "immediate",
+        multiplier: 1,
+        hasBestScore: true,
+        requiresLoginToPlay: true,
+        allowLossPenalty: false,
+        awardsXP: true,
+        leaderboardType: "best-score",
+        scoreDirection: "desc" //higher is better
     }
+
+
+
 
 
     //     id: "reaction",

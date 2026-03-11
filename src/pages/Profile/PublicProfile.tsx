@@ -19,6 +19,12 @@ type ProfileResponse = {
   rank: number;
   mostPlayedGame: string | null;
   recentEvents?: RecentEvent[]; // ✅ optional for safety
+  achievements: {
+  key: string
+  title: string
+  description: string
+  unlockedAt: string
+}[]
 };
 
 export default function Profile() {
@@ -111,6 +117,22 @@ export default function Profile() {
           {profile.xpIntoLevel} / {profile.xpForNextLevel} XP to next level
         </p>
       </div>
+
+
+    <div className="profile-card">
+  <h2>Achievements</h2>
+
+  {profile.achievements.length === 0 && <p>No achievements yet.</p>}
+
+  <div className="achievement-grid">
+    {profile.achievements.map(a => (
+      <div key={a.key} className="achievement-badge">
+        🏆
+        <div>{a.title}</div>
+      </div>
+    ))}
+  </div>
+</div>
 
       {/* Game Stats */}
       <div className="profile-card">

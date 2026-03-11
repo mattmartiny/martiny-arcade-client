@@ -5,22 +5,48 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 24px;
+    padding: 0 20px;
     background: rgba(5, 7, 18, 0.85);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 20px rgba(255, 0, 128, 0.15);
 }
 
-.arcade-logo{
-width:25%
+.arcade-logo {
+    width: 17.5%
 }
-    
-    .arcade-logo img{
-width:100%;
-height:auto;
+
+.arcade-logo img {
+    width: 100%;
+    height: auto;
 
 
+}
+
+.arcade-logo2 {
+    width: 7.5%;
+    margin:-10px 0;
+}
+
+.arcade-logo2 img {
+    width: 100%;
+
+
+
+}
+
+.arcade-header2 {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(5, 7, 18, 0.85);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.15);
 }
 
 .arcade-nav a {
@@ -29,17 +55,50 @@ height:auto;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s ease;
-    font-size:1.25rem
+    font-size: 1.05rem
 }
 
 .arcade-nav a:hover {
     color: #ff0080;
 }
 
+.arcade-profile2 {
+    font-weight: 700;
+    color: #ffd166;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size:.80rem;
+}
+
+
+
+.arcade-nav2 a {
+    margin: 0 12px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+    font-size: .80rem
+}
+
+.arcade-nav2 a.active {
+    color: #ff0080;
+    text-shadow: 0 0 8px #ff0080;
+}
+
+
+
+
+.arcade-nav2 a:hover {
+    color: #ff0080;
+}
+
 .arcade-profile {
     font-weight: 700;
     color: #ffd166;
-     display: flex;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -49,6 +108,7 @@ height:auto;
     color: #ff0080;
     text-shadow: 0 0 8px #ff0080;
 }
+
 
 .header-btn {
     background: linear-gradient(135deg, #ff0080, #00d4ff);
@@ -66,11 +126,10 @@ height:auto;
     transform: translateY(-2px);
 }
 
-.header-xp{
+.header-xp {
 
-     display: flex;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
-

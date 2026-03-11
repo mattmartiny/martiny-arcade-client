@@ -11,7 +11,7 @@ public class XpEvent
 
     public Guid ClientEventId { get; set; } // idempotency key
 
-    public int Amount { get; set; }
+    public long Amount { get; set; }
 
     public string Reason { get; set; } = "action";
 

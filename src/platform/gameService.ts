@@ -6,20 +6,29 @@ export async function recordGameSession(
 ) {
   if (!token) return;
 
-  try {
-    await fetch("/api/game/session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        gameKey,
-        score,
-        xpEarned,
-      }),
-    });
-  } catch (err) {
-    console.error("Failed to record game session:", err);
+  const res = await fetch("/api/game/session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      gameKey,
+      score,
+      xpEarned,
+    }),
+  });
+
+  if (!res.ok) return;
+
+  const data = await res.json();
+
+  // 🚀 Dispatch achievement event
+  if (data?.unlockedAchievements?.length) {
+    window.dispatchEvent(
+      new CustomEvent("achievementUnlocked", {
+        detail: data.unlockedAchievements,
+      })
+    );
   }
 }

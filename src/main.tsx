@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from './platform/AuthContext.tsx'
 import { ArcadeProfileProvider } from './platform/ArcadeProfileContext.tsx'
+import { AchievementProvider } from "./platform/AchievementContext";
 
 createRoot(document.getElementById('root')!).render(
   <AuthProvider>
-  <ArcadeProfileProvider>  
-    <App />
+  <ArcadeProfileProvider> 
+     <AchievementProvider>
+      <App />
+      </AchievementProvider>
   </ArcadeProfileProvider>
   </AuthProvider>
   ,
