@@ -13,6 +13,10 @@ export const Player: player = {
     experiencePoints: 66,
     level: 1,
     deathCount: 0,
+    baseAttack: 1,
+    baseDefense: 1,
+    baseSpeed: 1,
+    baseMaxHp: 9
   },
   inventory: [],
   questList: [],

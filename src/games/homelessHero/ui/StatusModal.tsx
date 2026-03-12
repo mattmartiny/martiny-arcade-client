@@ -8,8 +8,8 @@ export function StatusModal({
   game,
 }: {
   game: any;
-    selectedItem: inventoryItem | null;
-    setSelectedItem: (x: inventoryItem | null) => void;
+  selectedItem: inventoryItem | null;
+  setSelectedItem: (x: inventoryItem | null) => void;
 }) {
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
@@ -30,7 +30,7 @@ export function StatusModal({
               <td>
                 <ClickTooltip
                   id="stat-attack"
-                  label={<span style={{ cursor:"pointer", textDecoration:"underline" }}>Attack</span>}
+                  label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Attack</span>}
                   openTooltip={openTooltip}
                   setOpenTooltip={setOpenTooltip}
                 >
@@ -51,7 +51,7 @@ export function StatusModal({
               <td>
                 <ClickTooltip
                   id="stat-defense"
-                  label={<span style={{ cursor:"pointer", textDecoration:"underline" }}>Defense</span>}
+                  label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Defense</span>}
                   openTooltip={openTooltip}
                   setOpenTooltip={setOpenTooltip}
                 >
@@ -72,7 +72,7 @@ export function StatusModal({
               <td>
                 <ClickTooltip
                   id="stat-speed"
-                  label={<span style={{ cursor:"pointer", textDecoration:"underline" }}>Speed</span>}
+                  label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Speed</span>}
                   openTooltip={openTooltip}
                   setOpenTooltip={setOpenTooltip}
                 >
@@ -92,6 +92,9 @@ export function StatusModal({
             <tr><td>Exp. Points:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.experiencePoints}</td></tr>
             <tr><td>Gold:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.gold}</td></tr>
             <tr><td>Death Count:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.deathCount}</td></tr>
+      <tr><td>&nbsp;</td></tr>
+            <tr><td>Weapon:</td><td style={{ textAlign: "right", fontSize: ".6rem" }}>{game.myPlayer.weapon?.itemName}</td></tr>
+            <tr><td>Gear:</td><td style={{ textAlign: "right", fontSize: ".6rem"  }}>{game.myPlayer.wearable?.itemName}</td></tr>
           </tbody>
         </table>
       </div>
@@ -163,7 +166,7 @@ export function StatusModal({
                       <button onClick={() => game.heal(inv)} className="invBtn">Heal</button>
                     )}
 
-                    {inv.details.equippable && (
+                    {inv.details.equippable && (inv.details.name === game.myPlayer.weapon?.itemName || !game.myPlayer.weapon?.equipped) && (
                       <>
                         <button
                           disabled={game.myPlayer.weapon?.equipped}
@@ -182,7 +185,7 @@ export function StatusModal({
                       </>
                     )}
 
-                    {inv.details.wearable && (
+                    {inv.details.wearable && (inv.details.name === game.myPlayer.wearable?.itemName || !game.myPlayer.wearable?.equipped) && (
                       <>
                         <button
                           disabled={game.myPlayer.wearable?.equipped}

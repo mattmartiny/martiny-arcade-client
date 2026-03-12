@@ -1,6 +1,6 @@
 import { dataFor } from "../content/data";
 import type { Location, dungeonRoom, dungeon } from "../types/locations";
-import type { Enemy } from "../types/enemy";
+import type { EnemyTemplate } from "../types/enemy";
 import type { NPC } from "../types/NPC";
 
 export const initialGameState = {
@@ -11,7 +11,7 @@ export const initialGameState = {
   currentDungeonRoom: null as dungeonRoom | null,
 
   // combat
-  activeEnemy: null as Enemy | null,
+  activeEnemy: null as EnemyTemplate| null,
 
   // npc dialog
   npcOpen: false,

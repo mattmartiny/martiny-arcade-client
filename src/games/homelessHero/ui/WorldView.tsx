@@ -213,7 +213,7 @@ export function WorldView() {
                                     </tr> */}
                                     <tr><td>Level:</td><td style={{ textAlign: "right" }}>{g.myPlayer.stats.level}</td></tr>
                                     <tr><td>Weapon:</td><td style={{ textAlign: "right" }}>{g.myPlayer.weapon?.itemName}</td></tr>
-                                    <tr><td>Equipped:</td><td style={{ textAlign: "right" }}>{g.myPlayer.wearable?.itemName}</td></tr>
+                                    <tr><td>Gear:</td><td style={{ textAlign: "right" }}>{g.myPlayer.wearable?.itemName}</td></tr>
                                 </tbody>
                             </table>
                         </div>

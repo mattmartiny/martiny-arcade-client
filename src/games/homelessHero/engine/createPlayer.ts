@@ -18,7 +18,11 @@ export function createPlayer(): player {
       speed: Math.round(level * 1.17),
       experiencePoints: initialXP,
       level,
-      deathCount: 0
+      deathCount: 0,
+      baseAttack: Math.round(level * 1.16),
+      baseDefense: Math.round(level * 1.18),
+      baseSpeed:  Math.round(level * 1.17),
+      baseMaxHp: Math.round(level * 3.15),
     },
 
     inventory: [],

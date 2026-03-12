@@ -534,7 +534,8 @@ export function useHomelessHero() {
                 ...p,
                 stats: {
                     ...p.stats,
-                    currentHp: p.stats.MaxHp
+                    currentHp: p.stats.MaxHp,
+                    deathCount: p.stats.deathCount++
                 }
             }))
 
