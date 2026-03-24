@@ -26,6 +26,11 @@ export interface player {
 
   inventory: inventoryItem[];
 
+
+  weaponItemId?: number;
+  wearableItemId?: number;
+
+
   weapon?: equippableItem;
   wearable?: equippableItem;
 

@@ -99,3 +99,18 @@ export let beatSomePimps: quest = {
     message: `Go take out the Chads!`
 
   }
+
+  export const quests: quest[]=[
+beatSomePimps,
+PAAARTY,
+Mobbin,
+wyverntReady,
+mobbin2,
+mobbin3,
+mob4,
+toolshop,
+
+
+
+
+  ] 

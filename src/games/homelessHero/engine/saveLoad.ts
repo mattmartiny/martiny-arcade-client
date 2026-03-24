@@ -1,33 +1,28 @@
-import { useHomelessHero } from "./useHomelessHero"
+// import type { SaveGameDTO } from "../types/saveTypes"
+// import { useHomelessHero } from "./useHomelessHero"
 
-const g = useHomelessHero()
-export function saveGame(game:any){
+// const SAVE_KEY = "homelessHeroSave";
 
-  localStorage.setItem(
-    "myPlayer",
-    JSON.stringify(game.player)
-  )
+// const g = useHomelessHero()
+// export function saveGame(data: SaveGameDTO) {
+//   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+// }
 
-  localStorage.setItem(
-    "cLocation",
-    JSON.stringify(game.currentLocation)
-  )
+// export function loadGame(): SaveGameDTO | null {
+//   const raw = localStorage.getItem(SAVE_KEY);
+//   if (!raw) return null;
 
-}
+//   try {
+//     const data = JSON.parse(raw) as SaveGameDTO;
 
-export function loadGame(){
-   
-  const player =
-    localStorage.getItem("myPlayer")
+//     if (!data.version) {
+//       console.warn("Old save detected");
+//       return null;
+//     }
 
-  const location =
-    localStorage.getItem("cLocation")
-
-  if(!player || !location) return null
-
-  return {
-    player:JSON.parse(player),
-    location:JSON.parse(location)
-  }
-
-}
+//     return data;
+//   } catch (err) {
+//     console.error("Failed to parse save data", err);
+//     return null;
+//   }
+// }

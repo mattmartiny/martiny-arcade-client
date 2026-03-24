@@ -18,7 +18,8 @@ import LeaderboardGame from "./pages/Leaderboard/LeaderboardGame";
 import ReactionArena from "./games/reaction/ReactionArena";
 import PatternMemory from "./games/pattern/PatternMemory";
 import RpgGame from "./games/homelessHero/RpgGame";
-// import ProtectedRoute from "./components/ProtectedRoute";
+import RpgMenu from "./games/homelessHero/RpgMenu"
+ import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
@@ -35,7 +36,9 @@ export default function App() {
             <Route path="/precision-grid" element={<PrecisionGrid />} />
             <Route path = "/reaction-arena" element={<ReactionArena />} />
             <Route path ="/pattern-memory" element ={<PatternMemory />} />
-            <Route path ="/homeless-hero" element={<RpgGame />} />
+            <Route path ="/homeless-hero" element={<ProtectedRoute><RpgMenu /></ProtectedRoute>} />
+             <Route path ="/homeless-hero/play" element={<ProtectedRoute><RpgGame /></ProtectedRoute>} />
+
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path = "/register" element = { <Register /> } />   
             <Route path="/login" element={<Login />} />

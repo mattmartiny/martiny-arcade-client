@@ -1,8 +1,9 @@
 
 import type { inventoryItem } from "../types/item";
-import { useState } from "react";
+import { useState, type Key } from "react";
 import * as quests from "../content/quests"
 import { ClickTooltip } from "./ClickTooltip";
+import { dataFor } from "../content/data";
 
 export function StatusModal({
   game,
@@ -13,6 +14,13 @@ export function StatusModal({
 }) {
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
+
+  const weapon = game.getEquippedWeapon(game.myPlayer);
+  const wearable = game.getEquippedWearable(game.myPlayer);
+  
+  const isEquipped = game.myPlayer.weaponItemId ? game.myPlayer.weaponItemId === weapon.id : false
+const isWorn = game.myPlayer.wearableItemId ? game.myPlayer.wearableItemId === wearable.id : false
+
   return (
     <div className="dataWindow">
       <div className="col-sm-12" style={{ textAlign: "center" }}>
@@ -92,9 +100,20 @@ export function StatusModal({
             <tr><td>Exp. Points:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.experiencePoints}</td></tr>
             <tr><td>Gold:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.gold}</td></tr>
             <tr><td>Death Count:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.deathCount}</td></tr>
-      <tr><td>&nbsp;</td></tr>
-            <tr><td>Weapon:</td><td style={{ textAlign: "right", fontSize: ".6rem" }}>{game.myPlayer.weapon?.itemName}</td></tr>
-            <tr><td>Gear:</td><td style={{ textAlign: "right", fontSize: ".6rem"  }}>{game.myPlayer.wearable?.itemName}</td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+              <td>Weapon:</td>
+              <td style={{ textAlign: "right", fontSize: ".6rem" }}>
+                {weapon?.name ?? "None"}
+              </td>
+            </tr>
+
+            <tr>
+              <td>Gear:</td>
+              <td style={{ textAlign: "right", fontSize: ".6rem" }}>
+                {wearable?.name ?? "None"}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -166,17 +185,17 @@ export function StatusModal({
                       <button onClick={() => game.heal(inv)} className="invBtn">Heal</button>
                     )}
 
-                    {inv.details.equippable && (inv.details.name === game.myPlayer.weapon?.itemName || !game.myPlayer.weapon?.equipped) && (
+                    {inv.details.equippable && (!isEquipped || weapon?.id === inv.details.id ) && (
                       <>
                         <button
-                          disabled={game.myPlayer.weapon?.equipped}
+                          disabled={isEquipped}
                           onClick={() => game.Equip(inv)}
                           className="invBtn"
                         >
                           Equip
                         </button>
                         <button
-                          disabled={!game.myPlayer.weapon?.equipped}
+                          disabled={!isEquipped}
                           onClick={() => game.unequip(inv)}
                           className="invBtn"
                         >
@@ -185,17 +204,17 @@ export function StatusModal({
                       </>
                     )}
 
-                    {inv.details.wearable && (inv.details.name === game.myPlayer.wearable?.itemName || !game.myPlayer.wearable?.equipped) && (
+                    {inv.details.wearable && (inv.details.id === wearable?.id || !isWorn) && (
                       <>
                         <button
-                          disabled={game.myPlayer.wearable?.equipped}
+                          disabled={isWorn}
                           onClick={() => game.Wear(inv)}
                           className="invBtn"
                         >
                           Wear
                         </button>
                         <button
-                          disabled={!game.myPlayer.wearable?.equipped}
+                          disabled={!isWorn}
                           onClick={() => game.removeItem(inv)}
                           className="invBtn"
                         >
@@ -211,51 +230,36 @@ export function StatusModal({
       </div>
 
       <div className="quests col-sm-4" id="quests">
-        <h3>QUESTS</h3>
+  <h3>QUESTS</h3>
 
-        <div>
+  <div>
+ {game.myPlayer.questList.map((progress: { id: number; isComplete: any; }) => {
+  const quest = dataFor.getQuest(progress.id);
 
-          {game.myPlayer.questList.map((progress: any) => {
+  return (
+    <div key={progress.id}>
+      <li
+        style={{
+          fontWeight: progress.isComplete ? "normal" : "bolder",
+          textDecoration: progress.isComplete ? "line-through" : "none",
+        }}
+      >
+        {quest.name}
+      </li>
 
-            const quest =
-              Object.values(quests).find(
-                (q: any) => q.id === progress.id
-              )
+      {!progress.isComplete && (
+        <span style={{ fontSize: ".65rem" }}>
+          {quest.description}
+        </span>
+      )}
 
-            if (!quest) return null
-
-            return (
-              <div key={progress.id}>
-
-                {progress.isComplete ? (
-
-                  <div style={{ textDecoration: "line-through" }}>
-                    <li>{quest.name}</li>
-                  </div>
-
-                ) : (
-
-                  <div>
-                    <li style={{ fontWeight: "bolder" }}>
-                      {quest.name}
-                    </li>
-
-                    <span style={{ fontSize: ".65rem" }}>
-                      {quest.description}
-                    </span>
-                  </div>
-
-                )}
-
-                <hr />
-
-              </div>
-            )
-
-          })}
+      <hr />
+    </div>
+  );
+})}
+  </div>
+</div>
 
         </div>
-      </div>
-    </div>
   );
 }

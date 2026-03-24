@@ -21,12 +21,12 @@ export function FightModal({
         {game.combat?.enemy && (
           <><ClickTooltip
             id="enemyStats"
-            label={<b>{game.combat.enemy.name}</b>}
+            label={<b style={{textDecoration:"underline"}}>{game.combat.enemy.name}</b>}
             openTooltip={openTooltip}
             setOpenTooltip={setOpenTooltip}
           >
-
-            <b>{game.combat.enemy.name}</b>
+            <b>{game.combat.enemy.name}</b><br />
+            <span style={{fontSize:".6rem"}}>{game.combat.enemy.description}</span>
             <hr />
 
             ⚔ Attack: {game.combat.enemy.attack}<br />
@@ -49,7 +49,27 @@ export function FightModal({
       </div>
 
       <div className="myStats">
-        <b>Player</b><br />
+
+          <ClickTooltip
+            id="playerStats"
+            label={<b style={{textDecoration:"underline"}}>Player</b>}
+            openTooltip={openTooltip}
+            setOpenTooltip={setOpenTooltip}
+          >
+          
+
+            ⚔ Attack: {game.myPlayer.stats.attack}<br />
+            🛡 Defense: {game.myPlayer.stats.defense}<br />
+            ⚡ Speed: {game.myPlayer.stats.speed}
+
+          </ClickTooltip>
+
+
+
+
+
+
+        
         <span style={{ color: game.myPlayer.stats.currentHp >= game.myPlayer.stats.MaxHp / 3 ? "black" : "red" }}>
           <HpBar
             current={game.myPlayer.stats.currentHp}

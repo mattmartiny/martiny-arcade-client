@@ -1,23 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, } from "react";
 import type { Location, dungeon, dungeonRoom, dungeonFloor } from "../types/locations";
-import type { EnemyTemplate, EnemyInstance } from "../types/enemy";
-import type { item, inventoryItem } from "../types/item";
+import type { EnemyInstance } from "../types/enemy";
+import type { inventoryItem, } from "../types/item";
 import type { NPC } from "../types/NPC";
 import type { player } from "../types/player";
-import { loadJSON, saveJSON } from "./storage";
+import type { SaveGameDTO } from "../types/saveTypes";
 import { calcDamage, levelFromXP, randomInt } from "./combat";
 import { rollLoot } from "./loot";
 import type { CombatState } from "../types/combat";
 import { recalcStats } from "./stats"
-import type { quest, QuestProgress } from "../types/quest";
-import type { shop } from "../types/shop";
+import type { quest, } from "../types/quest";
 import { resolveCombatRound } from "./combatRound";
-import type { completeDialog, dialogReplies } from "../types/player";
-import { addToInventory, cloneEnemy, hasItem, removeFromInventory } from "./helpers";
+import { addToInventory, removeFromInventory } from "./helpers";
 import * as dataFor from "../content/data";
-import { startQuest, isQuestComplete, completeQuest, hasQuest, } from "./quests";
+import { startQuest, completeQuest, } from "./quests";
 import { spawnEnemy } from "./enemySpawn";
 import { getQuestState } from "./questLogic";
+import { useAutosave } from "./useAutosave";
+import { loadFromSave } from "./saveMapper";
+import { loadGame, saveGame } from "./saveRepository";
+import { useAuth } from "../../../platform/AuthContext";
+
+
 
 // YOU PROVIDE THIS MODULE (same shape as Angular: dataFor.home, dataFor.Locs)
 type UiState = {
@@ -28,15 +32,6 @@ type UiState = {
     battleItemOpen: boolean;
 };
 
-const LS = {
-    player: "myPlayer",
-    quest: "myPlayerQuest",
-    inv: "myPlayerInventory",
-    msg: "bmessage",
-    equipped: "equipped",
-    worn: "worn",
-    loc: "cLocation",
-};
 
 function detectMobileDevice() {
     const userAgent = navigator.userAgent;
@@ -44,51 +39,57 @@ function detectMobileDevice() {
 }
 
 
-export const Locs: Location[] = Object.values(location).filter(
-    (l): l is Location => typeof l === "object" && "id" in l
-);
+export function useHomelessHero(mode: string | null) {
 
-export function useHomelessHero() {
     const isMobileDevice = useMemo(() => detectMobileDevice(), []);
 
-    // --- base placeholders matching your Angular defaults ---
-    const fakeItem: item = useMemo(() => ({
-        id: 0,
-        name: "",
-        price: 0,
-        equippable: false,
-        wearable: false,
-        healing: false,
-    }), []);
 
+    const { token } = useAuth();
+    const [initialSave, setInitialSave] = useState<SaveGameDTO | null>(null);
+    const [isLoadedFromServer, setIsLoadedFromServer] = useState(false);
+
+
+
+    useEffect(() => {
+        if (!token) return;
+
+        if (mode === "new") {
+            console.log("STARTING NEW GAME");
+
+            const newPlayer = createNewPlayer(dataFor.dataFor.home);
+            setMyPlayer(newPlayer);
+            setInitialSave(null);
+            setIsLoadedFromServer(true);
+            return;
+        }
+
+        // continue
+        loadGame(token)
+            .then(save => {
+                if (save) {
+                    const loaded = loadFromSave(save);
+                    setMyPlayer(recalcStats(loaded));
+                    setInitialSave(save);
+                } else {
+                    // fallback
+                    const newPlayer = createNewPlayer(dataFor.dataFor.home);
+                    setMyPlayer(newPlayer);
+                }
+            })
+            .catch(err => {
+                console.error("LOAD FAILED", err);
+            })
+            .finally(() => {
+                setIsLoadedFromServer(true);
+            });
+
+    }, [token, mode]);
+
+    // --- base placeholders matching your Angular defaults ---
+    const BATTLE_MSG_KEY = "hh_battleMessage";
     const initialXP = 66;
     const initialHP = 9;
     const initialLevel = levelFromXP(initialXP);
-
-    // --- Location bootstrap (from localStorage or home) ---
-    const [currentLocation, setCurrentLocation] = useState<Location>(() => {
-        const loc = loadJSON<Location>(LS.loc);
-        return loc ?? dataFor.dataFor.home;
-    });
-
-    // --- Dungeon state ---
-    const [currentDungeon, setCurrentDungeon] = useState<dungeon>({
-        id: 0, name: "", floors: 0, insideDungeon: false,
-    });
-
-    const [currentDungeonRoom, setCurrentDungeonRoom] = useState<dungeonRoom>({
-        roomID: "0AA",
-        dungeon: currentDungeon,
-        floor: 0,
-        roomNumber: 0,
-        enemyNumber: 0,
-        hasEnemy: false,
-        exit: false,
-        stairsUp: false,
-        stairsDown: true,
-        hasEntered: false,
-        itemRequired: false,
-    });
 
     const [ui, setUi] = useState<UiState>({
         fightOpen: false,
@@ -98,43 +99,126 @@ export function useHomelessHero() {
         battleItemOpen: false,
     });
 
-    // --- NPC dialog ---
+
     const [npcName, setNpcName] = useState("");
     const [NPCDialog, setNPCDialog] = useState("");
     const [playerOption1, setPlayerOption1] = useState<string>("");
     const [EndChatMessage, setEndChatMessage] = useState<string>("");
 
-    // --- messages ---
-    const [battleMessage, setBattleMessage] = useState<string>(() => {
-        return loadJSON<string>(LS.msg) ??
-            `You wake up in a strange alley-way, unsure of anything. You don't remember your name, your occupation, or anyone around you. You have no idea where you live, and for all you know, you are homeless. Everything seems new.... and scary. <br /><br /> `;
+
+    // const initialLocation = useMemo(() => {
+    //     if (!initialSave) return dataFor.dataFor.home;
+
+    //     return (
+    //         dataFor.dataFor.Locs.find(
+    //             l => l.id === initialSave.location.locationId
+    //         ) ?? dataFor.dataFor.home
+    //     );
+    // }, [initialSave]);
+
+    const [currentLocation, setCurrentLocation] = useState<Location>(dataFor.dataFor.home);
+
+    const [currentDungeon, setCurrentDungeon] = useState<dungeon>({
+        id: 0,
+        name: "",
+        floors: 0,
+        insideDungeon: false,
     });
+
+
+    const [currentDungeonRoom, setCurrentDungeonRoom] = useState<dungeonRoom>(() => {
+        return {
+            roomID: initialSave?.location.dungeonRoomId ?? "0AA",
+            dungeon: currentDungeon,
+            floor: 0,
+            roomNumber: 0,
+            enemyNumber: 0,
+            hasEnemy: false,
+            exit: false,
+            stairsUp: false,
+            stairsDown: true,
+            hasEntered: false,
+            itemRequired: false,
+        };
+    });
+
+    // --- NPC dialog ---
+
+
+
+
+    // --- messages ---
+
+
 
     const [fightMessage, setFightMessage] = useState<string>("");
     const [combat, setCombat] = useState<CombatState | null>(null)
 
 
-    // --- Player ---
-    const [myPlayer, setMyPlayer] = useState<player>(() => {
-        const savedStats = loadJSON<player["stats"]>(LS.player);
+    const [battleMessage, setBattleMessage] = useState<string>(() => {
+        const saved = localStorage.getItem(BATTLE_MSG_KEY);
+        if (saved) return saved;
 
-        if (savedStats && savedStats.baseAttack === undefined) {
+        return `You wake up in a strange alley-way, unsure of anything. You don't remember your name, your occupation, or anyone around you. You have no idea where you live, and for all you know, you are homeless. Everything seems new.... and scary. <br /><br /> `;
+    });
 
-            savedStats.baseAttack = savedStats.attack
-            savedStats.baseDefense = savedStats.defense
-            savedStats.baseSpeed = savedStats.speed
-            savedStats.baseMaxHp = savedStats.MaxHp
 
+    const [myPlayer, setMyPlayer] = useState<player | null>(null);
+    const isReady = !!myPlayer && isLoadedFromServer;
+
+    useEffect(() => {
+        if (!initialSave) return;
+
+        const loc =
+            dataFor.dataFor.Locs.find(
+                l => l.id === initialSave.location.locationId
+            ) ?? dataFor.dataFor.home;
+
+        console.log("SETTING LOCATION FROM SAVE:", loc.id); // 👈 debug
+
+        setCurrentLocation(loc);
+
+    }, [initialSave]);
+
+    useEffect(() => {
+        if (!initialSave) return;
+
+        setCurrentDungeonRoom(prev => ({
+            ...prev,
+            roomID: initialSave.location.dungeonRoomId ?? "0AA"
+        }));
+
+    }, [initialSave]);
+
+
+    useEffect(() => {
+        if (!isLoadedFromServer) return;
+
+        console.log("INIT PLAYER", { initialSave });
+
+        if (initialSave) {
+            const loaded = loadFromSave(initialSave);
+            setMyPlayer(recalcStats(loaded));
+        } else {
+            const newPlayer = createNewPlayer(dataFor.dataFor.home); // 👈 DON'T rely on initialLocation
+            setMyPlayer(newPlayer);
         }
-        const savedQuest = loadJSON<QuestProgress[]>(LS.quest);
-        const savedInv = loadJSON<inventoryItem[]>(LS.inv);
 
-        const player = {
-            currentLocation,
-            stats: savedStats ?? {
+    }, [isLoadedFromServer, initialSave]); // ✅ CRITICAL
 
+
+
+
+
+
+
+
+
+    function createNewPlayer(startLocation: Location): player {
+        return recalcStats({
+            currentLocation: startLocation,
+            stats: {
                 gold: 0,
-
                 currentHp: Math.max(0, initialHP),
 
                 baseMaxHp: Math.round(initialLevel * 3.15),
@@ -151,47 +235,40 @@ export function useHomelessHero() {
                 level: initialLevel,
                 deathCount: 0,
             },
-            inventory: savedInv ?? [{ details: fakeItem, quantity: 0 }],
-            questList: savedQuest ?? [],
-            weapon: loadJSON<any>(LS.equipped) ?? { itemName: "N/A", attackBonus: 0, defenseBonus: 0, speedBonus: 0, equipped: false },
-            wearable: loadJSON<any>(LS.worn) ?? { itemName: "N/A", attackBonus: 0, defenseBonus: 0, speedBonus: 0, equipped: false },
-
-
-        };
-        return recalcStats(player);
-    });
+            inventory: [],
+            questList: [],
+            weaponItemId: undefined,
+            wearableItemId: undefined,
+        });
+    }
 
 
 
-    // keep player currentLocation synced
+
     useEffect(() => {
-        setMyPlayer(p => ({ ...p, currentLocation }));
-        saveJSON(LS.loc, currentLocation);
-    }, [currentLocation]);
-
-    // persist player chunks
-    useEffect(() => { saveJSON(LS.player, myPlayer.stats); }, [myPlayer.stats]);
-    useEffect(() => { saveJSON(LS.inv, myPlayer.inventory); }, [myPlayer.inventory]);
-    useEffect(() => { saveJSON(LS.quest, myPlayer.questList); }, [myPlayer.questList]);
-    useEffect(() => { saveJSON(LS.msg, battleMessage); }, [battleMessage]);
+        localStorage.setItem(BATTLE_MSG_KEY, battleMessage);
+    }, [battleMessage]);
 
     useEffect(() => {
 
         if (!combat || combat.turn !== "enemy") return
-
+        if (!myPlayer) return;
         const enemy = combat.enemy
 
         const damage =
             calcDamage(enemy.attack, myPlayer.stats.defense)
 
-        setMyPlayer(p => ({
-            ...p,
-            stats: {
-                ...p.stats,
-                currentHp:
-                    Math.max(0, p.stats.currentHp - damage)
+        setMyPlayer(p => {
+            if (!p) return p;
+
+            return {
+                ...p,
+                stats: {
+                    ...p.stats,
+                    currentHp: Math.max(0, p.stats.currentHp - damage)
+                }
             }
-        }))
+        })
 
         const log = [
             ...combat.log,
@@ -215,7 +292,7 @@ export function useHomelessHero() {
             turn: "player"
         })
 
-    }, [combat?.turn])
+    }, [combat?.turn, myPlayer])
 
 
     // --- derived helpers ---
@@ -232,13 +309,23 @@ export function useHomelessHero() {
     const [activeEnemy, setActiveEnemy] = useState<EnemyInstance | null>(null);;
     const [canFight, setCanFight] = useState<boolean>(() => !!activeEnemy);
     const [turn, setTurn] = useState<"player" | "enemy">("player")
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    type SaveStatus = "idle" | "saving" | "saved" | "error";
+
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+
+
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
 
     useEffect(() => {
 
         const area: any = isInDungeon ? currentDungeonRoom : currentLocation;
 
         const enemies = area?.EnemyHere;
-
+        if (!myPlayer) return;
         if (!enemies || enemies.length === 0) {
             setActiveEnemy(null);
             return;
@@ -252,18 +339,81 @@ export function useHomelessHero() {
             return;
         }
 
-        if (activeEnemy?.id === template.id) return;
+        if (activeEnemy && activeEnemy.currentHp > 0 && activeEnemy.id === template.id) {
+            return;
+        }
 
         const enemy = spawnEnemy(template, myPlayer);
-        setActiveEnemy(enemy)
-        enemy.currentHp = enemy.maxHp;
 
-        setActiveEnemy(enemy);
+        setActiveEnemy({
+            ...enemy,
+            currentHp: enemy.maxHp
+        })
 
     }, [isInDungeon, currentLocation.id, currentDungeonRoom.roomID]);
 
 
     const isFluctuatingEnemy = !!(activeEnemy && activeEnemy.fluctuating === true);
+    const isLoading = !token || !isLoadedFromServer || !myPlayer;
+    const save = useCallback(async (playerOverride?: player) => {
+        if (!myPlayer || !token) return;
+
+        const p = playerOverride ?? myPlayer;
+
+        const data: SaveGameDTO = {
+            version: 1,
+            player: {
+                stats: {
+                    gold: p.stats.gold,
+                    currentHp: p.stats.currentHp,
+                    maxHp: p.stats.MaxHp,
+                    experiencePoints: p.stats.experiencePoints,
+                    level: p.stats.level,
+                    deathCount: p.stats.deathCount,
+                },
+                baseStats: {
+                    baseAttack: p.stats.baseAttack,
+                    baseDefense: p.stats.baseDefense,
+                    baseSpeed: p.stats.baseSpeed,
+                    baseMaxHp: p.stats.baseMaxHp,
+                },
+            },
+            inventory: {
+                items: p.inventory.map(i => ({
+                    itemId: i.details.id,
+                    quantity: i.quantity,
+                })),
+            },
+            equipment: {
+                weaponItemId: p.weaponItemId,
+                wearableItemId: p.wearableItemId,
+            },
+            quests: p.questList.map(q => ({
+                questId: q.id,
+                completed: q.isComplete,
+            })),
+            location: {
+                locationId: currentLocation.id,
+                dungeonRoomId: currentDungeonRoom?.roomID,
+            },
+        };
+
+        try {
+            setSaveStatus("saving");
+
+            await saveGame(data, token); // 👈 IMPORTANT: must await
+
+            setSaveStatus("saved");
+
+            // fade out after a bit
+            setTimeout(() => setSaveStatus("idle"), 1500);
+
+        } catch (err) {
+            console.error("SAVE FAILED", err);
+            setSaveStatus("error");
+        }
+
+    }, [myPlayer, token, currentLocation.id, currentDungeonRoom?.roomID]);
 
 
 
@@ -272,7 +422,39 @@ export function useHomelessHero() {
     }, [activeEnemy?.id, isInDungeon]);
 
 
+    useEffect(() => {
+        if (!isHydrated || !myPlayer || !token || !initialSave) return;
 
+        setSaveStatus("saving")
+        save();
+
+        const t = setTimeout(() => setSaveStatus("saving"), 400);
+        return () => clearTimeout(t);
+    }, [
+        isHydrated,
+        currentLocation.id,
+        currentDungeonRoom?.roomID,
+        myPlayer?.stats.level,
+        myPlayer?.stats.experiencePoints,
+        myPlayer?.weaponItemId,
+        myPlayer?.wearableItemId,
+        save,
+    ]);
+    const isFirstRender = useRef(true);
+
+    useAutosave(() => {
+        if (!isHydrated) return;
+
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        setSaveStatus("saving");
+        save();
+
+        setTimeout(() => setSaveStatus("saving"), 400);
+    }, 1200);
 
 
     // --- enemy snapshot for fluctuating enemies ---
@@ -285,8 +467,19 @@ export function useHomelessHero() {
     //     lootTable: [{ details: fakeItem, chance: 100, isDefaultItem: true }],
     // });
 
+
+    function getEquippedWeapon(player: player) {
+        if (!player || !player.weaponItemId) return undefined;
+        return dataFor.getItem(player.weaponItemId);
+    }
+
+    function getEquippedWearable(player: player) {
+        if (!player || !player.wearableItemId) return undefined;
+        return dataFor.getItem(player.wearableItemId);
+    }
     // --- gating by required item ---
     function hasRequiredItemFor(loc: Location) {
+        if (!myPlayer) return;
         if (!loc.itemRequired) return true;
         const req = loc.itemThatsRequired;
         if (!req?.details) return false;
@@ -295,6 +488,7 @@ export function useHomelessHero() {
     }
 
     function hasRequiredItemForRoom(room: dungeonRoom) {
+        if (!myPlayer) return;
         if (!room.itemRequired) return true;
         const req = room.itemThatsRequired;
         if (!req?.details) return false;
@@ -341,7 +535,7 @@ export function useHomelessHero() {
         const template = location.EnemyHere?.[0];
 
         if (template) {
-
+            if (!myPlayer) return false;
             const enemy = spawnEnemy(template, myPlayer);
 
             announceCurrentEnemy(enemy);
@@ -391,7 +585,7 @@ export function useHomelessHero() {
         const template = room.EnemyHere?.[0];
 
         if (template) {
-
+            if (!myPlayer) return;
             const enemy = spawnEnemy(template, myPlayer);
 
             announceCurrentEnemy(enemy);
@@ -435,6 +629,7 @@ export function useHomelessHero() {
 
 
         if (entry) {
+            if (!myPlayer) return;
             setCurrentDungeonRoom(entry);
             setActiveEnemy(null)
             if (template) {
@@ -462,6 +657,7 @@ export function useHomelessHero() {
         const template = area?.EnemyHere?.[0];
 
         if (template) {
+            if (!myPlayer) return;
             const enemy = spawnEnemy(template, myPlayer);
             announceCurrentEnemy(enemy);
         }
@@ -480,15 +676,16 @@ export function useHomelessHero() {
     }
 
     // --- leveling/stats ---
-    function completelyHeal() {
-        setMyPlayer(p => ({ ...p, stats: { ...p.stats, currentHp: p.stats.MaxHp } }));
-    }
+    // function completelyHeal() {
+    //     setMyPlayer(p => { if (!p) return p; return { ...p, stats: { ...p.stats, currentHp: p.stats.MaxHp } } });
+    // }
 
     function updateStats(newXP: number, oldXP: number) {
         const oldLevel = levelFromXP(oldXP);
         const newLevel = levelFromXP(newXP);
 
         setMyPlayer(p => {
+            if (!p) return p;
             const updated = {
                 ...p,
                 stats: {
@@ -530,21 +727,24 @@ export function useHomelessHero() {
 
             setCurrentLocation(dataFor.dataFor.home)
 
-            setMyPlayer(p => ({
-                ...p,
-                stats: {
-                    ...p.stats,
-                    currentHp: p.stats.MaxHp,
-                    deathCount: p.stats.deathCount++
+            setMyPlayer(p => {
+                if (!p) return p;
+                return {
+                    ...p,
+                    stats: {
+                        ...p.stats,
+                        currentHp: p.stats.MaxHp,
+                        deathCount: p.stats.deathCount + 1
+                    }
                 }
-            }))
+            })
 
         }, 800)
     }
 
     // --- fight modal open ---
     function openFight() {
-
+        if (!myPlayer) return;
         if (!activeEnemy) return
 
         const enemyFirst =
@@ -568,7 +768,7 @@ export function useHomelessHero() {
 
     // --- player attack ---
     function playerAttack() {
-
+        if (!myPlayer) return;
         if (!combat || combat.turn !== "player") return
 
         const enemy = { ...combat.enemy }
@@ -631,7 +831,7 @@ export function useHomelessHero() {
     }
 
     function endCombat(enemy: any, log: string[]) {
-
+        if (!myPlayer) return;
         const xp = enemy.rewardXP ?? 0
         const gold = enemy.rewardGold ?? 0
 
@@ -641,25 +841,31 @@ export function useHomelessHero() {
 
         updateStats(newXP, oldXP)
 
-        setMyPlayer(p => ({
-            ...p,
-            stats: {
-                ...p.stats,
-                experiencePoints:
-                    p.stats.experiencePoints + xp,
-                gold: p.stats.gold + gold
+        setMyPlayer(p => {
+            if (!p) return p;
+            return {
+                ...p,
+                stats: {
+                    ...p.stats,
+                    experiencePoints:
+                        p.stats.experiencePoints + xp,
+                    gold: p.stats.gold + gold
+                }
             }
-        }))
+        })
 
         const loot = rollLoot(enemy.lootTable)
 
         if (loot) {
 
-            setMyPlayer(p => ({
-                ...p,
-                inventory:
-                    addToInventory(p.inventory, loot)
-            }))
+            setMyPlayer(p => {
+                if (!p) return p;
+                return {
+                    ...p,
+                    inventory:
+                        addToInventory(p.inventory, loot)
+                }
+            })
 
             log.push(`You found ${loot.details.name}`)
         }
@@ -693,14 +899,15 @@ export function useHomelessHero() {
     // --- casino ---
     function playGame(playerChoice: string, betAmount: number) {
         const computerChoice = randomInt(1, 3);
+        if (!myPlayer) return;
         if (myPlayer.stats.gold < betAmount) return "Thats more money than you have";
 
         // subtract bet
-        setMyPlayer(p => ({ ...p, stats: { ...p.stats, gold: p.stats.gold - betAmount } }));
+        setMyPlayer(p => { if (!p) return p; return { ...p, stats: { ...p.stats, gold: p.stats.gold - betAmount } } });
 
         if (parseFloat(playerChoice) === computerChoice) {
             const winAmount = betAmount * 2.25;
-            setMyPlayer(p => ({ ...p, stats: { ...p.stats, gold: p.stats.gold + Math.round(winAmount) } }));
+            setMyPlayer(p => { if (!p) return p; return { ...p, stats: { ...p.stats, gold: p.stats.gold + Math.round(winAmount) } } });
             return `You win ${Math.round(winAmount)} game currency!`;
         }
 
@@ -725,7 +932,7 @@ export function useHomelessHero() {
 
 
     function Talk(npc: NPC) {
-
+        if (!myPlayer) return;
         if (!npc) return
 
         setNpcName(npc.name ?? "")
@@ -782,21 +989,21 @@ export function useHomelessHero() {
     }
 
 
-    function closeDialogOptions() {
-        setPlayerOption1("Okay")
-        setEndChatMessage("Close")
-    }
+    // function closeDialogOptions() {
+    //     setPlayerOption1("Okay")
+    //     setEndChatMessage("Close")
+    // }
 
-    function closeDialog() {
-        setNPCDialog("")
-        closeDialogOptions()
-    }
+    // function closeDialog() {
+    //     setNPCDialog("")
+    //     closeDialogOptions()
+    // }
 
 
 
 
     function accept(npc: NPC) {
-
+        if (!myPlayer) return;
         const q: quest | undefined = npc?.questGiven?.details
         if (!q) return
 
@@ -806,10 +1013,14 @@ export function useHomelessHero() {
 
             case "NOT_STARTED":
 
-                setMyPlayer(p => ({
-                    ...p,
-                    questList: startQuest(p, q.id)
-                }))
+                setMyPlayer(p => {
+                    if (!p) return p;
+                    return {
+
+                        ...p,
+                        questList: startQuest(p, q.id)
+                    }
+                })
 
                 setNPCDialog(npc.Dialog1 ?? "Quest started.")
                 setPlayerOption1("")
@@ -828,6 +1039,7 @@ export function useHomelessHero() {
                 const newXP = oldXP + xp
 
                 setMyPlayer(p => {
+                    if (!p) return p;
 
                     let inv = [...p.inventory]
 
@@ -901,6 +1113,7 @@ export function useHomelessHero() {
         const amt = inv.details.healingStats?.amountHealed ?? 0;
 
         setMyPlayer(p => {
+            if (!p) return p;
             const nextHp = Math.min(p.stats.MaxHp, p.stats.currentHp + amt);
             const nextInv = removeFromInventory(p.inventory, inv.details.id, 1);
             return {
@@ -913,113 +1126,107 @@ export function useHomelessHero() {
         setFightMessage(m => m + `<span style="color:green;">You healed ${amt} HP.</span><br/>`);
     }
 
-    function Equip(inv: any) {
+    function Equip(inv: inventoryItem) {
+
+        // if (inv.details.equippableStats) inv.details.equippableStats.equipped = true
         if (!inv?.details?.equippable || inv.quantity <= 0) return;
 
-        const stats = inv.details.equippableStats;
-        if (!stats) return;
-
         setMyPlayer(p => {
-            if (p.weapon?.equipped) return p;
-
-            const weapon = {
-                ...stats,
-                equipped: true
-            };
-
-            saveJSON(LS.equipped, weapon);
-
-            return recalcStats({
+            if (!p) return p;
+            const updated = {
                 ...p,
-                weapon
-            });
+                weaponItemId: inv.details.id,
+            };
+            const recalced = recalcStats(updated);
+
+            setSaveStatus("saving");
+            save(recalced);
+            setTimeout(() => setSaveStatus("saving"), 400);// 🔥 SAVE THE CORRECT STATE
+
+            return recalced;
         });
     }
 
-    function unequip(inv: any) {
-        if (!inv?.details?.equippable) return;
+    function unequip() {
 
+        // if (inv.details.equippableStats) inv.details.equippableStats.equipped = false
         setMyPlayer(p => {
-            if (!p.weapon?.equipped) return p;
-
-            const weapon = {
-                itemName: "N/A",
-                attackBonus: 0,
-                defenseBonus: 0,
-                speedBonus: 0,
-                equipped: false
-            };
-
-            saveJSON(LS.equipped, weapon);
-
-            return recalcStats({
+            if (!p) return p;
+            const updated = {
                 ...p,
-                weapon
-            });
+                weaponItemId: undefined,
+            };
+            const recalced = recalcStats(updated);
+
+            setSaveStatus("saving");
+            save(recalced);
+            setTimeout(() => setSaveStatus("saving"), 400);
+
+            return recalced;
         });
     }
-
-    function Wear(inv: any) {
+    function Wear(inv: inventoryItem) {
         if (!inv?.details?.wearable || inv.quantity <= 0) return;
 
-        const stats = inv.details.wearableStats;
-        if (!stats) return;
+        // if (inv.details.wearableStats) inv.details.wearableStats.equipped = true
+
 
         setMyPlayer(p => {
-            if (p.wearable?.equipped) return p;
-
-            const wearable = {
-                ...stats,
-                equipped: true
-            };
-
-            saveJSON(LS.worn, wearable);
-
-            return recalcStats({
+            if (!p) return p;
+            const updated = {
                 ...p,
-                wearable
-            });
+                wearableItemId: inv.details.id,
+            };
+            const recalced = recalcStats(updated);
+
+            setSaveStatus("saving")
+            save(recalced);
+
+            return recalced;
         });
     }
 
-    function removeItem(inv: any) {
-        if (!inv?.details?.wearable) return;
+    function removeItem() {
+
+        // if (inv.details.wearableStats) inv.details.wearableStats.equipped = false
 
         setMyPlayer(p => {
-            if (!p.wearable?.equipped) return p;
-
-            const wearable = {
-                itemName: "N/A",
-                attackBonus: 0,
-                defenseBonus: 0,
-                speedBonus: 0,
-                equipped: false
-            };
-
-            saveJSON(LS.worn, wearable);
-
-            return recalcStats({
+            if (!p) return p;
+            const updated = {
                 ...p,
-                wearable
-            });
-        });
-    }
+                wearableItemId: undefined,
+            }
+            const recalced = recalcStats(updated);
 
+            setSaveStatus("saving");
+            save(recalced);
+            setTimeout(() => setSaveStatus("saving"), 400);
+
+            return recalced;
+
+        })
+
+
+
+    }
     // --- shop actions ---
     function buyItem(si: any) {
         if (!si) return;
         const price = si.price ?? 0;
-
+        if (!myPlayer) return;
         if (myPlayer.stats.gold < price) {
             setBattleMessage(m => m + `<b style="color:red;">Not enough gold.</b><br/>`);
             return;
         }
 
-        setMyPlayer(p => ({
-            ...p,
-            stats: { ...p.stats, gold: p.stats.gold - price },
-            inventory: addToInventory(p.inventory, { details: si, quantity: 1 }),
-        }));
+        setMyPlayer(p => {
+            if (!p) return p;
+            return {
+                ...p,
+                stats: { ...p.stats, gold: p.stats.gold - price },
+                inventory: addToInventory(p.inventory, { details: si, quantity: 1 }),
+            }
+        });
 
         setBattleMessage(m => m + `Bought 1 ${si.name}.<br/>`);
     }
@@ -1030,11 +1237,14 @@ export function useHomelessHero() {
 
         if (sellPrice <= 0) return;
 
-        setMyPlayer(p => ({
-            ...p,
-            stats: { ...p.stats, gold: p.stats.gold + sellPrice },
-            inventory: removeFromInventory(p.inventory, inv.details.id, 1),
-        }));
+        setMyPlayer(p => {
+            if (!p) return p;
+            return {
+                ...p,
+                stats: { ...p.stats, gold: p.stats.gold + sellPrice },
+                inventory: removeFromInventory(p.inventory, inv.details.id, 1),
+            }
+        });
 
         setBattleMessage(m => m + `Sold 1 ${inv.details.name} for ${sellPrice} gold.<br/>`);
     }
@@ -1042,6 +1252,7 @@ export function useHomelessHero() {
 
     return {
         // state
+        isReady,
         ui,
         isMobileDevice,
         isInDungeon,
@@ -1061,6 +1272,8 @@ export function useHomelessHero() {
         EndChatMessage,
         turn,
         combat,
+        isLoading,
+        saveStatus,
         // actions (movement / modal / combat)
         moveNorth,
         moveSouth,
@@ -1075,6 +1288,10 @@ export function useHomelessHero() {
         stairsUp,
         stairsDown,
 
+
+
+        getEquippedWeapon,
+        getEquippedWearable,
         playerAttack,
         openFight,
         fight,

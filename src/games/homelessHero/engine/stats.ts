@@ -1,4 +1,5 @@
 import type { player } from "../types/player"
+import * as dataFor from "../content/data"
 
 export function recalcStats(p: player): player {
 
@@ -9,29 +10,36 @@ export function recalcStats(p: player): player {
   let speed = base.baseSpeed ?? 0
   let MaxHp = base.baseMaxHp ?? 1
 
-  // weapon bonuses
-  if (p.weapon?.attackBonus)
-    attack += p.weapon.attackBonus ?? 0 
+  // ✅ GET EQUIPPED ITEMS FROM IDs
+  const weapon = p.weaponItemId
+    ? dataFor.getItem(p.weaponItemId)
+    : undefined
 
-  if (p.weapon?.defenseBonus)
-    defense += p.weapon.defenseBonus ?? 0 
+  const wearable = p.wearableItemId
+    ? dataFor.getItem(p.wearableItemId)
+    : undefined
 
-  if (p.weapon?.speedBonus)
-    speed += p.weapon.speedBonus ?? 0 
+  // --- weapon bonuses ---
+  if (weapon?.equippableStats?.attackBonus)
+    attack += weapon?.equippableStats.attackBonus
 
+  if (weapon?.equippableStats?.defenseBonus)
+    defense += weapon.equippableStats.defenseBonus
 
-  // wearable bonuses
-  if (p.wearable?.attackBonus)
-    attack += p.wearable.attackBonus ?? 0 
+  if (weapon?.equippableStats?.speedBonus)
+    speed += weapon.equippableStats.speedBonus
 
-  if (p.wearable?.defenseBonus)
-    defense += p.wearable.defenseBonus ?? 0 
+  // --- wearable bonuses ---
+  if (wearable?.wearableStats?.attackBonus)
+    attack += wearable.wearableStats.attackBonus
 
-  if (p.wearable?.speedBonus)
-    speed += p.wearable.speedBonus ?? 0 
+  if (wearable?.wearableStats?.defenseBonus)
+    defense += wearable.wearableStats.defenseBonus
 
+  if (wearable?.wearableStats?.speedBonus)
+    speed += wearable.wearableStats.speedBonus
 
-  // HP cap protection
+  // --- HP cap ---
   const currentHp = Math.min(p.stats.currentHp, MaxHp)
 
   return {

@@ -20,9 +20,11 @@ public class ArcadeDbContext : DbContext
     public DbSet<GameSession> GameSessions => Set<GameSession>();
 
     public DbSet<Achievement> Achievements => Set<Achievement>();
-public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
+    public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
 
-public DbSet<Game> Games => Set<Game>();
+    public DbSet<HomelessHeroSave> HomelessHeroSaves => Set<HomelessHeroSave>();
+
+    public DbSet<Game> Games => Set<Game>();
     public DbSet<GameLeaderboardEntry> GameLeaderboard => Set<GameLeaderboardEntry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -86,15 +88,22 @@ public DbSet<Game> Games => Set<Game>();
         modelBuilder.Entity<GameSession>()
             .HasIndex(g => new { g.GameKey, g.Score });
 
-            modelBuilder.Entity<UserAchievement>()
-    .HasIndex(u => new { u.UserId, u.AchievementId })
+        modelBuilder.Entity<UserAchievement>()
+        .HasIndex(u => new { u.UserId, u.AchievementId })
+        .IsUnique();
+
+        modelBuilder.Entity<UserAchievement>()
+            .HasOne(u => u.Achievement)
+            .WithMany(a => a.UserAchievements)
+            .HasForeignKey(u => u.AchievementId);
+
+        modelBuilder.Entity<HomelessHeroSave>()
+    .HasIndex(s => new { s.UserId, s.GameKey })
     .IsUnique();
 
-modelBuilder.Entity<UserAchievement>()
-    .HasOne(u => u.Achievement)
-    .WithMany(a => a.UserAchievements)
-    .HasForeignKey(u => u.AchievementId);
+
     }
+
 
 
 

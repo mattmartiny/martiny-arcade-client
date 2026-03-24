@@ -7,12 +7,16 @@ import { ShopModal } from "./ShopModal";
 import { CasinoModal } from "./CasinoModal";
 import '../styles/world.css'
 import { HpBar } from "./HpBar"
-export function WorldView() {
-    const g = useHomelessHero();
+import { SavingOverlay } from "./SavingOverlay";
+
+export function WorldView({ mode }: { mode: string | null }) {
+    const g = useHomelessHero(mode);
+ 
+
+
     const npc = g.isInDungeon
         ? g.currentDungeonRoom.NPCHere
         : g.currentLocation.NPCHere;
-
 
     const scrollRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
@@ -21,9 +25,21 @@ export function WorldView() {
         el.scrollTop = el.scrollHeight;
     }, [g.battleMessage]);
 
+
+
+
     // tooltip / selected item popup equivalent
     const [selectedItem, setSelectedItem] = useState<inventoryItem | null>(null);
 
+
+    const weapon = g.myPlayer ? g.getEquippedWeapon(g.myPlayer) : undefined;
+    const wearable = g.myPlayer ? g.getEquippedWearable(g.myPlayer) : undefined;
+
+
+
+    if (g.isLoading) return <div>Loading...</div>;
+    const player = g.myPlayer!;
+    <SavingOverlay status={g.saveStatus} />
     return (
 
 
@@ -191,15 +207,15 @@ export function WorldView() {
                                     <tr>
                                         <td colSpan={2}>
                                             <HpBar
-                                                current={g.myPlayer.stats.currentHp}
-                                                max={g.myPlayer.stats.MaxHp}
+                                                current={player.stats.currentHp}
+                                                max={player.stats.MaxHp}
                                                 color="#4caf50"
                                             />
-</td>
-                                     </tr><tr>
-                    <td>Health:</td><td>
+                                        </td>
+                                    </tr><tr>
+                                        <td>Health:</td><td>
                                             <div style={{ textAlign: "right", fontSize: "0.8rem" }}>
-                                        {g.myPlayer.stats.currentHp}/{g.myPlayer.stats.MaxHp}
+                                                {player.stats.currentHp}/{player.stats.MaxHp}
                                             </div>
                                         </td>
                                     </tr>
@@ -211,10 +227,20 @@ export function WorldView() {
                                             </span>
                                         </td>
                                     </tr> */}
-                                    <tr><td>Level:</td><td style={{ textAlign: "right" }}>{g.myPlayer.stats.level}</td></tr>
-                                    <tr><td>Weapon:</td><td style={{ textAlign: "right" }}>{g.myPlayer.weapon?.itemName}</td></tr>
-                                    <tr><td>Gear:</td><td style={{ textAlign: "right" }}>{g.myPlayer.wearable?.itemName}</td></tr>
-                                </tbody>
+                                    <tr><td>Level:</td><td style={{ textAlign: "right" }}>{player.stats.level}</td></tr>
+                                    <tr>
+                                        <td>Weapon:</td>
+                                        <td style={{ textAlign: "right", fontSize: ".6rem" }}>
+                                            {weapon?.name ?? "None"}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Gear:</td>
+                                        <td style={{ textAlign: "right", fontSize: ".6rem" }}>
+                                            {wearable?.name ?? "None"}
+                                        </td>
+                                    </tr></tbody>
                             </table>
                         </div>
 
@@ -232,5 +258,8 @@ export function WorldView() {
             {g.ui.shopOpen && <ShopModal game={g} />}
             {g.ui.casinoOpen && <CasinoModal game={g} />}
         </div>
+
+
     );
 }
+

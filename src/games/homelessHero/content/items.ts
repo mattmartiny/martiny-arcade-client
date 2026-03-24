@@ -302,15 +302,6 @@ export let sodaPop: item = {
     wearable: false,
   };
 
-  // export let playersCard: item = {
-  //   id: 3025,
-  //   name: `Players Card`,
-  //   price: 0,
-  //   equippable: false,
-  //   healing: false,
-  //   wearable: false,
-  // };
-
   export let passCode: item = {
     id: 3026,
     name: `Pass Code`,
@@ -362,3 +353,38 @@ export let sodaPop: item = {
     healing: false,
     wearable: false,
   };
+
+  export const allItems: item[] = [
+  stick,
+  sodaPop,
+  shoes,
+  pimpCane,
+  ratTail,
+  partyHat,
+  mobSuitcases,
+  boatKey,
+  mallet,
+  wdSteak,
+  mrSteak,
+  merFlesh,
+  merFlippers,
+  lighthouseKey,
+  WyvernTail,
+  Spear,
+  heavyBat,
+  SteelToeBoots,
+  buffaloWing,
+  pokerChip,
+  purpleDong,
+  casinoKey,
+  mbKeyCard,
+  resignationL,
+  passCode,
+  mobIdBadge,
+  woodenWood,
+  KeggerCard,
+  roofies,
+];
+
+export const itemMap: Record<number, item> =
+  Object.fromEntries(allItems.map(i => [i.id, i]));
