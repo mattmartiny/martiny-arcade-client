@@ -11,7 +11,7 @@ import { SavingOverlay } from "./SavingOverlay";
 
 export function WorldView({ mode }: { mode: string | null }) {
     const g = useHomelessHero(mode);
- 
+
 
 
     const npc = g.isInDungeon
@@ -41,8 +41,13 @@ export function WorldView({ mode }: { mode: string | null }) {
     const player = g.myPlayer!;
     <SavingOverlay status={g.saveStatus} />
     return (
-
-
+<div className="homeless-hero-game">
+   <div className="rotate-warning">
+                <div>
+                    <h2>Rotate Your Device</h2>
+                    <p>This game is designed for landscape mode.</p>
+                </div>
+            </div>
         <div className={g.isInDungeon ? "dungeon-mode" : "overworld-mode"}>
             <div className="col-sm-12">
                 <div className="row">
@@ -251,6 +256,11 @@ export function WorldView({ mode }: { mode: string | null }) {
                     </div>
                 </div>
             </div>
+            
+            
+         
+
+
 
             {/* MODALS */}
             {g.combat && <FightModal game={g} selectedItem={selectedItem} setSelectedItem={setSelectedItem} />}
@@ -259,6 +269,9 @@ export function WorldView({ mode }: { mode: string | null }) {
             {g.ui.casinoOpen && <CasinoModal game={g} />}
         </div>
 
+
+
+</div>
 
     );
 }

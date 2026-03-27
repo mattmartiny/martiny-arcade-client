@@ -133,3 +133,60 @@
     justify-content: space-between;
     gap: 12px;
 }
+
+@media (max-width: 768px) {
+
+  /* Header layout stacks better */
+  .arcade-header,
+  .arcade-header2 {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  /* Logos shrink so they don’t dominate */
+  .arcade-logo {
+    width: 120px;
+    text-align:center;
+    margin:0 auto;
+  }
+
+  .arcade-logo2 {
+    width: 60px;
+    margin: 0;
+  }
+
+  /* Nav becomes full width + wraps */
+  .arcade-nav,
+  .arcade-nav2 {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .arcade-nav a,
+  .arcade-nav2 a {
+    margin: 4px 6px;
+    font-size: 0.9rem;
+  }
+
+  /* Profile + XP stack cleanly */
+  .arcade-profile,
+  .arcade-profile2,
+  .header-xp {
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+
+  /* Buttons become touch-friendly */
+  .header-btn {
+    width: 100%;
+    max-width: 220px;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}

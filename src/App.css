@@ -1,10 +1,14 @@
 #root {
-  width:100%;
+  width: 100%;
   margin: 0 auto;
-  padding: .5rem 2rem 0 2rem;
+  padding: 0.5rem 1rem; /* smaller for mobile */
+  max-width: 1200px; /* keeps desktop clean */
   text-align: center;
 }
 
+html, body {
+  overflow-x: hidden;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -34,10 +38,31 @@
 }
 
 .card {
-  padding: 2em;
+  padding: 1.5rem;
+  border-radius: 12px;
 }
 
 .read-the-docs {
   color: #888;
 }
 
+
+
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  button {
+    width: 100%; /* full width buttons feel better on mobile */
+    font-size: clamp(1rem, 5vw, 2rem);
+  }
+}

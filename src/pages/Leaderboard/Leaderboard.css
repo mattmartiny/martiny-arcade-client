@@ -66,3 +66,53 @@
 
   font-weight:bolder
 }
+
+@media (max-width: 768px) {
+
+  .leaderboard {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  /* Stack layout instead of 4 columns */
+  .leaderboard-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 10px;
+  }
+
+  /* Top line: rank + username */
+  .leaderboard-row .rank,
+  .leaderboard-row .username {
+    display: inline;
+    font-size: 0.95rem;
+  }
+
+  .leaderboard-row .rank {
+    margin-right: 6px;
+  }
+
+  /* Bottom line: level + xp */
+  .level,
+  .xp {
+    font-size: 0.85rem;
+  }
+
+  .xp {
+    text-align: left; /* don’t right-align on mobile */
+  }
+
+  /* Reduce hover effects (mobile) */
+  .leaderboard-row:hover {
+    transform: none;
+  }
+
+  /* Section spacing */
+  .leaderboard-section {
+    margin-top: 20px;
+  }
+
+  .leaderboard-section h2 {
+    font-size: 1.2rem;
+  }
+}

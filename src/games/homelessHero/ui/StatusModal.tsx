@@ -1,7 +1,6 @@
 
 import type { inventoryItem } from "../types/item";
-import { useState, type Key } from "react";
-import * as quests from "../content/quests"
+import { useState } from "react";
 import { ClickTooltip } from "./ClickTooltip";
 import { dataFor } from "../content/data";
 

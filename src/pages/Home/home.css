@@ -94,3 +94,46 @@
     0 25px 60px rgba(0,0,0,0.7),
     0 0 30px rgba(255,0,128,0.3);
 }
+
+@media (max-width: 768px) {
+
+  /* Grid becomes tighter + more mobile-friendly */
+ .games-page  .game-grid {
+    grid-template-columns: 1fr; /* stack cards */
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  /* Card padding reduced */
+  .game-card {
+    padding: 0; /* outer padding not needed on mobile */
+  }
+
+  .game-card-inner {
+    padding: 18px;
+    min-height: 140px;
+  }
+
+  /* Typography scales down */
+  .game-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .game-card p {
+    font-size: 0.9rem;
+  }
+
+  /* Button becomes easier to tap */
+  .play-button {
+    font-size: 0.75rem;
+    margin-top: 16px;
+  }
+
+  /* Reduce hover effects (mobile doesn't use hover well) */
+  .game-card:hover {
+    transform: none;
+    box-shadow:
+      0 15px 40px rgba(0,0,0,0.5),
+      0 0 15px rgba(0,200,255,0.15);
+  }
+}

@@ -2,7 +2,6 @@ import { useMemo, useState } from "react"
 import { dataFor } from "./content/data"
 import * as movement from "./engine/movement"
 import * as combat from "./engine/combat"
-import * as save from "./engine/saveLoad"
 import { createPlayer } from "./engine/createPlayer"
 import type { EnemyInstance } from "./types/enemy"
 import { spawnEnemy } from "./engine/enemySpawn"
@@ -19,8 +18,8 @@ export function useRpgGame() {
 
     const [player, setPlayer] = useState(() => createPlayer())
 
-   const [activeEnemy, setEnemy] =
-  useState<EnemyInstance | null>(null)
+    const [activeEnemy, setEnemy] =
+        useState<EnemyInstance | null>(null)
 
 
     const [fightOpen, setFightOpen] = useState(false)
@@ -30,26 +29,26 @@ export function useRpgGame() {
 
     const [battleMessage, setBattleMessage] = useState("")
 
-function openFight() {
+    function openFight() {
 
-    let enemy = activeEnemy
+        let enemy = activeEnemy
 
-    if (!enemy || enemy.currentHp <= 0) {
+        if (!enemy || enemy.currentHp <= 0) {
 
-        const template =
-            currentLocation.EnemyHere?.[0]
+            const template =
+                currentLocation.EnemyHere?.[0]
 
-        if (template) {
-            enemy = spawnEnemy(template, player)
-            setEnemy(enemy)
+            if (template) {
+                enemy = spawnEnemy(template, player)
+                setEnemy(enemy)
+            }
+
         }
 
+        if (!enemy) return
+
+        setFightOpen(true)
     }
-
-    if (!enemy) return
-
-    setFightOpen(true)
-}
 
     function fight() {
 

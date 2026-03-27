@@ -2,7 +2,6 @@ import type { completeDialog } from "../types/player";
 import * as l from "./locations";
 import * as e from "./enemies";
 import * as n from "./npcs"
-import * as i from "./items"
 import * as d from "./dungeons"
 
 
@@ -29,26 +28,11 @@ export const infConvo: completeDialog[] = [
     { NPCDetails: n.mobInformant, dialog: n.informConvo },
 ];
 
-//----Loot------
 
+export const laurConv: completeDialog[] = [
+{NPCDetails: n.Lauren, dialog: n.LaurenConvo}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+]
 
 //-------------------------Locations---------------------
 l.home.toTheNorth = 1002;
@@ -113,10 +97,25 @@ l.mBFountain.toTheEast = 1029;
 l.countryClub.toTheWest = 1028;
 l.countryClub.toTheEast = 1030;
 l.proShop.toTheWest = 1029;
-l.proShop.toTheEast = 1031;
-l.proShop.toTheSouth = 1032;
-l.golfCourse.toTheWest = 1030;
-l.pool.toTheNorth = 1030;
+l.proShop.toTheEast = 1032;
+l.proShop.toTheSouth = 1031;
+l.pool.toTheWest = 1030;
+l.golfCourse.toTheNorth = 1030;
+l.golfCourse.toTheSouth = 1033,
+l.broBar.toTheNorth = 1031,
+l.broBar.toTheEast = 1034,
+l.fratHouse.toTheWest = 1033,
+l.fratHouse.dungeonThatsHere = d.fratHouseDung
+l.fratHouse.toTheSouth = 1035,
+l.calfCreek.toTheNorth = 1034,
+l.calfCreek.toTheSouth = 1036,
+l.freightYard.toTheNorth = 1035,
+l.freightYard.toTheWest= 1037,
+l.hoboVillage.toTheEast = 1036,
+l.hoboVillage.toTheWest = 1038,
+l.shadyStreet.toTheEast = 1037,
+l.shadyStreet.toTheSouth = 1039
+
 
 //-------------------------Enemies-----------------
 l.neighbors.EnemyHere = Object.freeze([e.burgler]);
@@ -135,7 +134,11 @@ l.showStage.EnemyHere = Object.freeze([e.joeyJugg]);
 d.cbr5D1.EnemyHere = Object.freeze([e.mobHenchman]);
 d.cbr2A4.EnemyHere = Object.freeze([e.mobHead]);
 l.golfCourse.EnemyHere =Object.freeze([e.yachtBro]);
-
+l.fratHouse.EnemyHere=Object.freeze([e.chad]);
+d.fh1B2.EnemyHere=Object.freeze([e.brotherChadwick]);
+l.freightYard.EnemyHere=Object.freeze([e.cat]);
+l.shadyStreet.EnemyHere=Object.freeze([e.drifter]);
+l.hoboVillage.EnemyHere=Object.freeze([e.hobo]);
 
 //------------------ NPC quest Dialog-------------------------
 
@@ -160,6 +163,9 @@ l.petteyPalace2.Dialog = corConvo;
 d.cbr2C1.NPCHere = n.mobInformant;
 d.cbr2C1.Dialog = infConvo;
 
+l.broBar.NPCHere = n.Lauren;
+l.broBar.Dialog = laurConv;
+
 
 //-------shop npc----------
 l.gasStation.NPCHere = n.Sanjay;
@@ -171,4 +177,4 @@ l.boat.NPCHere = n.steve;
 d.lhrm4A.NPCHere = n.wiseGuy;
 l.forestLot.NPCHere = n.trucker;
 l.mBFountain.NPCHere = n.Charles;
-
+l.calfCreek.NPCHere =  n.Millie;

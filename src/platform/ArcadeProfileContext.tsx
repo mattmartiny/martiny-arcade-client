@@ -51,81 +51,37 @@ export function ArcadeProfileProvider({
 }) {
   const [xp, setXp] = useState(0);
   const [displayXP, setDisplayXP] = useState(0);
-  const { user } = useAuth();
-  useEffect(() => {
-    function handleXPUpdate(e: CustomEvent<number>) {
-      if (!user) {
-        window.dispatchEvent(
-          new CustomEvent("arcade:xp-blocked")
-        );
-        return;
-      }
-
-      setXp((prev) => prev + e.detail);
-    }
-
-    window.addEventListener("arcade:xp", handleXPUpdate as EventListener);
-
-    return () => {
-      window.removeEventListener("arcade:xp", handleXPUpdate as EventListener);
-    };
-  }, [user]);
+  const { user, token } = useAuth();
 
 
 
   useEffect(() => {
-    if (!user) return;
-
-    console.log("XP sync effect mounted");
+    if (!user || !token) return;
 
     const interval = window.setInterval(async () => {
-      console.log("XP interval tick");
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.log("No token found");
-        return;
-      }
-
-      const result = await flushXP(token);
-      console.log("Flush result:", result);
-
-    }, 5000); // 5 sec for testing
-
-    return () => window.clearInterval(interval);
-  }, [user]);
-
-
-  useEffect(() => {
-    if (!user) return;
-
-    const interval = window.setInterval(async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
       const result = await flushXP(token);
 
       if (result) {
-        setXp(result.totalXP); // backend is source of truth
+        setXp(result.totalXP);
       }
-    }, 60000);
+    }, 10000);
 
     return () => window.clearInterval(interval);
-  }, [user]);
+  }, [user, token]);
+
+
 
   useEffect(() => {
     if (!user) return;
 
     async function loadProfile() {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+      if (!user || !token) return;
 
-      const res = await fetch("http://localhost:5173/api/profile", {
+      const res = await fetch("/api/profile", {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
       if (!res.ok) return;
 
       const data = await res.json();
@@ -169,19 +125,19 @@ export function ArcadeProfileProvider({
 
     return () => window.clearInterval(interval);
   }, [xp, displayXP]);
-const { level, xpIntoLevel, xpForNextLevel, multiplier } =
-  calculateLevelData(displayXP);
+  const { level, xpIntoLevel, xpForNextLevel, multiplier } =
+    calculateLevelData(displayXP);
 
-return (
-  <ArcadeProfileContext.Provider
-    value={{
-      xp: displayXP,
-      level,
-      xpIntoLevel,
-      xpForNextLevel,
-      multiplier,
-    }}
-  >
+  return (
+    <ArcadeProfileContext.Provider
+      value={{
+        xp: displayXP,
+        level,
+        xpIntoLevel,
+        xpForNextLevel,
+        multiplier,
+      }}
+    >
       {children}
     </ArcadeProfileContext.Provider>
   );

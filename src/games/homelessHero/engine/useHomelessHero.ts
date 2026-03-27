@@ -20,8 +20,11 @@ import { useAutosave } from "./useAutosave";
 import { loadFromSave } from "./saveMapper";
 import { loadGame, saveGame } from "./saveRepository";
 import { useAuth } from "../../../platform/AuthContext";
-
-
+import { calculateScore } from "./score";
+import { submitGameSession } from "./gameSessionRepository"
+import { useNavigate } from "react-router-dom";
+import { awardGameXP } from "../../../platform/xpManager";
+import { recordGameSession } from "../../../platform/gameService";
 
 // YOU PROVIDE THIS MODULE (same shape as Angular: dataFor.home, dataFor.Locs)
 type UiState = {
@@ -42,7 +45,7 @@ function detectMobileDevice() {
 export function useHomelessHero(mode: string | null) {
 
     const isMobileDevice = useMemo(() => detectMobileDevice(), []);
-
+    const navigate = useNavigate();
 
     const { token } = useAuth();
     const [initialSave, setInitialSave] = useState<SaveGameDTO | null>(null);
@@ -165,6 +168,51 @@ export function useHomelessHero(mode: string | null) {
 
     const [myPlayer, setMyPlayer] = useState<player | null>(null);
     const isReady = !!myPlayer && isLoadedFromServer;
+
+    const endGame = useCallback(async () => {
+        if (!myPlayer || !token) return;
+
+        try {
+            const score = calculateScore(myPlayer);
+
+            console.log("FINAL SCORE:", score);
+
+            // 🎯 XP bonus
+            const bonusXP = Math.floor(score / 50);
+
+            // 🏆 Submit leaderboard
+            await submitGameSession(token, score, bonusXP);
+
+            // ⚡ Fire XP event (goes to your Arcade system)
+            window.dispatchEvent(new CustomEvent("arcade:xp", {
+                detail: {
+                    gameId: "homeless-hero",
+                    amount: bonusXP,
+                    reason: "Game completed"
+                }
+            }));
+
+            // 💾 Optional: clear save (since run is over)
+            // await deleteSave(token);
+
+            // 🚀 Go to results screen
+            navigate("/rpg/results", {
+                state: { score }
+            });
+
+        } catch (err) {
+            console.error("END GAME FAILED", err);
+        }
+    }, [myPlayer, token, navigate]);
+
+
+    useEffect(() => {
+        if (!myPlayer) return;
+
+        if (myPlayer.stats.level >= 5) {
+            endGame();
+        }
+    }, [myPlayer?.stats.level]);
 
     useEffect(() => {
         if (!initialSave) return;
@@ -711,6 +759,22 @@ export function useHomelessHero(mode: string | null) {
 
         if (newLevel !== oldLevel) {
             setBattleMessage(m => m + `<b>You have leveled up to level ${newLevel}!</b><br />`);
+            awardGameXP({
+                clientEventId: crypto.randomUUID(),
+                amount: newLevel * 2,
+                source: "homeless-hero",
+                reason: `Reached level ${newLevel}`,
+                timestamp: Date.now(),
+            });
+            if (token) {
+                recordGameSession(
+                    token,
+                    "homeless-hero",
+                    0,   // score = how many rounds they won
+                    newLevel * 2
+                );
+            }
+
         }
     }
 
@@ -841,6 +905,26 @@ export function useHomelessHero(mode: string | null) {
 
         updateStats(newXP, oldXP)
 
+
+
+
+
+
+        awardGameXP({
+            clientEventId: crypto.randomUUID(),
+            amount: Math.max(1, Math.floor(xp / 10)),
+            source: "homeless-hero",
+            reason: `Defeated ${enemy.name}`,
+            timestamp: Date.now(),
+        });
+        if (token) {
+            recordGameSession(
+                token,
+                "homeless-hero",
+                0,   // score = how many rounds they won
+                Math.max(1, Math.floor(xp / 10)),
+            );
+        }
         setMyPlayer(p => {
             if (!p) return p;
             return {
@@ -1067,6 +1151,22 @@ export function useHomelessHero(mode: string | null) {
                 })
 
                 updateStats(newXP, oldXP)
+                awardGameXP({
+                    clientEventId: crypto.randomUUID(),
+                    amount: Math.max(5, Math.floor(xp / 5)),
+                    source: "homeless-hero",
+                    reason: "Quest completed",
+                    timestamp: Date.now(),
+                });
+                  if (token) {
+            recordGameSession(
+                token,
+                "homeless-hero",
+                0,   // score = how many rounds they won
+                Math.max(5, Math.floor(xp / 5)),
+            );
+        }
+
 
                 setNPCDialog(npc.afterMessage ?? q.message ?? "Quest complete!")
                 setPlayerOption1("")

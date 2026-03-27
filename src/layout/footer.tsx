@@ -17,7 +17,7 @@ export default function Footer() {
             <Link to="/">  MA<span style={{ fontSize: "115%", fontWeight: "bold" }}>tt</span>YBA<span style={{ fontSize: "115%", fontWeight: "bold" }}>tt</span>Z <br />GaM1<span style={{ transform: "scaleX(-1)", display: "inline-block" }}>N</span>G<br /><div className="arcade-word-effect" >Arcade</div></Link>
           </div>
           <div className="footer-copy">
-            © {year}<a
+            © {year} <a
               href="https://mattmartiny.com"
               target="_blank"
               rel="noopener noreferrer"

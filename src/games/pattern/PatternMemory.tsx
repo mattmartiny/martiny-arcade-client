@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GameShell from "../../components/GameShell";
 import { awardXP } from "../../platform/arcadeProfile";
 import { recordGameSession } from "../../platform/gameService";

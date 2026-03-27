@@ -3,7 +3,6 @@ import { loadGame } from "./engine/saveRepository"
 import { useAuth } from "../../platform/AuthContext";
 import { useNavigate } from "react-router-dom";
 import GameShell from "../../components/GameShell";
-
 export default function RpgMenu() {
     const { token } = useAuth();
     const [hasSave, setHasSave] = useState(false);
@@ -21,17 +20,48 @@ export default function RpgMenu() {
         navigate("/homeless-hero/play?mode=continue");
     }
 
-    function handleNewGame() {
-        navigate("/homeless-hero/play?mode=new");
+
+    function clearLocalSave() {
+        localStorage.removeItem("hh_battleMessage");
     }
 
+
+    async function deleteServerSave() {
+    if (!token) return;
+
+    await fetch("/api/save", {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+}
+
+    async function handleNewGame() {
+    if (hasSave) {
+        const confirmed = window.confirm(
+            "Starting a new game will delete your current progress. Are you sure?"
+        );
+
+        if (!confirmed) return;
+    }
+
+
+    await deleteServerSave(); // 🔥 important
+    clearLocalSave();
+    navigate("/homeless-hero/play?mode=new");
+}
     return (
+
+
+        
         <GameShell gameKey={GAME_ID}
             eyebrow="Homeless Hero"
             title="Homeless Hero"
-            subtitle="A turn based RPG."
-    
+            subtitle="An in-browser, turn based RPG."
+
         >
+
             <div style={{ textAlign: "center", marginBottom: "100px" }}>
                 <h1>Homeless Hero</h1>
 

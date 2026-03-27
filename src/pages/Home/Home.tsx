@@ -4,7 +4,7 @@ import Logo from "../../assets/ArcadeLogo.png"
 
 export default function Home() {
   return (
-    <div>
+    <div className="games-page">
       <section className="home-hero">
 <img src={Logo} style={{ height: "auto", width: "35%" }} />
         <p>Play. Earn XP. Climb Levels.</p>
@@ -12,9 +12,9 @@ export default function Home() {
 
       <section className="game-grid">
         <GameCard
-          title="Coin Flip"
-          description="Call it right and stack quick wins."
-          to="/coin-flip"
+          title="Homeless Hero"
+          description="In-browser, turn based RPG"
+          to="/homeless-hero"
           accent="gold"
         />
 

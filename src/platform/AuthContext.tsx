@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function fetchUser(jwt: string) {
-    const res = await fetch("http://localhost:5189/api/auth/me", {
+    const res = await fetch("/api/auth/me", {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function login(email: string, password: string) {
-    const res = await fetch("http://localhost:5189/api/auth/login", {
+    const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

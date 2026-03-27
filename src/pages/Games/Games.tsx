@@ -7,12 +7,10 @@ export default function Home() {
 
         <GameCard
           title="Homeless Hero"
-          description="Browser Based RPG"
+          description="An in-browser, turn based RPG"
           to="/homeless-hero"
           accent="gold"
         />
-
-
 
 
         <GameCard
