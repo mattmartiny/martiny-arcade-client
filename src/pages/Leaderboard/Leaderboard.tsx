@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import GameShell from "../../components/GameShell";
 import "./Leaderboard.css"
 import { Link } from "react-router-dom";
 

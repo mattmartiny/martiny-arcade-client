@@ -8,7 +8,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
 [ApiController]
-[Route("api/game")]
+[Route("game")]
 [Authorize]
 public class GameController : ControllerBase
 {

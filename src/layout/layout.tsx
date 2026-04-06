@@ -8,7 +8,7 @@ import SmallHeader from "./smallHeader";
 
 export default function Layout(){
   const location = useLocation();
-const needsSmallHeader = location.pathname.includes("homeless-hero");
+const needsSmallHeader = location.pathname.includes("homeless-hero/play");
   return (<>
 
   {needsSmallHeader ?  <SmallHeader />: 

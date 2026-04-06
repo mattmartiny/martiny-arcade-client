@@ -2,13 +2,13 @@
   background: #282727;
   z-index: 0;
   color: #fff;
-  height: 150%;
+  height: auto;
 }
 
 .overworld-mode {
   background: #b7b6b6;
   z-index: 0;
-  height: 150%;
+  height: auto;
 }
 
 
@@ -49,7 +49,7 @@ dungeon-mode button,
 
 
 .fmessage {
-  height: 30%;
+  height: 60%;
   width: 60%;
   float: right;
   font-size: .85em;
@@ -58,6 +58,7 @@ dungeon-mode button,
   position: relative;
   padding: 2.5%;
   background-color: rgba(255, 255, 255, 0.65);
+  overflow-y: scroll;
 }
 
 .playerStats2 {
@@ -136,10 +137,11 @@ dungeon-mode button,
   float: left;
 }
 
-button{
-box-shadow: none;
+button {
+  box-shadow: none;
 
 }
+
 .north {
   float: left;
   width: 50%;
@@ -190,14 +192,14 @@ box-shadow: none;
   z-index: 0;
   width: 50%;
   display: block;
-  left:27.5%;
+  left: 27.5%;
 }
 
 .npcImg {
   position: absolute;
   z-index: 4;
   height: 110px;
-  top: 150px;
+  top: 125px;
 }
 
 .enemyImg {
@@ -366,8 +368,6 @@ element.style {
 }
 
 .optionBox {
-  width: 100%;
-  float: left;
   height: 42px;
 }
 
@@ -405,8 +405,8 @@ element.style {
 }
 
 .dataWindow {
-  height: 90%;
   width: 90%;
+  height: 90%;
   background-color: white;
   z-index: 1000000;
   color: #111;
@@ -415,6 +415,12 @@ element.style {
   top: 5%;
   left: 5%;
   border: 3px solid black;
+}
+
+
+.dataWindow .inventory {
+  padding-bottom: 0;
+
 }
 
 .battleItemWindow {
@@ -433,7 +439,7 @@ element.style {
   height: 90%;
   width: 90%;
   background-color: white;
-  color:#111;
+  color: #111;
   z-index: 1000000;
   position: absolute;
   display: block;
@@ -475,31 +481,435 @@ element.style {
 
 
 
-/* 📱 Portrait Mode Blocker */
-/* 📱 ONLY affects Homeless Hero */
+
 @media (orientation: portrait) {
+  .arcade-header2 {
+    display: none;
+  }
+
+  /* 📱 Root game layout */
+  .homeless-hero-game {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
 
   .homeless-hero-game .dungeon-mode,
   .homeless-hero-game .overworld-mode {
-    display: none !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
-  .homeless-hero-game .rotate-warning {
-    display: flex !important;
+
+  .homeless-hero-game .battleSection,
+  .homeless-hero-game .navigateWorld,
+  .homeless-hero-game .playerStats {
+    gap: 6px;
+  }
+
+
+  .homeless-hero-game .enemyImg {
+    height: 250px;
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    left: auto;
+    transform: none;
+
+    max-height: 20vh;
+    width: auto;
+    z-index: 5;
+
+  }
+
+
+
+  /* 📱 Stack layout (override desktop columns) */
+  .homeless-hero-game .row {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .homeless-hero-game .dataWindow {
+    height: auto;
+    height: 125%;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .homeless-hero-game .fmessage {
+    position: relative;
+    top: 120px;
+    overflow-y: scroll;
+  }
+
+  .playerStats2 {
+    width: 100% !important;
+    margin: 0 7.5% !important;
+  }
+
+
+  .homeless-hero-game .opponentStats {
+    width: 40%;
+    font-size: 0.7em;
+  }
+
+  .homeless-hero-game .myStats {
+    width: 22.5%;
+    font-size: 0.7em;
+
+
+  }
+
+  .homeless-hero-game .col-sm-4,
+  .homeless-hero-game .col-sm-12 {
+    width: 100%;
+  }
+
+  /* 🎥 TOP: Scene (image + location) */
+  .homeless-hero-game .battleSection {
+    flex: 0 0 35vh;
+    position: relative;
+    /* 🔥 fixed scene area */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+  }
+
+  .homeless-hero-game .locationImg {
+    position: relative;
+    width: 100%;
+    left: 0;
+    max-height: none;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  /* 🎮 CONTROLS */
+  .homeless-hero-game .navigateWorld {
+    order: 2;
+    flex: 0 0 auto;
+    padding: 6px;
+  }
+
+  .homeless-hero-game .buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .homeless-hero-game .dataWindow button {
+    width: 30%;
+    margin: 2%;
+
+  }
+
+  .homeless-hero-game .fight,
+  .homeless-hero-game .shop,
+  .homeless-hero-game .status,
+  .homeless-hero-game .proceedDungeon {
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    font-size: .9rem;
+  }
+
+  /* 🎯 Direction pad */
+  .homeless-hero-game .directions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .homeless-hero-game .north {
+    grid-column: 2;
+  }
+
+  .homeless-hero-game .west {
+    grid-column: 1;
+  }
+
+  .homeless-hero-game .east {
+    grid-column: 3;
+  }
+
+  .homeless-hero-game .south {
+    grid-column: 2;
+  }
+
+  /* 📊 STATS */
+  .homeless-hero-game .playerStats {
+    order: 3;
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 6px 0;
+    padding: 6px;
+  }
+
+  /* 📜 LOG (main content area) */
+  .homeless-hero-game .bmessage {
+    order: 4;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    position: relative;
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 2px solid #000;
+    font-size: 0.9rem;
+    bottom: 50px;
+    z-index: 1;
+  }
+
+  .homeless-hero-game .inventory {
+    height: 40%;
+    overflow-y: scroll;
+    width: 90%;
+
+  }
+
+  .homeless-hero-game .dataWindow button.invBtn {
+    width: 100%;
+    height: 25px;
+    font-size: 0.75rem;
+  }
+
+  .homeless-hero-game .app-footer {
+    display: none;
+  }
+
+  .homeless-hero-game .dataWindow.playerStats2 {
+    transition: all 0.25s ease;
+    border-radius: 8px;
+    bottom: 0;
+    width: 100%;
+
+  }
+
+  /* Header (always visible) */
+  .homeless-hero-game .stats-header {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  /* Content area */
+  .homeless-hero-game .stats-content {
+    padding: 8px;
+  }
+
+  /* Collapsed state */
+  .homeless-hero-game .playerStats2.collapsed .stats-content {
+    display: none;
+  }
+
+  /* Expanded state */
+  .homeless-hero-game .playerStats2.open {
+    max-height: 355px;
+  }
+
+  .homeless-hero-game .quests {
+    transition: all 0.25s ease;
+    overflow: hidden;
+    border-radius: 8px;
+    width: 95%;
+  }
+
+  /* Header (always visible) */
+  .homeless-hero-game .quests-header {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  /* Content area */
+  .homeless-hero-game .quests-content {
+    padding: 8px;
+    margin-bottom: 125px;
+  }
+
+  /* Collapsed state */
+  .homeless-hero-game .quests.collapsed .quests-content {
+    display: none;
+    width: 95%;
+  }
+
+  /* Expanded state */
+  .homeless-hero-game .quests.open {
+    height: 300px;
+    overflow-y: scroll;
+
+    list-style-type: none;
+  }
+
+
+  .homeless-hero-game .game-layout .playerStats {
+    display: none;
+  }
+
+  .dialog {
+    bottom: 120px;
+
+  }
+
+  .homeless-hero-game .npcImg {
+    position: absolute;
+    left: 50%;
+    top: 35px !important;
+    transform: translateX(-5%);
+    max-height: 18vh;
+  }
+
+  .homeless-hero-game .shopItems {
+    width: 100% !important;
+    float: none !important;
+    height: auto;
+    overflow-x: auto;
+  }
+
+  .homeless-hero-game .shopWindow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .homeless-hero-game .shop-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 8px;
+    max-height: 30vh;
+    overflow-y: auto;
+  }
+
+  .homeless-hero-game .shop-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .homeless-hero-game .shop-table td {
+    font-size: 0.8rem;
+    padding: 4px;
+  }
+
+  .homeless-hero-game .shop-table button {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+
+  .shopWindow {
+    width: 85%;
+  }
+
+
+  .homeless-hero-game .optionBox {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: auto;
+  }
+
+  .homeless-hero-game .optionBox button {
+    float: none;
+    width: 100%;
+    margin: 0;
   }
 }
 
-/* Default hidden */
-.homeless-hero-game .rotate-warning {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 999999;
-  background: #050712;
+/*Lanscape mode on mobile */
+@media (orientation: landscape) and (max-height: 500px) {
 
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
-  color: white;
+  .arcade-header2 {
+    display: none;
+  }
+
+  .arcade-nav2 {
+    display: none;
+  }
+
+
+  .homeless-hero-game .battleSection {
+    height: 35vh;
+  }
+
+  .homeless-hero-game .fight,
+  .homeless-hero-game .status {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .homeless-hero-game .directions {
+    gap: 2px;
+  }
+
+  .homeless-hero-game .row {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+  }
+
+  .homeless-hero-game .navigateWorld {
+    width: 30%;
+  }
+
+  .homeless-hero-game .battleSection {
+    width: 50%;
+  }
+
+  .homeless-hero-game .playerStats {
+    width: 20%;
+  }
+
+  .homeless-hero-game .bmessage {
+    height: 20vh;
+    overflow-y: auto;
+    margin: 0;
+  }
+
+  .homeless-hero-game~.app-footer {
+    display: none !important;
+  }
+
+
+  .homeless-hero-game .dialog {
+    float: none;
+    margin: 4px 0;
+    padding: 6px;
+    font-size: 0.8rem;
+    line-height: 1.2;
+    width: 100%;
+    max-height: 80px;
+    overflow-y: auto;
+    right: 6.5%;
+
+  }
+
+
+  .homeless-hero-game .playerStats {
+    float: none;
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    width: 140px;
+    font-size: 0.7rem;
+    color: white;
+    padding: 6px;
+    border-radius: 6px;
+    z-index: 10;
+  }
+
 }

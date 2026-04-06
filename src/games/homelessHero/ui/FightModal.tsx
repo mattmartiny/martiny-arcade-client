@@ -21,12 +21,12 @@ export function FightModal({
         {game.combat?.enemy && (
           <><ClickTooltip
             id="enemyStats"
-            label={<b style={{textDecoration:"underline"}}>{game.combat.enemy.name}</b>}
+            label={<b style={{ textDecoration: "underline" }}>{game.combat.enemy.name}</b>}
             openTooltip={openTooltip}
             setOpenTooltip={setOpenTooltip}
           >
             <b>{game.combat.enemy.name}</b><br />
-            <span style={{fontSize:".6rem"}}>{game.combat.enemy.description}</span>
+            <span style={{ fontSize: ".6rem" }}>{game.combat.enemy.description}</span>
             <hr />
 
             ⚔ Attack: {game.combat.enemy.attack}<br />
@@ -50,26 +50,26 @@ export function FightModal({
 
       <div className="myStats">
 
-          <ClickTooltip
-            id="playerStats"
-            label={<b style={{textDecoration:"underline"}}>Player</b>}
-            openTooltip={openTooltip}
-            setOpenTooltip={setOpenTooltip}
-          >
-          
-
-            ⚔ Attack: {game.myPlayer.stats.attack}<br />
-            🛡 Defense: {game.myPlayer.stats.defense}<br />
-            ⚡ Speed: {game.myPlayer.stats.speed}
-
-          </ClickTooltip>
+        <ClickTooltip
+          id="playerStats"
+          label={<b style={{ textDecoration: "underline" }}>Player</b>}
+          openTooltip={openTooltip}
+          setOpenTooltip={setOpenTooltip}
+        >
 
 
+          ⚔ Attack: {game.myPlayer.stats.attack}<br />
+          🛡 Defense: {game.myPlayer.stats.defense}<br />
+          ⚡ Speed: {game.myPlayer.stats.speed}
+
+        </ClickTooltip>
 
 
 
 
-        
+
+
+
         <span style={{ color: game.myPlayer.stats.currentHp >= game.myPlayer.stats.MaxHp / 3 ? "black" : "red" }}>
           <HpBar
             current={game.myPlayer.stats.currentHp}
@@ -97,12 +97,13 @@ export function FightModal({
       </div>
 
       <button
+        className="optionBox"
         disabled={game.combat?.turn !== "player"}
         onClick={game.playerAttack}
       >
         ATTACK
       </button>
-      <button onClick={game.toggleBattleItems} style={{ margin: "1%" }}>ITEM</button>
+      <button onClick={game.toggleBattleItems} style={{ margin: "1%" }} className="optionBox">ITEM</button>
 
       {game.ui.battleItemOpen && (
         <div className="battleItemWindow">

@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace MartinyArcadeApi.Controllers;
 
 [ApiController]
-[Route("api/save/homeless-hero")]
+[Route("save/homeless-hero")]
 [Authorize]
 public class HomelessHeroSaveController : ControllerBase
 {

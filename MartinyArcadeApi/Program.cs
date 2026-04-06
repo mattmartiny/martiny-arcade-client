@@ -16,6 +16,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         var jwt = builder.Configuration.GetSection("Jwt");
 
+        if (string.IsNullOrEmpty(jwt["Key"]))
+        {
+            throw new Exception("JWT KEY IS MISSING");
+        }
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -34,7 +39,7 @@ builder.Services.AddAuthorization();
 
 
 
-// DB
+// //DB
 builder.Services.AddDbContext<ArcadeDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("Default")));
@@ -78,7 +83,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:5173")
+                .WithOrigins("https://arcade.mattmartiny.com")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -110,3 +115,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+

@@ -37,30 +37,26 @@ export function saveProfile(profile: ArcadeProfile) {
 export function awardXP({
   source,
   amount,
-  multiplier = 1,
   reason,
 }: {
   amount: number;
   source: string;
-  multiplier?: number;
   reason?: string;
 }) {
-  const finalAmount = Math.round(amount * multiplier);
+  if (amount === 0) return;
 
-  if (finalAmount === 0) return;
-
-  // 1️⃣ Store in session buffer
+  // 1️⃣ Store RAW XP (no multiplier applied)
   addXpToSession({
-    source: source,
-    amount: finalAmount,
-    multiplier: 1,
+    source,
+    amount, // 👈 raw amount only
+    multiplier: 1, // 👈 keep for compatibility, but unused
     reason,
   });
 
-  // 2️⃣ Update UI immediately
+  // 2️⃣ Update UI immediately (still feels responsive)
   window.dispatchEvent(
     new CustomEvent("arcade:xp", {
-      detail: finalAmount,
+      detail: amount, // 👈 raw amount for UI
     })
   );
 }

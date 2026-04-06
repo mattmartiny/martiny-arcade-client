@@ -114,8 +114,8 @@ l.freightYard.toTheWest= 1037,
 l.hoboVillage.toTheEast = 1036,
 l.hoboVillage.toTheWest = 1038,
 l.shadyStreet.toTheEast = 1037,
-l.shadyStreet.toTheSouth = 1039
-
+l.shadyStreet.toTheSouth = 1039,
+l.warehouse.toTheNorth = 1038,
 
 //-------------------------Enemies-----------------
 l.neighbors.EnemyHere = Object.freeze([e.burgler]);
@@ -178,3 +178,4 @@ d.lhrm4A.NPCHere = n.wiseGuy;
 l.forestLot.NPCHere = n.trucker;
 l.mBFountain.NPCHere = n.Charles;
 l.calfCreek.NPCHere =  n.Millie;
+l.warehouse.NPCHere = n.Neff;

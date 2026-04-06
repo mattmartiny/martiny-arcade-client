@@ -7,11 +7,11 @@ export const burgler: EnemyTemplate = Object.freeze({
   name: 'Burgler',
   description: 'Steals stuff',
   imgPath: 'burgler',
-  maxHp: 5,
+  maxHp: 6,
   attack: 2,
   defense: 0,
-  speed: 1,
-  rewardXP: 2,
+  speed: 3,
+  rewardXP: 3,
   rewardGold: 5,
   lootTable: [
     { details: i.stick, chance: 700, isDefaultItem: true },
@@ -29,7 +29,7 @@ export const rat: EnemyTemplate = Object.freeze({
   attack: 3,
   defense: 0,
   speed: 4,
-  rewardXP: 3,
+  rewardXP: 2,
   rewardGold: 2,
   lootTable: [
     { details: i.shoes, chance: 375, isDefaultItem: true },
@@ -49,14 +49,15 @@ export const Pimp: EnemyTemplate = Object.freeze({
   rewardXP: 10,
   rewardGold: 10,
   lootTable: [
-    { details: i.pimpCane, chance: 500, isDefaultItem: true },
+    { details: i.pimpChain, chance: 520, isDefaultItem: true },
     { details: i.wdSteak, chance: 200, isDefaultItem: false },
+    {details: i.pimpCane, chance: 80, isDefaultItem: false}
   ]
 });
 export const couchTroll: EnemyTemplate = Object.freeze({
   id: 2004,
   name: 'Couch Troll',
-  description: 'troll on a couch',
+  description: 'Tsroll on a couch',
   imgPath: 'couchTroll',
   fluctuating: false,
   maxHp: 16,
@@ -65,8 +66,6 @@ export const couchTroll: EnemyTemplate = Object.freeze({
   speed: 3,
   rewardXP: 13,
   rewardGold: 8,
-
-
   lootTable: [
     { details: i.sodaPop, chance: 620, isDefaultItem: true },
     { details: i.partyHat, chance: 80, isDefaultItem: false },
@@ -143,7 +142,8 @@ export const mobHenchman: EnemyTemplate = Object.freeze({
   rewardXP: 25,
   rewardGold: 14,
   lootTable: [
-    { details: i.mobIdBadge, chance: 720, isDefaultItem: true },
+    { details: i.mobIdBadge, chance: 620, isDefaultItem: true },
+    {details:i.gangstaHat, chance: 230, isDefaultItem: false,},
   ]
 });
 
@@ -212,8 +212,8 @@ export const caveGoblin: EnemyTemplate = Object.freeze({
   attack: 0,
   defense: 1,
   speed: 3,
-  rewardXP: 8,
-  rewardGold: 8,
+  rewardXP: 18,
+  rewardGold: 13,
   lootTable: [
     { details: i.mrSteak, chance: 320, isDefaultItem: false },
     { details: i.wdSteak, chance: 350, isDefaultItem: false },
@@ -232,7 +232,7 @@ export const lotLizard: EnemyTemplate = Object.freeze({
   attack: 3,
   defense: 1,
   speed: 2,
-  rewardXP: 12,
+  rewardXP: 15,
   rewardGold: 10,
 
   lootTable: [
@@ -249,7 +249,7 @@ export const mobHead: EnemyTemplate = Object.freeze({
   attack: 9,
   defense: 7,
   speed: 4,
-  rewardXP: 55,
+  rewardXP: 65,
   rewardGold: 225,
   lootTable: [
     { details: i.resignationL, chance: 999, isDefaultItem: true },
@@ -266,7 +266,7 @@ export const yachtBro: EnemyTemplate = Object.freeze({
   attack: 5,
   defense: 2,
   speed: 1,
-  rewardXP: 17,
+  rewardXP: 23,
   rewardGold: 20,
   lootTable: [
     { details: i.roofies, chance: 372, isDefaultItem: true },
@@ -285,7 +285,7 @@ export const chad: EnemyTemplate = Object.freeze({
   attack: 8,
   defense: 6,
   speed: 0,
-  rewardXP: 20,
+  rewardXP: 28,
   rewardGold: 24,
   lootTable: [
     { details: i.fratKey, chance: 325, isDefaultItem: true, },
@@ -304,7 +304,7 @@ maxHp: 8,
 attack: 11,
 defense: 9,
 speed: 5,
-rewardXP:50,
+rewardXP:70,
 rewardGold:230,
 lootTable:[
   {details: i.betaDocument, chance: 998, isDefaultItem: true,},
@@ -319,13 +319,13 @@ name: "Hyphy Hobo",
 description: "He's on something",
 imgPath: 'hobo',
 fluctuating: true,
-maxHp: 23,
+maxHp: 15,
 attack:5,
-defense: 16,
-speed: 15,
+defense: 12,
+speed: 1,
 rewardXP: 30,
 rewardGold: 20,
-// lootTable[{}],
+lootTable:[{details: i.ramen, chance: 550, isDefaultItem: true }],
 })
 
 
@@ -339,14 +339,10 @@ maxHp: 0,
 attack: 9,
 defense: 8,
 speed:6,
-rewardXP: 25,
+rewardXP: 34,
 rewardGold: 32,
 lootTable:[{
 details: i.busPass, chance: 455,  isDefaultItem: true},
 {details:i.trenchCoat, chance: 145, isDefaultItem: false,},
 ]
-
-
-
-
 })

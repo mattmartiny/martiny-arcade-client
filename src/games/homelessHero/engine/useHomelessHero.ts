@@ -324,12 +324,12 @@ export function useHomelessHero(mode: string | null) {
         ]
 
         if (myPlayer.stats.currentHp - damage <= 0) {
-
+            closeFightLater()
 
             handlePlayerDeath()
 
 
-            closeFightLater()
+         
 
             return
         }
@@ -760,12 +760,11 @@ export function useHomelessHero(mode: string | null) {
         if (newLevel !== oldLevel) {
             setBattleMessage(m => m + `<b>You have leveled up to level ${newLevel}!</b><br />`);
             awardGameXP({
-                clientEventId: crypto.randomUUID(),
+                gameId: "homeless-hero",
                 amount: newLevel * 2,
                 source: "homeless-hero",
                 reason: `Reached level ${newLevel}`,
-                timestamp: Date.now(),
-            });
+                });
             if (token) {
                 recordGameSession(
                     token,
@@ -788,7 +787,7 @@ export function useHomelessHero(mode: string | null) {
         setCombat(null)
 
         setTimeout(() => {
-
+            exitDungeon()
             setCurrentLocation(dataFor.dataFor.home)
 
             setMyPlayer(p => {
@@ -911,11 +910,11 @@ export function useHomelessHero(mode: string | null) {
 
 
         awardGameXP({
-            clientEventId: crypto.randomUUID(),
+            gameId: "homeless-hero",
             amount: Math.max(1, Math.floor(xp / 10)),
             source: "homeless-hero",
             reason: `Defeated ${enemy.name}`,
-            timestamp: Date.now(),
+      
         });
         if (token) {
             recordGameSession(
@@ -1152,20 +1151,20 @@ export function useHomelessHero(mode: string | null) {
 
                 updateStats(newXP, oldXP)
                 awardGameXP({
-                    clientEventId: crypto.randomUUID(),
+                  gameId: "homeless-hero",
                     amount: Math.max(5, Math.floor(xp / 5)),
                     source: "homeless-hero",
                     reason: "Quest completed",
-                    timestamp: Date.now(),
+                   
                 });
-                  if (token) {
-            recordGameSession(
-                token,
-                "homeless-hero",
-                0,   // score = how many rounds they won
-                Math.max(5, Math.floor(xp / 5)),
-            );
-        }
+                if (token) {
+                    recordGameSession(
+                        token,
+                        "homeless-hero",
+                        0,   // score = how many rounds they won
+                        Math.max(5, Math.floor(xp / 5)),
+                    );
+                }
 
 
                 setNPCDialog(npc.afterMessage ?? q.message ?? "Quest complete!")

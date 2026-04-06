@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 
 [ApiController]
-[Route("api/auth")]
+[Route("auth")]
 public class AuthController : ControllerBase
 {
     private readonly ArcadeDbContext _db;
@@ -127,4 +127,11 @@ public class AuthController : ControllerBase
 
     return new JwtSecurityTokenHandler().WriteToken(token);
 }
+
+[HttpGet("debug-db")]
+public IActionResult DebugDb()
+{
+    return Ok("no db");
+}
+
 }

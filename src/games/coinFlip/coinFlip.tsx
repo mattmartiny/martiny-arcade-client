@@ -16,7 +16,7 @@ export default function CoinFlip() {
   const [losses, setLosses] = useState(0);
   const [status, setStatus] = useState("Call it and flip.");
   const [isFlipping, setIsFlipping] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [, setResult] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
   const rotationRef = useRef(0); // ✅ source of truth
   const { token } = useAuth();
@@ -60,7 +60,6 @@ export default function CoinFlip() {
       awardXP({
         amount: xpEarned,
         source: "coin-flip",
-        multiplier: config?.multiplier,
         reason: "Coin Flip Win",
       });
 

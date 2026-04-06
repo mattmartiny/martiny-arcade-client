@@ -24,7 +24,7 @@ export default function ElementalBattle() {
   const [currentSeriesL, setCurrentSeriesL] = useState(0);
   const [status, setStatus] = useState("Choose your element.");
   const [isLocked, setIsLocked] = useState(false);
-  const [lastChoice, setLastChoice] = useState<Element | null>(null);
+  const [, setLastChoice] = useState<Element | null>(null);
 
   function determineWinner(player: Element, computer: Element) {
     if (player === computer) return "tie";
@@ -81,7 +81,6 @@ export default function ElementalBattle() {
         awardXP({
           source: "elemental-battle",
           amount: xpEarned,
-          multiplier: config?.multiplier,
           reason: "Series Win",
         });
 
@@ -108,7 +107,6 @@ export default function ElementalBattle() {
         awardXP({
           source: "elemental-battle",
           amount: xpEarned,
-          multiplier: config?.multiplier,
           reason: "Series Loss",
         });
 

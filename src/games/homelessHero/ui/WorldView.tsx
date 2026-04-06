@@ -42,16 +42,11 @@ export function WorldView({ mode }: { mode: string | null }) {
     <SavingOverlay status={g.saveStatus} />
     return (
 <div className="homeless-hero-game">
-   <div className="rotate-warning">
-                <div>
-                    <h2>Rotate Your Device</h2>
-                    <p>This game is designed for landscape mode.</p>
-                </div>
-            </div>
-        <div className={g.isInDungeon ? "dungeon-mode" : "overworld-mode"}>
+         <div className={g.isInDungeon ? "dungeon-mode" : "overworld-mode"}>
             <div className="col-sm-12">
                 <div className="row">
                     {/* LEFT: Navigation */}
+                    <div className="game-layout">
                     <div className="navigateWorld col-sm-4">
                         <div className="currentLocation">
                             Location: {g.currentLocation.name}
@@ -253,6 +248,7 @@ export function WorldView({ mode }: { mode: string | null }) {
                             {/* Angular used sanitizer; in React, render HTML intentionally */}
                             <div dangerouslySetInnerHTML={{ __html: g.battleMessage }} />
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

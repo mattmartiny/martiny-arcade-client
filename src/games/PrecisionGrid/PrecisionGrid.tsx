@@ -92,7 +92,6 @@ const GAME_ID = "precision-grid";
 
         if (index === activeIndex) {
             const newCombo = combo + 1;
-            const comboBonus = Math.floor(newCombo * 0.5);
             const reaction = performance.now() - lastSpawnTime.current;
 
             setLastHit(index);

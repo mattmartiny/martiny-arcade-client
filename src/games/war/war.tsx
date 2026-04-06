@@ -90,6 +90,7 @@ export default function War() {
   const [gameOver, setGameOver] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
   const [tieCarry, setTieCarry] = useState(0);
+  const [gameFinished, setGameFinished] = useState(false);
 
   function startGame() {
     const deck = shuffle(getDeck());
@@ -150,8 +151,7 @@ export default function War() {
 
       awardXP({
         amount: xpEarned,
-        source: "War",
-        multiplier: config?.multiplier,
+        source: "war",
         reason: "War: Round Win",
       });
 
@@ -178,6 +178,8 @@ export default function War() {
   }
 
   function finishGame() {
+    if (gameFinished) return; // 🔒 prevent duplicates
+    setGameFinished(true);
     setGameOver(true);
 
     let xpEarned = 0;
@@ -189,7 +191,6 @@ export default function War() {
       awardXP({
         source: "war",
         amount: xpEarned,
-        multiplier: config?.multiplier,
         reason: "War: Game Win",
       });
 
@@ -202,7 +203,6 @@ export default function War() {
       awardXP({
         source: "war",
         amount: xpEarned,
-        multiplier: config?.multiplier,
         reason: "War: Game Loss",
       });
 
@@ -214,7 +214,6 @@ export default function War() {
       awardXP({
         source: "war",
         amount: xpEarned,
-        multiplier: config?.multiplier,
         reason: "War: Draw",
       });
     }
@@ -228,11 +227,7 @@ export default function War() {
       );
     }
 
-    if (index >= player.length - 1) {
-      finishGame();
-      return;
-    }
-    
+
     setSubStatus("Press Start to play again.");
   }
   const sidebar = (

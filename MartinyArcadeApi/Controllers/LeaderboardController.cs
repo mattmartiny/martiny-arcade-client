@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 [ApiController]
-[Route("api/leaderboard")]
+[Route("leaderboard")]
 public class LeaderboardController : ControllerBase
 {
     private readonly ArcadeDbContext _db;

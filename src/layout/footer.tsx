@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="footer-links">
           <Link to="/leaderboard">Leaderboard</Link>
 
-          <Link to="/">Games</Link>
+          <Link to="/games">Games</Link>
         </div>
 
         {/* Right */}

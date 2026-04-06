@@ -16,7 +16,7 @@ export function useRpgGame() {
         return dataFor.Locs.find(l => l.id === currentLocationId) ?? dataFor.home;
     }, [currentLocationId]);
 
-    const [player, setPlayer] = useState(() => createPlayer())
+    const [player] = useState(() => createPlayer())
 
     const [activeEnemy, setEnemy] =
         useState<EnemyInstance | null>(null)

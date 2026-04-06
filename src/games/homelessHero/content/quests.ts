@@ -4,12 +4,13 @@ import * as i from "./items";
 export let beatSomePimps: quest = {
   id: 4000,
   name: 'Big Pimpin',
-  description: 'Defeat enough pimps to get 5 pimp canes',
+  description: 'Defeat enough pimps to get 5 pimp chains',
   rewardXP: 60,
   rewardGold: 25,
-  questCompletionItem: [{ details: i.pimpCane, quantity: 5 }
+  questCompletionItem: [{ details: i.pimpChain, quantity: 5 }
   ],
-  message: "Congrats! You've helped Cristie and gotten the pimp canes!",
+  rewardItem:{details: i.pimpCane, quantity: 3},
+  message: "Congrats! You've helped Cristie and gotten the pimp chains!",
 };
 export let PAAARTY: quest = {
   id: 4001,
@@ -20,6 +21,7 @@ export let PAAARTY: quest = {
   questCompletionItem: [
     { details: i.partyHat, quantity: 1 },
   ],
+  rewardItem: {details: i.partyHat, quantity:1},
   message: "Congrats! You've gotten the party hat and showed it off!",
 };
 export let Mobbin: quest = {
@@ -92,7 +94,7 @@ export let toolshop: quest = {
   description: `Get the Beta Document from the frat president!`,
   rewardXP: 60,
   rewardItem: { details: i.creekPass, quantity: 1 },
-  rewardGold: 15,
+  rewardGold: 75,
   questCompletionItem: [
     { details: i.betaDocument, quantity: 1 }
   ],

@@ -13,12 +13,14 @@ export function StatusModal({
 }) {
 
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
+  const [statsOpen, setStatsOpen] = useState(false);
+  const [questsOpen, setQuestsOpen] = useState(false);
 
   const weapon = game.getEquippedWeapon(game.myPlayer);
   const wearable = game.getEquippedWearable(game.myPlayer);
-  
+
   const isEquipped = game.myPlayer.weaponItemId ? game.myPlayer.weaponItemId === weapon.id : false
-const isWorn = game.myPlayer.wearableItemId ? game.myPlayer.wearableItemId === wearable.id : false
+  const isWorn = game.myPlayer.wearableItemId ? game.myPlayer.wearableItemId === wearable.id : false
 
   return (
     <div className="dataWindow">
@@ -29,94 +31,98 @@ const isWorn = game.myPlayer.wearableItemId ? game.myPlayer.wearableItemId === w
         </div>
       </div>
 
-      <div className="playerStats2 col-sm-4">
-        <table style={{ width: "80%" }}>
-          <tbody>
-            <tr><td>Health:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.currentHp}/{game.myPlayer.stats.MaxHp}</td></tr>
-            <tr>
-              <td>
-                <ClickTooltip
-                  id="stat-attack"
-                  label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Attack</span>}
-                  openTooltip={openTooltip}
-                  setOpenTooltip={setOpenTooltip}
-                >
-                  <b>Attack</b>
-                  <hr />
+      <div className={`playerStats2 ${statsOpen ? "open" : "collapsed"}`}>
+        <div className="stats-header" onClick={() => setStatsOpen(!statsOpen)}>
+          Stats {statsOpen ? "▲" : "▼"}
+        </div>
+        <div className="stats-content">
+          <table style={{ width: "80%" }}>
+            <tbody>
+              <tr><td>Health:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.currentHp}/{game.myPlayer.stats.MaxHp}</td></tr>
+              <tr>
+                <td>
+                  <ClickTooltip
+                    id="stat-attack"
+                    label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Attack</span>}
+                    openTooltip={openTooltip}
+                    setOpenTooltip={setOpenTooltip}
+                  >
+                    <b>Attack</b>
+                    <hr />
 
-                  Base: {game.myPlayer.stats.baseAttack}<br />
-                  Weapon Bonus: {game.myPlayer.weapon?.attackBonus ?? 0}
-                </ClickTooltip>
-              </td>
+                    Base: {game.myPlayer.stats.baseAttack}<br />
+                    Bonus: {(game.myPlayer.stats.attack - game.myPlayer.stats.baseAttack) || 0}
+                  </ClickTooltip>
+                </td>
 
-              <td style={{ textAlign: "right" }}>
-                {game.myPlayer.stats.attack}
-              </td>
-            </tr>
+                <td style={{ textAlign: "right" }}>
+                  {game.myPlayer.stats.attack}
+                </td>
+              </tr>
 
-            <tr>
-              <td>
-                <ClickTooltip
-                  id="stat-defense"
-                  label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Defense</span>}
-                  openTooltip={openTooltip}
-                  setOpenTooltip={setOpenTooltip}
-                >
-                  <b>Defense</b>
-                  <hr />
+              <tr>
+                <td>
+                  <ClickTooltip
+                    id="stat-defense"
+                    label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Defense</span>}
+                    openTooltip={openTooltip}
+                    setOpenTooltip={setOpenTooltip}
+                  >
+                    <b>Defense</b>
+                    <hr />
 
-                  Base: {game.myPlayer.stats.baseDefense}<br />
-                  Armor Bonus: {game.myPlayer.wearable?.defenseBonus ?? 0}
-                </ClickTooltip>
-              </td>
+                    Base: {game.myPlayer.stats.baseDefense}<br />
+                    Bonus: {(game.myPlayer.stats.defense - game.myPlayer.stats.baseDefense) || 0}
+                  </ClickTooltip>
+                </td>
 
-              <td style={{ textAlign: "right" }}>
-                {game.myPlayer.stats.defense}
-              </td>
-            </tr>
+                <td style={{ textAlign: "right" }}>
+                  {game.myPlayer.stats.defense}
+                </td>
+              </tr>
 
-            <tr>
-              <td>
-                <ClickTooltip
-                  id="stat-speed"
-                  label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Speed</span>}
-                  openTooltip={openTooltip}
-                  setOpenTooltip={setOpenTooltip}
-                >
-                  <b>Speed</b>
-                  <hr />
+              <tr>
+                <td>
+                  <ClickTooltip
+                    id="stat-speed"
+                    label={<span style={{ cursor: "pointer", textDecoration: "underline" }}>Speed</span>}
+                    openTooltip={openTooltip}
+                    setOpenTooltip={setOpenTooltip}
+                  >
+                    <b>Speed</b>
+                    <hr />
 
-                  Base: {game.myPlayer.stats.baseSpeed}<br />
-                  Equipment Bonus: {(game.myPlayer.weapon?.speedBonus ?? 0) + (game.myPlayer.wearable?.speedBonus ?? 0)}
-                </ClickTooltip>
-              </td>
+                    Base: {game.myPlayer.stats.baseSpeed}<br />
+                    Bonus: {(game.myPlayer.stats.speed - game.myPlayer.stats.baseSpeed) || 0}
+                  </ClickTooltip>
+                </td>
 
-              <td style={{ textAlign: "right" }}>
-                {game.myPlayer.stats.speed}
-              </td>
-            </tr>
-            <tr><td>Level:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.level}</td></tr>
-            <tr><td>Exp. Points:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.experiencePoints}</td></tr>
-            <tr><td>Gold:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.gold}</td></tr>
-            <tr><td>Death Count:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.deathCount}</td></tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-              <td>Weapon:</td>
-              <td style={{ textAlign: "right", fontSize: ".6rem" }}>
-                {weapon?.name ?? "None"}
-              </td>
-            </tr>
+                <td style={{ textAlign: "right" }}>
+                  {game.myPlayer.stats.speed}
+                </td>
+              </tr>
+              <tr><td>Level:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.level}</td></tr>
+              <tr><td>Exp. Points:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.experiencePoints}</td></tr>
+              <tr><td>Gold:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.gold}</td></tr>
+              <tr><td>Death Count:</td><td style={{ textAlign: "right" }}>{game.myPlayer.stats.deathCount}</td></tr>
+              <tr><td>&nbsp;</td></tr>
+              <tr>
+                <td>Weapon:</td>
+                <td style={{ textAlign: "right", fontSize: ".6rem" }}>
+                  {weapon?.name ?? "None"}
+                </td>
+              </tr>
 
-            <tr>
-              <td>Gear:</td>
-              <td style={{ textAlign: "right", fontSize: ".6rem" }}>
-                {wearable?.name ?? "None"}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              <tr>
+                <td>Gear:</td>
+                <td style={{ textAlign: "right", fontSize: ".6rem" }}>
+                  {wearable?.name ?? "None"}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-
       <div className="inventory col-sm-4" id="inventory">
         <h3>INVENTORY</h3>
         <table className="invTable">
@@ -184,7 +190,7 @@ const isWorn = game.myPlayer.wearableItemId ? game.myPlayer.wearableItemId === w
                       <button onClick={() => game.heal(inv)} className="invBtn">Heal</button>
                     )}
 
-                    {inv.details.equippable && (!isEquipped || weapon?.id === inv.details.id ) && (
+                    {inv.details.equippable && (!isEquipped || weapon?.id === inv.details.id) && (
                       <>
                         <button
                           disabled={isEquipped}
@@ -228,37 +234,40 @@ const isWorn = game.myPlayer.wearableItemId ? game.myPlayer.wearableItemId === w
         </table>
       </div>
 
-      <div className="quests col-sm-4" id="quests">
-  <h3>QUESTS</h3>
 
-  <div>
- {game.myPlayer.questList.map((progress: { id: number; isComplete: any; }) => {
-  const quest = dataFor.getQuest(progress.id);
 
-  return (
-    <div key={progress.id}>
-      <li
-        style={{
-          fontWeight: progress.isComplete ? "normal" : "bolder",
-          textDecoration: progress.isComplete ? "line-through" : "none",
-        }}
-      >
-        {quest.name}
-      </li>
-
-      {!progress.isComplete && (
-        <span style={{ fontSize: ".65rem" }}>
-          {quest.description}
-        </span>
-      )}
-
-      <hr />
-    </div>
-  );
-})}
-  </div>
-</div>
-
+      <div className={`quests ${questsOpen ? "open" : "collapsed"}`}>
+        <div className="quests=s-header" onClick={() => setQuestsOpen(!questsOpen)}>
+          Quests {questsOpen ? "▲" : "▼"}
         </div>
+        <div className="quests-content">
+          {game.myPlayer.questList.map((progress: { id: number; isComplete: any; }) => {
+            const quest = dataFor.getQuest(progress.id);
+
+            return (
+              <div key={progress.id}>
+                <li
+                  style={{
+                    fontWeight: progress.isComplete ? "normal" : "bolder",
+                    textDecoration: progress.isComplete ? "line-through" : "none",
+                  }}
+                >
+                  {quest.name}
+                </li>
+
+                {!progress.isComplete && (
+                  <span style={{ fontSize: ".65rem" }}>
+                    {quest.description}
+                  </span>
+                )}
+
+                <hr />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
   );
 }

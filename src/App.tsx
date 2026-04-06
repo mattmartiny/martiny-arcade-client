@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./layout/layout";
 import Home from "./pages/Home/Home";
 import ElementalBattle from "./games/elementalBattle/ElementalBattle";
@@ -49,6 +49,8 @@ export default function App() {
 
 
               {/* <Route path="/aroundTheWorld" element={<ProtectedRoute><AroundTheWorld /></ProtectedRoute>} /> */}
+            
+            <Route path="*" element={<Navigate to="/games" />} />
             </Route>
           </Routes>
 

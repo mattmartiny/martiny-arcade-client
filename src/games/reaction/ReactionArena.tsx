@@ -15,7 +15,7 @@ export default function ReactionArena() {
     const { token } = useAuth();
 
     const [status, setStatus] = useState("Click Start to begin.");
-    const [round, setRound] = useState(0);
+    const [, setRound] = useState(0);
     const [results, setResults] = useState<number[]>([]);
     const [active, setActive] = useState(false);
     const [ready, setReady] = useState(false);
@@ -90,7 +90,6 @@ export default function ReactionArena() {
         awardXP({
             source: GAME_ID,
             amount: xpEarned,
-            multiplier: config?.multiplier,
             reason: "Reaction Arena Complete"
         });
 

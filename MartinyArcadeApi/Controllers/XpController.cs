@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace MartinyArcadeApi.Controllers;
 
 [ApiController]
-[Route("api/xp")]
+[Route("xp")]
 [Authorize]
 public class XpController : ControllerBase
 {
@@ -25,13 +25,16 @@ public class XpController : ControllerBase
         _xpService = xpService;
     }
 
-   [HttpPost("flush")]
+ [HttpPost("flush")]
 public async Task<IActionResult> Flush(FlushXpBatchDto dto)
 {
     try
     {
         if (dto.Events == null || dto.Events.Count == 0)
             return BadRequest("No events provided");
+
+        if (dto.Events.Count > 50)
+            return BadRequest("Too many XP events");
 
         var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (userIdStr == null)
@@ -47,7 +50,6 @@ public async Task<IActionResult> Flush(FlushXpBatchDto dto)
 
         int totalNewXp = 0;
 
-        // 🔹 Get level once per flush (prevents level-jumping mid-batch)
         var currentProgress = _xpService.GetProgress(profile.TotalXP);
         var levelMultiplier = _xpService.GetLevelXpMultiplier(currentProgress.level);
 
@@ -55,13 +57,16 @@ public async Task<IActionResult> Flush(FlushXpBatchDto dto)
         {
             if (ev.Amount <= 0) continue;
 
+            // 🔒 Per-event sanity cap
+            if (ev.Amount > 50) continue;
+
             var scaledAmount = (int)Math.Floor(ev.Amount * levelMultiplier);
 
             var newEvent = new XpEvent
             {
                 UserId = userId,
                 ClientEventId = ev.ClientEventId,
-                Amount = scaledAmount,  // ✅ store scaled XP
+                Amount = scaledAmount,
                 Reason = ev.Reason ?? "action",
                 Source = ev.Source ?? "unknown",
                 CreatedAt = DateTime.UtcNow
@@ -79,7 +84,7 @@ public async Task<IActionResult> Flush(FlushXpBatchDto dto)
                 if (ex.InnerException is SqlException sqlEx &&
                     (sqlEx.Number == 2601 || sqlEx.Number == 2627))
                 {
-                    // Duplicate event — ignore
+                    // 🔁 Duplicate event → ignore safely
                     _db.Entry(newEvent).State = EntityState.Detached;
                 }
                 else
@@ -87,6 +92,15 @@ public async Task<IActionResult> Flush(FlushXpBatchDto dto)
                     throw;
                 }
             }
+        }
+
+        // 🔒 HARD CAP per flush
+        const int MAX_XP_PER_FLUSH = 200;
+
+        if (totalNewXp > MAX_XP_PER_FLUSH)
+        {
+            Console.WriteLine($"XP capped: {totalNewXp} → {MAX_XP_PER_FLUSH}");
+            totalNewXp = MAX_XP_PER_FLUSH;
         }
 
         if (totalNewXp > 0)

@@ -20,9 +20,9 @@ export const Cristie: NPC = {
   },
 
   endChatMessage: "Well Shoot, I was hoping you could assist me.",
-  inProgressMessage: "I still need 5 Pimp Canes",
+  inProgressMessage: "I still need 5 Pimp Chains",
   Dialog1:
-    "Oh thank you so much! Bring me back 5 Pimp Canes as proof of your exploits.",
+    "Oh thank you so much! Bring me back 5 Pimp Chains as proof of your exploits.",
 
   afterMessage: "Thank you so much for your assistance!",
 };
@@ -230,3 +230,20 @@ export const Millie: NPC = {
   initialMessage: "MOOOOOOOOO! (shhh...I'm a bovine, don't judge me)",
   endChatMessage: 'End',
 };
+
+
+export const Diddy: NPC = {
+  id: 5016,
+  name: 'Diddy',
+  optionPerson: false,
+  initialMessage: 'Getcha Glizzies... I mean hotdogs',
+  endChatMessage: 'End',
+};
+
+export const Neff:NPC={
+id: 5017,
+name: 'Alex the Neffarious',
+optionPerson: false,
+initialMessage:"You Kain't continue. All knowing MattyBattz hasn't finished the game yet! Come back later. ",
+endChatMessage: 'End',
+}

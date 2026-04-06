@@ -19,7 +19,7 @@ export default function PatternMemory() {
   const [playerInput, setPlayerInput] = useState<number[]>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isShowing, setIsShowing] = useState(false);
-  const [score, setScore] = useState(0);
+  const [, setScore] = useState(0);
   const [status, setStatus] = useState("Press Start");
   const [gameOver, setGameOver] = useState(false);
 
@@ -86,7 +86,6 @@ export default function PatternMemory() {
     awardXP({
       source: GAME_ID,
       amount: xpEarned,
-      multiplier: config?.multiplier,
       reason: "Pattern Memory Complete"
     });
 

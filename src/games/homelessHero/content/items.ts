@@ -396,7 +396,7 @@ export let pizza: item = {
   price: 30,
   equippable: false,
   healing: true,
-  healingStats: { amountHealed: 15 },
+  healingStats: { amountHealed: 17 },
   wearable: false,
 };
 export let brew: item = {
@@ -405,7 +405,7 @@ export let brew: item = {
   price: 25,
   equippable: false,
   healing: true,
-  healingStats: {amountHealed: 13},
+  healingStats: { amountHealed: 15 },
   wearable: false,
 }
 
@@ -416,17 +416,17 @@ export let chineseChicken: item = {
   price: 27,
   equippable: false,
   healing: true,
-  healingStats: {amountHealed: 14},
+  healingStats: { amountHealed: 16 },
   wearable: false,
 }
 
-export let busPass: item ={
-id: 3037,
-name: 'Bus Pass',
-price: 0,
-equippable: false,
-healing: false,
-wearable: false,
+export let busPass: item = {
+  id: 3037,
+  name: 'Bus Pass',
+  price: 0,
+  equippable: false,
+  healing: false,
+  wearable: false,
 }
 
 export let trenchCoat: item = {
@@ -439,11 +439,71 @@ export let trenchCoat: item = {
   wearableStats: {
     itemName: 'Trench Coat',
     attackBonus: 0,
-    defenseBonus: 8,
+    defenseBonus: 10,
     speedBonus: 3,
     equipped: false,
   },
 };
+
+export let ramen: item = {
+  id: 3039,
+  name: 'Ramen Newdles',
+  price: 45,
+  equippable: false,
+  healing: true,
+  healingStats: { amountHealed: 18 },
+  wearable: false,
+}
+
+export let glizzy: item ={
+id: 3040,
+name : 'Glizzy',
+price: 50,
+equippable: false,
+healing: true,
+healingStats: { amountHealed: 20},
+wearable: false,
+}
+
+export let mustard: item={
+id: 3041,
+name: 'MUSTAAAARD',
+price: 40,
+equippable: false,
+healing: true,
+healingStats:{amountHealed:2},
+wearable: false,
+}
+
+export let pimpChain:item={
+id: 3042,
+name: 'Pimp Chain',
+price: 5,
+equippable: false,
+wearable: false,
+healing: false,
+}
+
+export let gangstaHat:item={
+id:3043,
+name: 'Gansta Hat',
+price: 85,
+equippable: false,
+wearable: true,
+healing: false,
+  wearableStats: {
+    itemName: 'Gangsta Hat',
+    attackBonus: 0,
+    defenseBonus: 8,
+    speedBonus: 1,
+    equipped: false,
+  },
+
+
+
+
+}
+
 
 export const allItems: item[] = [
   stick,
@@ -482,6 +542,11 @@ export const allItems: item[] = [
   pizza,
   chineseChicken,
   busPass,
+  trenchCoat,
+  ramen,
+  glizzy,
+  mustard,
+  gangstaHat,
 ];
 
 export const itemMap: Record<number, item> =
