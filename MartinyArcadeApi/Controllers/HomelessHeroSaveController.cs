@@ -38,23 +38,34 @@ public class HomelessHeroSaveController : ControllerBase
 
         var dto = JsonSerializer.Deserialize<object>(save.SaveData);
 
-        return Ok(dto);
+        return Ok(new
+        {
+            data = dto,
+            battleMessage = save.BattleMessage
+        });
     }
 
     // 🔹 SAVE GAME (UPSERT)
+    public class HomelessHeroSaveRequest
+    {
+        public object Data { get; set; }
+        public string BattleMessage { get; set; }
+    }
+
     [HttpPost]
-    public IActionResult SaveGame([FromBody] object dto)
+    public IActionResult SaveGame([FromBody] HomelessHeroSaveRequest request)
     {
         var userId = GetUserId();
 
-        var json = JsonSerializer.Serialize(dto);
+        var json = JsonSerializer.Serialize(request.Data);
 
         var existing = _context.HomelessHeroSaves
             .FirstOrDefault(s => s.UserId == userId && s.GameKey == "homeless-hero");
 
         if (existing != null)
         {
-            existing.SaveData = json;
+            existing.SaveData = json; // ✅ ONLY game data
+            existing.BattleMessage = request.BattleMessage; // ✅ separate column
             existing.UpdatedAt = DateTime.UtcNow;
         }
         else
@@ -63,7 +74,8 @@ public class HomelessHeroSaveController : ControllerBase
             {
                 UserId = userId,
                 GameKey = "homeless-hero",
-                SaveData = json
+                SaveData = json,
+                BattleMessage = request.BattleMessage
             });
         }
 

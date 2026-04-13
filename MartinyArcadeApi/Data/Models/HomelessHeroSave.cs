@@ -17,6 +17,8 @@ public class HomelessHeroSave
     [Required]
     public string SaveData { get; set; } = string.Empty;
 
+    public string? BattleMessage { get; set; }
+
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     // navigation

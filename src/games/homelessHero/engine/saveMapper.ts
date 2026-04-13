@@ -37,6 +37,9 @@ export function buildSave(state: GameState): SaveGameDTO {
         itemId: i.details.id,
         quantity: i.quantity,
       })),
+
+
+      
     },
 
     equipment: {
@@ -53,6 +56,9 @@ export function buildSave(state: GameState): SaveGameDTO {
       locationId: currentLocation.id,
       dungeonRoomId: currentDungeonRoom?.roomID,
     },
+
+
+battleMessage: "",
   };
 }
 

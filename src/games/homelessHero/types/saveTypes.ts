@@ -1,31 +1,8 @@
-export type GameSave = {
-
-  version: number
-player:{
-  stats: any
-  baseStats:any
-}
-
-
-  inventory: any[]
-  quests: any[]
-
-
-equipment:{
-  weaponItemId: number
-  wearableItemId: number
-}
-  location: {
-    locationId: number
-    dungeonRoomId?: string
-  }
-
-
-}
 
 export type SaveGameDTO = {
   version: number;
-
+  lastUpdated: number;
+  playTimeSeconds: number;
   player: {
     stats: {
       gold: number;
@@ -65,4 +42,6 @@ export type SaveGameDTO = {
     locationId: number;
     dungeonRoomId?: string;
   };
+
+
 };

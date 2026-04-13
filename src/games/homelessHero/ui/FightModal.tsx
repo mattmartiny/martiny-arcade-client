@@ -16,7 +16,7 @@ export function FightModal({
   const [openTooltip, setOpenTooltip] = useState<string | null>(null)
   return (
 
-    <div className="dataWindow">
+    <div className="dataWindow battleLayout">
       <div className="opponentStats">
         {game.combat?.enemy && (
           <><ClickTooltip
@@ -95,7 +95,7 @@ export function FightModal({
           }}
         />
       </div>
-
+<div className="optionButtons">
       <button
         className="optionBox"
         disabled={game.combat?.turn !== "player"}
@@ -104,7 +104,7 @@ export function FightModal({
         ATTACK
       </button>
       <button onClick={game.toggleBattleItems} style={{ margin: "1%" }} className="optionBox">ITEM</button>
-
+      </div>
       {game.ui.battleItemOpen && (
         <div className="battleItemWindow">
           <div onClick={game.toggleBattleItems} style={{ cursor: "pointer", float: "right", width: 10, margin: "3px 10px" }}>

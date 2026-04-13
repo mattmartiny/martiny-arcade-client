@@ -6,4 +6,12 @@ public class SaveGameDTO
     public object Equipment { get; set; } = new();
     public object Quests { get; set; } = new();
     public object Location { get; set; } = new();
+
+}
+
+
+public class HomelessHeroSaveDto
+{
+    public object Data { get; set; } = default!;
+    public string? BattleMessage { get; set; }
 }

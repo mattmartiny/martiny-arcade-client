@@ -55,24 +55,36 @@ export function useHomelessHero(mode: string | null) {
 
     useEffect(() => {
         if (!token) return;
-
+        let cancelled = false;
         if (mode === "new") {
             console.log("STARTING NEW GAME");
 
             const newPlayer = createNewPlayer(dataFor.dataFor.home);
+
+
+            if (cancelled) return;
             setMyPlayer(newPlayer);
             setInitialSave(null);
+            setBattleMessage(""); // 👈 reset log
             setIsLoadedFromServer(true);
             return;
         }
 
         // continue
         loadGame(token)
-            .then(save => {
-                if (save) {
-                    const loaded = loadFromSave(save);
+            .then(res => {
+
+                if (cancelled) return;
+                if (res && res.data) {
+                    const loaded = loadFromSave(res.data);
+
                     setMyPlayer(recalcStats(loaded));
-                    setInitialSave(save);
+                    setInitialSave(res.data);
+
+                    // 🔥 IMPORTANT: restore battle log
+                    if (res.battleMessage) {
+                        setBattleMessage(res.battleMessage ?? "");
+                    }
                 } else {
                     // fallback
                     const newPlayer = createNewPlayer(dataFor.dataFor.home);
@@ -80,12 +92,22 @@ export function useHomelessHero(mode: string | null) {
                 }
             })
             .catch(err => {
+                if (cancelled) return;
+
                 console.error("LOAD FAILED", err);
+                const newPlayer = createNewPlayer(dataFor.dataFor.home);
+                setMyPlayer(newPlayer);
+                setBattleMessage("");
             })
             .finally(() => {
-                setIsLoadedFromServer(true);
+                if (!cancelled) {
+                    setIsLoadedFromServer(true);
+                }
             });
 
+        return () => {
+            cancelled = true;
+        };
     }, [token, mode]);
 
     // --- base placeholders matching your Angular defaults ---
@@ -252,6 +274,8 @@ export function useHomelessHero(mode: string | null) {
             setMyPlayer(newPlayer);
         }
 
+        setHasInitialized(true);
+
     }, [isLoadedFromServer, initialSave]); // ✅ CRITICAL
 
 
@@ -329,7 +353,7 @@ export function useHomelessHero(mode: string | null) {
             handlePlayerDeath()
 
 
-         
+
 
             return
         }
@@ -358,7 +382,7 @@ export function useHomelessHero(mode: string | null) {
     const [canFight, setCanFight] = useState<boolean>(() => !!activeEnemy);
     const [turn, setTurn] = useState<"player" | "enemy">("player")
     const [isHydrated, setIsHydrated] = useState(false);
-
+    const [hasInitialized, setHasInitialized] = useState(false);
     type SaveStatus = "idle" | "saving" | "saved" | "error";
 
     const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
@@ -403,13 +427,27 @@ export function useHomelessHero(mode: string | null) {
 
     const isFluctuatingEnemy = !!(activeEnemy && activeEnemy.fluctuating === true);
     const isLoading = !token || !isLoadedFromServer || !myPlayer;
-    const save = useCallback(async (playerOverride?: player) => {
+    const save = useCallback((playerOverride?: player) => {
         if (!myPlayer || !token) return;
-
         const p = playerOverride ?? myPlayer;
+
+        // 🚨 HARD GUARD
+        if (!p) {
+            console.warn("Prevented save: player is null");
+            return;
+        }
+
+        // 🚨 OPTIONAL: guard against default state
+        if (p.stats.level === 1 && p.stats.experiencePoints === 0) {
+            console.warn("Prevented save: looks like default player");
+            return;
+        }
 
         const data: SaveGameDTO = {
             version: 1,
+            lastUpdated: Date.now(),
+            playTimeSeconds: 0,
+
             player: {
                 stats: {
                     gold: p.stats.gold,
@@ -444,24 +482,17 @@ export function useHomelessHero(mode: string | null) {
                 locationId: currentLocation.id,
                 dungeonRoomId: currentDungeonRoom?.roomID,
             },
+
         };
 
-        try {
-            setSaveStatus("saving");
 
-            await saveGame(data, token); // 👈 IMPORTANT: must await
+        saveGame({
+            data,
+            battleMessage
+        }, token);
 
-            setSaveStatus("saved");
-
-            // fade out after a bit
-            setTimeout(() => setSaveStatus("idle"), 1500);
-
-        } catch (err) {
-            console.error("SAVE FAILED", err);
-            setSaveStatus("error");
-        }
-
-    }, [myPlayer, token, currentLocation.id, currentDungeonRoom?.roomID]);
+    }, [myPlayer, battleMessage, token, currentLocation.id,
+        currentDungeonRoom?.roomID]);
 
 
 
@@ -471,12 +502,12 @@ export function useHomelessHero(mode: string | null) {
 
 
     useEffect(() => {
-        if (!isHydrated || !myPlayer || !token || !initialSave) return;
+        if (!isHydrated || !myPlayer || !token || !hasInitialized) return;
 
-        setSaveStatus("saving")
+        setSaveStatus("saving");
         save();
 
-        const t = setTimeout(() => setSaveStatus("saving"), 400);
+        const t = setTimeout(() => setSaveStatus("idle"), 400);
         return () => clearTimeout(t);
     }, [
         isHydrated,
@@ -488,10 +519,14 @@ export function useHomelessHero(mode: string | null) {
         myPlayer?.wearableItemId,
         save,
     ]);
+
     const isFirstRender = useRef(true);
 
     useAutosave(() => {
         if (!isHydrated) return;
+        if (!myPlayer) return;
+        if (!token) return;
+        if (!hasInitialized) return;
 
         if (isFirstRender.current) {
             isFirstRender.current = false;
@@ -557,8 +592,8 @@ export function useHomelessHero(mode: string | null) {
         setCanFight(true)
 
         setBattleMessage(m =>
-            m + `<b style="color:purple">${enemy.name} appeared!</b><br/>`
-        )
+            (m + `<b style="color:purple">${enemy.name} appeared!</b><br/>`).slice(-5000));
+
     }
 
     // --- movement ---
@@ -571,7 +606,7 @@ export function useHomelessHero(mode: string | null) {
                 "the required item";
 
             setBattleMessage(m =>
-                m + `<b style="color:orange;">You must have ${reqName} to enter.</b><br/>`
+                (m + `<b style="color:orange;">You must have ${reqName} to enter.</b><br/>`).slice(-5000)
             );
 
             return false;
@@ -621,7 +656,7 @@ export function useHomelessHero(mode: string | null) {
                 "the required item";
 
             setBattleMessage(m =>
-                m + `<b style="color:orange;">You must have ${reqName} to enter.</b><br/>`
+                (m + `<b style="color:orange;">You must have ${reqName} to enter.</b><br/>`).slice(-5000)
             );
 
             return false;
@@ -758,13 +793,13 @@ export function useHomelessHero(mode: string | null) {
         });
 
         if (newLevel !== oldLevel) {
-            setBattleMessage(m => m + `<b>You have leveled up to level ${newLevel}!</b><br />`);
+            setBattleMessage(m => (m + `<b>You have leveled up to level ${newLevel}!</b><br />`).slice(-5000));
             awardGameXP({
                 gameId: "homeless-hero",
                 amount: newLevel * 2,
                 source: "homeless-hero",
                 reason: `Reached level ${newLevel}`,
-                });
+            });
             if (token) {
                 recordGameSession(
                     token,
@@ -781,7 +816,7 @@ export function useHomelessHero(mode: string | null) {
     function handlePlayerDeath() {
 
         setBattleMessage(m =>
-            m + `<span style="color:red">You died...</span><br>`
+            (m + `<span style="color:red">You died...</span><br>`).slice(-5000)
         )
 
         setCombat(null)
@@ -914,7 +949,7 @@ export function useHomelessHero(mode: string | null) {
             amount: Math.max(1, Math.floor(xp / 10)),
             source: "homeless-hero",
             reason: `Defeated ${enemy.name}`,
-      
+
         });
         if (token) {
             recordGameSession(
@@ -954,11 +989,11 @@ export function useHomelessHero(mode: string | null) {
         }
 
         setBattleMessage(m =>
-            m + `<span style="font-weight:bolder">You defeated ${enemy.name}!</span><br/>`
+            (m + `<span style="font-weight:bolder">You defeated ${enemy.name}!</span><br/>`).slice(-5000)
 
 
         )
-        if (loot) setBattleMessage(m => m + `You found ${loot?.details.name}<br />`)
+        if (loot) setBattleMessage(m => (m + `You found ${loot?.details.name}<br />`).slice(-5000));
 
         setCombat(null)
 
@@ -1151,11 +1186,11 @@ export function useHomelessHero(mode: string | null) {
 
                 updateStats(newXP, oldXP)
                 awardGameXP({
-                  gameId: "homeless-hero",
+                    gameId: "homeless-hero",
                     amount: Math.max(5, Math.floor(xp / 5)),
                     source: "homeless-hero",
                     reason: "Quest completed",
-                   
+
                 });
                 if (token) {
                     recordGameSession(
@@ -1314,7 +1349,7 @@ export function useHomelessHero(mode: string | null) {
         const price = si.price ?? 0;
         if (!myPlayer) return;
         if (myPlayer.stats.gold < price) {
-            setBattleMessage(m => m + `<b style="color:red;">Not enough gold.</b><br/>`);
+            setBattleMessage(m => (m + `<b style="color:red;">Not enough gold.</b><br/>`).slice(-5000));
             return;
         }
 
@@ -1327,7 +1362,7 @@ export function useHomelessHero(mode: string | null) {
             }
         });
 
-        setBattleMessage(m => m + `Bought 1 ${si.name}.<br/>`);
+        setBattleMessage(m => (m + `Bought 1 ${si.name}.<br/>`).slice(-5000));
     }
 
     function sellItem(inv: any) {
@@ -1345,7 +1380,7 @@ export function useHomelessHero(mode: string | null) {
             }
         });
 
-        setBattleMessage(m => m + `Sold 1 ${inv.details.name} for ${sellPrice} gold.<br/>`);
+        setBattleMessage(m => (m + `Sold 1 ${inv.details.name} for ${sellPrice} gold.<br/>`).slice(-5000));
     }
 
 
