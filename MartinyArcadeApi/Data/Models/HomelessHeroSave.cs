@@ -21,6 +21,9 @@ public class HomelessHeroSave
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    public string? BackupSaveData { get; set; }
+
+    public string? BackupBattleMessage { get; set; }
     // navigation
     [ForeignKey("UserId")]
     public User? User { get; set; }

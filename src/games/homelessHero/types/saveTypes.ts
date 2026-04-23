@@ -1,8 +1,6 @@
 
 export type SaveGameDTO = {
   version: number;
-  lastUpdated: number;
-  playTimeSeconds: number;
   player: {
     stats: {
       gold: number;

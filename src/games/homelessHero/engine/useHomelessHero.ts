@@ -18,7 +18,7 @@ import { spawnEnemy } from "./enemySpawn";
 import { getQuestState } from "./questLogic";
 import { useAutosave } from "./useAutosave";
 import { loadFromSave } from "./saveMapper";
-import { loadGame, saveGame } from "./saveRepository";
+import { loadGame, recoverGame, saveGame } from "./saveRepository";
 import { useAuth } from "../../../platform/AuthContext";
 import { calculateScore } from "./score";
 import { submitGameSession } from "./gameSessionRepository"
@@ -55,48 +55,73 @@ export function useHomelessHero(mode: string | null) {
 
     useEffect(() => {
         if (!token) return;
-        let cancelled = false;
-        if (mode === "new") {
-            console.log("STARTING NEW GAME");
 
+        let cancelled = false;
+
+        if (mode === "new") {
             const newPlayer = createNewPlayer(dataFor.dataFor.home);
 
-
-            if (cancelled) return;
             setMyPlayer(newPlayer);
             setInitialSave(null);
-            setBattleMessage(""); // 👈 reset log
+            setBattleMessage("");
             setIsLoadedFromServer(true);
             return;
         }
 
-        // continue
         loadGame(token)
-            .then(res => {
-
+            .then(async result => {
                 if (cancelled) return;
-                if (res && res.data) {
-                    const loaded = loadFromSave(res.data);
 
-                    setMyPlayer(recalcStats(loaded));
-                    setInitialSave(res.data);
-
-                    // 🔥 IMPORTANT: restore battle log
-                    if (res.battleMessage) {
-                        setBattleMessage(res.battleMessage ?? "");
-                    }
-                } else {
-                    // fallback
+                if (!result) {
                     const newPlayer = createNewPlayer(dataFor.dataFor.home);
                     setMyPlayer(newPlayer);
+                    setBattleMessage("");
+                    return;
                 }
+
+                try {
+                    if (result.data) {
+                        const loaded = loadFromSave(result.data);
+
+                        setMyPlayer(recalcStats(loaded));
+                        setInitialSave(result.data);
+                        setBattleMessage(result.battleMessage ?? "");
+                        return;
+                    }
+                } catch (err) {
+                    console.error("PRIMARY SAVE FAILED", err);
+                }
+
+                try {
+                    if (result.backupData) {
+                        const loadedBackup = loadFromSave(result.backupData);
+
+                        setMyPlayer(recalcStats(loadedBackup));
+                        setInitialSave(result.backupData);
+                        setBattleMessage(result.backupBattleMessage ?? "");
+
+                        await recoverGame(token);
+                        console.warn("Recovered from backup save.");
+
+                        return;
+                    }
+                } catch (err) {
+                    console.error("BACKUP SAVE FAILED", err);
+                }
+
+                const newPlayer = createNewPlayer(dataFor.dataFor.home);
+                setMyPlayer(newPlayer);
+                setInitialSave(null);
+                setBattleMessage("");
             })
             .catch(err => {
                 if (cancelled) return;
 
                 console.error("LOAD FAILED", err);
+
                 const newPlayer = createNewPlayer(dataFor.dataFor.home);
                 setMyPlayer(newPlayer);
+                setInitialSave(null);
                 setBattleMessage("");
             })
             .finally(() => {
@@ -111,7 +136,6 @@ export function useHomelessHero(mode: string | null) {
     }, [token, mode]);
 
     // --- base placeholders matching your Angular defaults ---
-    const BATTLE_MSG_KEY = "hh_battleMessage";
     const initialXP = 66;
     const initialHP = 9;
     const initialLevel = levelFromXP(initialXP);
@@ -181,8 +205,8 @@ export function useHomelessHero(mode: string | null) {
 
 
     const [battleMessage, setBattleMessage] = useState<string>(() => {
-        const saved = localStorage.getItem(BATTLE_MSG_KEY);
-        if (saved) return saved;
+       
+        
 
         return `You wake up in a strange alley-way, unsure of anything. You don't remember your name, your occupation, or anyone around you. You have no idea where you live, and for all you know, you are homeless. Everything seems new.... and scary. <br /><br /> `;
     });
@@ -261,22 +285,22 @@ export function useHomelessHero(mode: string | null) {
     }, [initialSave]);
 
 
-    useEffect(() => {
-        if (!isLoadedFromServer) return;
+    // useEffect(() => {
+    //     if (!isLoadedFromServer) return;
 
-        console.log("INIT PLAYER", { initialSave });
+    //     console.log("INIT PLAYER", { initialSave });
 
-        if (initialSave) {
-            const loaded = loadFromSave(initialSave);
-            setMyPlayer(recalcStats(loaded));
-        } else {
-            const newPlayer = createNewPlayer(dataFor.dataFor.home); // 👈 DON'T rely on initialLocation
-            setMyPlayer(newPlayer);
-        }
+    //     if (initialSave) {
+    //         const loaded = loadFromSave(initialSave);
+    //         setMyPlayer(recalcStats(loaded));
+    //     } else {
+    //         const newPlayer = createNewPlayer(dataFor.dataFor.home); // 👈 DON'T rely on initialLocation
+    //         setMyPlayer(newPlayer);
+    //     }
 
-        setHasInitialized(true);
+    //     setHasInitialized(true);
 
-    }, [isLoadedFromServer, initialSave]); // ✅ CRITICAL
+    // }, [isLoadedFromServer, initialSave]); // ✅ CRITICAL
 
 
 
@@ -317,9 +341,9 @@ export function useHomelessHero(mode: string | null) {
 
 
 
-    useEffect(() => {
-        localStorage.setItem(BATTLE_MSG_KEY, battleMessage);
-    }, [battleMessage]);
+    // useEffect(() => {
+      
+    // }, [battleMessage]);
 
     useEffect(() => {
 
@@ -382,7 +406,7 @@ export function useHomelessHero(mode: string | null) {
     const [canFight, setCanFight] = useState<boolean>(() => !!activeEnemy);
     const [turn, setTurn] = useState<"player" | "enemy">("player")
     const [isHydrated, setIsHydrated] = useState(false);
-    const [hasInitialized, setHasInitialized] = useState(false);
+    const [hasInitialized] = useState(false);
     type SaveStatus = "idle" | "saving" | "saved" | "error";
 
     const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
@@ -427,7 +451,7 @@ export function useHomelessHero(mode: string | null) {
 
     const isFluctuatingEnemy = !!(activeEnemy && activeEnemy.fluctuating === true);
     const isLoading = !token || !isLoadedFromServer || !myPlayer;
-    const save = useCallback((playerOverride?: player) => {
+    const save = useCallback(async (playerOverride?: player) => {
         if (!myPlayer || !token) return;
         const p = playerOverride ?? myPlayer;
 
@@ -445,8 +469,6 @@ export function useHomelessHero(mode: string | null) {
 
         const data: SaveGameDTO = {
             version: 1,
-            lastUpdated: Date.now(),
-            playTimeSeconds: 0,
 
             player: {
                 stats: {
@@ -486,10 +508,16 @@ export function useHomelessHero(mode: string | null) {
         };
 
 
-        saveGame({
-            data,
-            battleMessage
-        }, token);
+        try {
+            await saveGame({
+                data,
+                battleMessage,
+                clientUpdatedAt: new Date().toISOString()
+            }, token);
+        } catch (err) {
+            console.error("SAVE FAILED", err);
+            setSaveStatus("error");
+        }
 
     }, [myPlayer, battleMessage, token, currentLocation.id,
         currentDungeonRoom?.roomID]);
@@ -536,7 +564,7 @@ export function useHomelessHero(mode: string | null) {
         setSaveStatus("saving");
         save();
 
-        setTimeout(() => setSaveStatus("saving"), 400);
+        setTimeout(() => setSaveStatus("idle"), 400);
     }, 1200);
 
 

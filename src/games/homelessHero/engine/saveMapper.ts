@@ -56,9 +56,6 @@ export function buildSave(state: GameState): SaveGameDTO {
       locationId: currentLocation.id,
       dungeonRoomId: currentDungeonRoom?.roomID,
     },
-
-
-battleMessage: "",
   };
 }
 

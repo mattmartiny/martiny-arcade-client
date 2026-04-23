@@ -593,6 +593,36 @@ export const busStation: Location = {
   hasEntered: false,
 }
 
+export const interstateBridge: Location = {
+id: 1042,
+name: 'Interstate Bridge',
+description: 'A bridge over an interstate.',
+imgPath: 'interstateBridge',
+hasEnemy: false,
+NPC: false,
+enemyNumber: 0,
+itemRequired: false,
+dungeonHere: false,
+shop: false,
+hasEntered: false,  
+}
+
+export const hotDogStand: Location = {
+id: 1043,
+name: `Gator's Glorious Glizzys`,
+description: 'Glizzy Station',
+imgPath: 'hotDogStand',
+hasEnemy: false,
+NPC: true,
+enemyNumber: 0,
+itemRequired: false,
+dungeonHere: false,
+shop: true,
+shopHere: s.glizzyShop,
+hasEntered: false,
+}
+
+
 
 
 export const Locs: Location[] = [
@@ -637,4 +667,6 @@ export const Locs: Location[] = [
   warehouse,
   factory,
   busStation,
+  interstateBridge,
+  hotDogStand,
 ];

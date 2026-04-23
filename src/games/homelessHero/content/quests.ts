@@ -10,7 +10,7 @@ export let beatSomePimps: quest = {
   questCompletionItem: [{ details: i.pimpChain, quantity: 5 }
   ],
   rewardItem:{details: i.pimpCane, quantity: 3},
-  message: "Congrats! You've helped Cristie and gotten the pimp chains!",
+  message: "Congrats! You've helped Cristie and got the pimp chains!",
 };
 export let PAAARTY: quest = {
   id: 4001,
@@ -101,9 +101,6 @@ export let toolshop: quest = {
   message: `Go take out the frat!`
 
 }
-
-
-
 
 export const quests: quest[] = [
   beatSomePimps,

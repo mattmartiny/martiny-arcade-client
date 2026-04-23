@@ -16,7 +16,7 @@ export const emptyWearable = {
   equipped: false
 };
 
-export const stick: item = {
+export let stick: item = {
   id: 3001,
   name: "Stick",
   price: 3,
@@ -486,7 +486,7 @@ healing: false,
 
 export let gangstaHat:item={
 id:3043,
-name: 'Gansta Hat',
+name: 'Gangssta Hat',
 price: 85,
 equippable: false,
 wearable: true,

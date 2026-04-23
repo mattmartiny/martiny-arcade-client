@@ -18,3 +18,9 @@ export const SanjayShop: shop = {
     shopInventory: [i.woodenWood],
 
   }
+
+  export const glizzyShop: shop = {
+    id: 6003,
+    shopName: "Gator's Glorious Glizzy's",
+    shopInventory: [i.glizzy, i.mustard],
+  }
