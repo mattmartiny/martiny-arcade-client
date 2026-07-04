@@ -584,43 +584,176 @@ export const busStation: Location = {
   description: "It's bussin'",
   imgPath: "busStation",
   hasEnemy: false,
-  NPC:false,
+  NPC: false,
   enemyNumber: 0,
   itemRequired: true,
-  itemThatsRequired: {details: i.busPass, quantity: 1,},
+  itemThatsRequired: { details: i.busPass, quantity: 1, },
   dungeonHere: false,
   shop: false,
   hasEntered: false,
 }
 
+
 export const interstateBridge: Location = {
-id: 1042,
-name: 'Interstate Bridge',
-description: 'A bridge over an interstate.',
-imgPath: 'interstateBridge',
-hasEnemy: false,
-NPC: false,
-enemyNumber: 0,
-itemRequired: false,
-dungeonHere: false,
-shop: false,
-hasEntered: false,  
+  id: 1042,
+  name: 'Interstate Bridge',
+  description: 'A bridge over an interstate.',
+  imgPath: 'interstateBridge',
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
 }
 
 export const hotDogStand: Location = {
-id: 1043,
-name: `Gator's Glorious Glizzys`,
-description: 'Glizzy Station',
-imgPath: 'hotDogStand',
-hasEnemy: false,
-NPC: true,
-enemyNumber: 0,
-itemRequired: false,
-dungeonHere: false,
-shop: true,
-shopHere: s.glizzyShop,
-hasEntered: false,
+  id: 1043,
+  name: `Gator's Glorious Glizzys`,
+  description: 'Glizzy Station',
+  imgPath: 'hotDogStand',
+  hasEnemy: false,
+  NPC: true,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: true,
+  shopHere: s.glizzyShop,
+  hasEntered: false,
 }
+
+export const memorialGarden: Location = {
+  id: 1044,
+  name: 'Memorial Gardens',
+  description: 'A memorial garden for the fallen.',
+  imgPath: 'memorialGardens',
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
+}
+
+export const cementary: Location = {
+  id: 1045,
+  name: 'Cemetary',
+  description: 'Cemetery with a massive mausoleum.',
+  imgPath: 'cemetery',
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
+}
+
+export const catacombs: Location = {
+  id: 1046,
+  name: 'Catacombs',
+  description: 'A dark and creepy catacombs.',
+  imgPath: 'catacombs',
+  hasEnemy: true,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: true,
+  itemThatsRequired: { details: i.catacombsKey, quantity: 1, },
+  dungeonHere: true,
+  shop: false,
+  hasEntered: false,
+}
+
+export const exitCave: Location = {
+  id: 1047,
+  name: 'Catacombs Exit',
+  description: 'That was a long walk through the catacombs.',
+  imgPath: 'catacombsExit',
+  hasEnemy: false,
+  NPC: true,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: true,
+  shop: false,
+  hasEntered: false,
+}
+
+export const westOakMall: Location = {
+  id: 1048,
+  name: 'West Oak Mall',
+  description: 'A once thriving mall, only a few stores remain.',
+  imgPath: 'westOakMall',
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: true,
+  shop: false,
+  hasEntered: false,
+}
+
+export const pasture: Location = {
+  id: 1049,
+  name: 'Pasture',
+  description: 'There are cow patties in the horse pasture.',
+  imgPath: 'pasture',
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
+}
+
+export const dirtRoad: Location = {
+  id: 1050,
+  name: 'Dirt Road',
+  description: "If I had a beer, I'd have a country song",
+  imgPath: 'dirtRoad',
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
+}
+
+export const crashSite: Location = {
+  id: 1051,
+  name: 'Crash Site',
+  description: 'A luxury car has crashed into a tree.',
+  imgPath: 'crashSite',
+  hasEnemy: false,
+  NPC: true,
+  enemyNumber: 0,
+  itemRequired: false,
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
+}
+
+
+export const busStation2: Location = {
+  id: 1052,
+  name: "Bus Station",
+  description: "It's bussin'",
+  imgPath: "busStation2",
+  hasEnemy: false,
+  NPC: false,
+  enemyNumber: 0,
+  itemRequired: true,
+  itemThatsRequired: { details: i.busPass, quantity: 1, },
+  dungeonHere: false,
+  shop: false,
+  hasEntered: false,
+}
+
+
+
 
 
 
@@ -669,4 +802,14 @@ export const Locs: Location[] = [
   busStation,
   interstateBridge,
   hotDogStand,
+  memorialGarden,
+  cementary,
+  catacombs,
+  exitCave,
+  westOakMall,
+  pasture,
+  dirtRoad,
+  crashSite,
+  busStation2,
+
 ];

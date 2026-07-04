@@ -174,12 +174,13 @@ export const mobInformant: NPC = {
   name: `Mob informant`,
   optionPerson: true,
   initialMessage: `In order to continue I need 6 mob id badges`,
-  questGiven: { details: q.mob4, hasQuest: false, isComplete: false },
+  questGiven: { details: q.mobbin4, hasQuest: false, isComplete: false },
   endChatMessage: `guess you'll just wait...`,
   inProgressMessage: "I need 6 mob id badges for you to continue.",
   Dialog1: `defeat mob henchmen to get id badges`,
   afterMessage: `Continue up stairs!`,
 };
+
 export const informConvo: dialogReplies = {
   NPCDetails: mobInformant,
   playerResponse1: 'Yessir!',
@@ -246,4 +247,47 @@ name: 'Alex the Neffarious',
 optionPerson: false,
 initialMessage:"You Kain't continue. All knowing MattyBattz hasn't finished the game yet! Come back later. ",
 endChatMessage: 'End',
+}
+
+
+export const george:NPC={
+  id: 5018,
+  name: 'Mr. George',
+  optionPerson: true,
+  initialMessage:"My hot dog is certainly bland.  I need some mustard.  Can you get me some? Oh the catacombs are closed.",
+  questGiven: { details: q.mustardQuest, hasQuest: false, isComplete: false, },
+  endChatMessage: "I guess you'll just have to wait.",
+  inProgressMessage: "I still need some mustard.",
+  Dialog1: "Thank you so much! Bring me back some mustard and I'll be forever grateful.",
+  afterMessage: "Thank you so much for your assistance! I can finally enjoy my hot dog! Feel free to explore the catacombs now!",
+}
+export const GeorgeConvo: dialogReplies = {
+  NPCDetails: george,
+  playerResponse1: "Sure I will help you out.",
+  playerEndChatResponse: "I'm going to pass.",
+}
+
+export const wiseGuy2:NPC={
+  id: 5019,
+  name: 'Wise Old Guy', 
+  optionPerson: false,
+  initialMessage: "You're getting very close to figuring out who you are.  Keep going, and you'll remember. Just know that you have been betrayed by someone you trusted.  You will find out who it is soon enough.",
+  endChatMessage: 'End',
+}
+
+export const Kendra:NPC={
+  id: 5020,
+  name: 'Kendra',
+  optionPerson: true,
+  initialMessage:"I developed the ultimate wearable! To get my Fancy Pants,  I need a copy of piece of every wearable you can find. It's you're choice, but these pants are FANCY!",
+  questGiven: { details: q.fancyPantsQuest, hasQuest: false, isComplete: false, },
+  endChatMessage: "I guess you'll just have to wait.",
+  inProgressMessage: "I still need a copy of every wearable.",
+  Dialog1: " Bring me back a copy of every wearable and I'll give you my Fancy Pants.",
+  afterMessage: "Enjoy those Fancy Pants! They're fashionable and functional!",
+}
+export const KendraConvo: dialogReplies = {
+  NPCDetails: Kendra,
+  playerResponse1: "Sure I will help you out.",
+  playerEndChatResponse: "I'm going to pass.",
 }

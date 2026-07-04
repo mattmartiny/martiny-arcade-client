@@ -75,7 +75,7 @@ export let mobbin3: quest = {
   message: `Congrats, the Mob is no more!`,
 };
 
-export let mob4: quest = {
+export let mobbin4: quest = {
   id: 4006,
   name: `Mob Hideout`,
   description: `Get 6 id badges`,
@@ -99,8 +99,34 @@ export let toolshop: quest = {
     { details: i.betaDocument, quantity: 1 }
   ],
   message: `Go take out the frat!`
-
 }
+
+export let mustardQuest: quest = {
+  id: 4008,
+  name: `Quest for Mustard`,      
+  description: `Get the mustard for Mr. George.`,
+  rewardXP: 10,
+  rewardGold: 5,
+  rewardItem: { details: i.catacombsKey, quantity: 1 },
+  questCompletionItem: [
+    { details: i.mustard, quantity: 1 }
+  ],
+  message: `Feel free to enter the catacombs!`
+};
+
+
+export let fancyPantsQuest: quest = {
+  id: 4009,
+  name: `The Fanciest of Pants`,
+  description: `Get every wearable and give to Kendra`,
+  rewardXP: 100,
+  rewardGold: 100,
+  rewardItem: { details: i.fancyPants, quantity: 1 },
+  questCompletionItem: [
+    { details: i.fancyPants, quantity: 1 }, { details: i.SteelToeBoots, quantity: 1 }, { details: i.gangstaHat, quantity: 1 }, { details: i.merFlippers, quantity: 1 }, { details: i.partyHat, quantity: 1 }, { details:i.trenchCoat, quantity: 1 }, { details:i.purpleDong, quantity: 1 }, { details:i.shoes, quantity: 1 }
+  ],
+  message: `Congrats! You've gotten the ultimate wearable!`
+};
 
 export const quests: quest[] = [
   beatSomePimps,
@@ -109,9 +135,10 @@ export const quests: quest[] = [
   wyverntReady,
   mobbin2,
   mobbin3,
-  mob4,
+  mobbin4,
   toolshop,
-
+  mustardQuest,
+  fancyPantsQuest,
 
 
 

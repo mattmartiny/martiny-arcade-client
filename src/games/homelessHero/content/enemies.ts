@@ -51,13 +51,13 @@ export const Pimp: EnemyTemplate = Object.freeze({
   lootTable: [
     { details: i.pimpChain, chance: 520, isDefaultItem: true },
     { details: i.wdSteak, chance: 200, isDefaultItem: false },
-    {details: i.pimpCane, chance: 80, isDefaultItem: false}
+    { details: i.pimpCane, chance: 80, isDefaultItem: false }
   ]
 });
 export const couchTroll: EnemyTemplate = Object.freeze({
   id: 2004,
   name: 'Couch Troll',
-  description: 'Tsroll on a couch',
+  description: 'Troll on a couch',
   imgPath: 'couchTroll',
   fluctuating: false,
   maxHp: 16,
@@ -94,7 +94,7 @@ export const Mobster: EnemyTemplate = Object.freeze({
 export const merman: EnemyTemplate = Object.freeze({
   id: 2006,
   name: 'Merman',
-  description: 'Merman plus Merpeople equals mer-society',
+  description: 'Merman plus Merpeople equals mer-ciety',
   imgPath: 'merman',
   fluctuating: false,
   maxHp: 19,
@@ -143,7 +143,7 @@ export const mobHenchman: EnemyTemplate = Object.freeze({
   rewardGold: 14,
   lootTable: [
     { details: i.mobIdBadge, chance: 620, isDefaultItem: true },
-    {details:i.gangstaHat, chance: 230, isDefaultItem: false,},
+    { details: i.gangstaHat, chance: 230, isDefaultItem: false, },
   ]
 });
 
@@ -167,22 +167,41 @@ export const skeeter: EnemyTemplate = Object.freeze({
 });
 
 
-export const cat:EnemyTemplate=Object.freeze({
-id:2010,
-name:"Chicken O' the Freightyard",
-description:"MEow!",
-imgPath:'cat',
-fluctuating:false,
-maxHp:40,
-attack:24,
-defense: 18,
-speed: 22,
-rewardXP: 23,
-rewardGold: 8,
-lootTable:[{
-details:i.chineseChicken, chance: 550, isDefaultItem: true,
-}]
+export const cat: EnemyTemplate = Object.freeze({
+  id: 2010,
+  name: "Chicken O' the Freightyard",
+  description: "MEow!",
+  imgPath: 'cat',
+  fluctuating: false,
+  maxHp: 40,
+  attack: 24,
+  defense: 18,
+  speed: 22,
+  rewardXP: 23,
+  rewardGold: 8,
+  lootTable: [{
+    details: i.chineseChicken, chance: 550, isDefaultItem: true,
+  }]
+});
+
+export const mutantRat: EnemyTemplate = Object.freeze({
+  id: 2011,
+  name: "Mutant Rat",
+  description: "Much bigger than a mouse",
+  imgPath: 'mutantRat',
+  fluctuating: false,
+  maxHp: 45,
+  attack: 28,
+  defense: 23,
+  speed: 26,
+  rewardXP: 30,
+  rewardGold: 15,
+  lootTable: [
+    { details: i.furBoots, chance: 295, isDefaultItem: false },
+    { details: i.ratTail, chance: 400, isDefaultItem: false }
+  ]
 })
+
 //--------------------------------fluctuating enemies-----------------
 
 export const Wyvern: EnemyTemplate = Object.freeze({
@@ -295,54 +314,73 @@ export const chad: EnemyTemplate = Object.freeze({
 });
 
 export const brotherChadwick: EnemyTemplate = Object.freeze({
-id: 2507,
-name: "Brother Chadwick",
-description:"Typical frat tool",
-imgPath:'brotherChadwick',
-fluctuating: true,
-maxHp: 8,
-attack: 11,
-defense: 9,
-speed: 5,
-rewardXP:70,
-rewardGold:230,
-lootTable:[
-  {details: i.betaDocument, chance: 998, isDefaultItem: true,},
-]
+  id: 2507,
+  name: "Brother Chadwick",
+  description: "Typical frat tool",
+  imgPath: 'brotherChadwick',
+  fluctuating: true,
+  maxHp: 8,
+  attack: 11,
+  defense: 9,
+  speed: 5,
+  rewardXP: 70,
+  rewardGold: 230,
+  lootTable: [
+    { details: i.betaDocument, chance: 998, isDefaultItem: true, },
+  ]
 })
 
 
 
-export const hobo:EnemyTemplate =Object.freeze({
-id:2508,
-name: "Hyphy Hobo",
-description: "He's on something",
-imgPath: 'hobo',
-fluctuating: true,
-maxHp: 15,
-attack:5,
-defense: 12,
-speed: 1,
-rewardXP: 30,
-rewardGold: 20,
-lootTable:[{details: i.ramen, chance: 550, isDefaultItem: true }],
+export const hobo: EnemyTemplate = Object.freeze({
+  id: 2508,
+  name: "Hyphy Hobo",
+  description: "He's on something",
+  imgPath: 'hobo',
+  fluctuating: true,
+  maxHp: 15,
+  attack: 5,
+  defense: 12,
+  speed: 1,
+  rewardXP: 30,
+  rewardGold: 20,
+  lootTable: [{ details: i.ramen, chance: 550, isDefaultItem: true }],
 })
 
 
 export const drifter: EnemyTemplate = Object.freeze({
-id: 2509,
-name: "Dangerous Drifter",
-description: "Mysterious... and Dangerous.",
-imgPath: 'drifter',
-fluctuating: true,
-maxHp: 0,
-attack: 9,
-defense: 8,
-speed:6,
-rewardXP: 34,
-rewardGold: 32,
-lootTable:[{
-details: i.busPass, chance: 455,  isDefaultItem: true},
-{details:i.trenchCoat, chance: 145, isDefaultItem: false,},
-]
+  id: 2509,
+  name: "Dangerous Drifter",
+  description: "Mysterious... and Dangerous.",
+  imgPath: 'drifter',
+  fluctuating: true,
+  maxHp: 0,
+  attack: 9,
+  defense: 8,
+  speed: 6,
+  rewardXP: 34,
+  rewardGold: 32,
+  lootTable: [{
+    details: i.busPass, chance: 455, isDefaultItem: true
+  },
+  { details: i.trenchCoat, chance: 175, isDefaultItem: false, },
+  ]
+})
+
+export const mtntBat: EnemyTemplate = Object.freeze({
+  id: 2510,
+  name: "Mutant Chicken O' the Cave",
+  description: "That's a very big bat",
+  imgPath: 'mutantBat',
+  fluctuating: true,
+  maxHp: -10,
+  attack: 14,
+  defense: 5,
+  speed: 2,
+  rewardXP: 38,
+  rewardGold: 35,
+  lootTable: [
+    {details: i.prisonShank, chance: 295, isDefaultItem: false },
+    {details: i.wuhanSoup, chance: 450, isDefaultItem: true}
+  ]
 })

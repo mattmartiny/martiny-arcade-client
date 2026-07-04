@@ -16,7 +16,6 @@ import * as dataFor from "../content/data";
 import { startQuest, completeQuest, } from "./quests";
 import { spawnEnemy } from "./enemySpawn";
 import { getQuestState } from "./questLogic";
-import { useAutosave } from "./useAutosave";
 import { loadFromSave } from "./saveMapper";
 import { loadGame, recoverGame, saveGame } from "./saveRepository";
 import { useAuth } from "../../../platform/AuthContext";
@@ -35,6 +34,8 @@ type UiState = {
     battleItemOpen: boolean;
 };
 
+const AUTOSAVE_DELAY_MS = 4000;
+
 
 function detectMobileDevice() {
     const userAgent = navigator.userAgent;
@@ -50,6 +51,8 @@ export function useHomelessHero(mode: string | null) {
     const { token } = useAuth();
     const [initialSave, setInitialSave] = useState<SaveGameDTO | null>(null);
     const [isLoadedFromServer, setIsLoadedFromServer] = useState(false);
+    const [lastKnownUpdatedAt, setLastKnownUpdatedAt] = useState<string | null>(null);
+    const lastKnownUpdatedAtRef = useRef<string | null>(null);
 
 
 
@@ -63,6 +66,7 @@ export function useHomelessHero(mode: string | null) {
 
             setMyPlayer(newPlayer);
             setInitialSave(null);
+            setLastKnownUpdatedAt(null);
             setBattleMessage("");
             setIsLoadedFromServer(true);
             return;
@@ -85,6 +89,7 @@ export function useHomelessHero(mode: string | null) {
 
                         setMyPlayer(recalcStats(loaded));
                         setInitialSave(result.data);
+                        setLastKnownUpdatedAt(result.updatedAt);
                         setBattleMessage(result.battleMessage ?? "");
                         return;
                     }
@@ -100,7 +105,8 @@ export function useHomelessHero(mode: string | null) {
                         setInitialSave(result.backupData);
                         setBattleMessage(result.backupBattleMessage ?? "");
 
-                        await recoverGame(token);
+                        const recovered = await recoverGame(token);
+                        setLastKnownUpdatedAt(recovered?.updatedAt ?? result.updatedAt);
                         console.warn("Recovered from backup save.");
 
                         return;
@@ -112,6 +118,7 @@ export function useHomelessHero(mode: string | null) {
                 const newPlayer = createNewPlayer(dataFor.dataFor.home);
                 setMyPlayer(newPlayer);
                 setInitialSave(null);
+                setLastKnownUpdatedAt(null);
                 setBattleMessage("");
             })
             .catch(err => {
@@ -122,6 +129,7 @@ export function useHomelessHero(mode: string | null) {
                 const newPlayer = createNewPlayer(dataFor.dataFor.home);
                 setMyPlayer(newPlayer);
                 setInitialSave(null);
+                setLastKnownUpdatedAt(null);
                 setBattleMessage("");
             })
             .finally(() => {
@@ -134,6 +142,10 @@ export function useHomelessHero(mode: string | null) {
             cancelled = true;
         };
     }, [token, mode]);
+
+    useEffect(() => {
+        lastKnownUpdatedAtRef.current = lastKnownUpdatedAt;
+    }, [lastKnownUpdatedAt]);
 
     // --- base placeholders matching your Angular defaults ---
     const initialXP = 66;
@@ -255,7 +267,7 @@ export function useHomelessHero(mode: string | null) {
     useEffect(() => {
         if (!myPlayer) return;
 
-        if (myPlayer.stats.level >= 5) {
+        if (myPlayer.stats.level >= 25) {
             endGame();
         }
     }, [myPlayer?.stats.level]);
@@ -406,7 +418,7 @@ export function useHomelessHero(mode: string | null) {
     const [canFight, setCanFight] = useState<boolean>(() => !!activeEnemy);
     const [turn, setTurn] = useState<"player" | "enemy">("player")
     const [isHydrated, setIsHydrated] = useState(false);
-    const [hasInitialized] = useState(false);
+    const [hasInitialized, setHasInitialized] = useState(false);
     type SaveStatus = "idle" | "saving" | "saved" | "error";
 
     const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
@@ -415,6 +427,12 @@ export function useHomelessHero(mode: string | null) {
     useEffect(() => {
         setIsHydrated(true);
     }, []);
+
+    useEffect(() => {
+        if (!isLoadedFromServer || !myPlayer) return;
+
+        setHasInitialized(true);
+    }, [isLoadedFromServer, myPlayer]);
 
     useEffect(() => {
 
@@ -509,11 +527,12 @@ export function useHomelessHero(mode: string | null) {
 
 
         try {
-            await saveGame({
+            const response = await saveGame({
                 data,
                 battleMessage,
-                clientUpdatedAt: new Date().toISOString()
+                lastKnownUpdatedAt: lastKnownUpdatedAtRef.current
             }, token);
+            setLastKnownUpdatedAt(response.updatedAt);
         } catch (err) {
             console.error("SAVE FAILED", err);
             setSaveStatus("error");
@@ -529,14 +548,24 @@ export function useHomelessHero(mode: string | null) {
     }, [activeEnemy?.id, isInDungeon]);
 
 
+    const isFirstTrackedSave = useRef(true);
+
     useEffect(() => {
         if (!isHydrated || !myPlayer || !token || !hasInitialized) return;
 
-        setSaveStatus("saving");
-        save();
+        if (isFirstTrackedSave.current) {
+            isFirstTrackedSave.current = false;
+            return;
+        }
 
-        const t = setTimeout(() => setSaveStatus("idle"), 400);
-        return () => clearTimeout(t);
+        const saveTimer = setTimeout(() => {
+            setSaveStatus("saving");
+            save();
+
+            setTimeout(() => setSaveStatus("idle"), 400);
+        }, AUTOSAVE_DELAY_MS);
+
+        return () => clearTimeout(saveTimer);
     }, [
         isHydrated,
         currentLocation.id,
@@ -545,27 +574,10 @@ export function useHomelessHero(mode: string | null) {
         myPlayer?.stats.experiencePoints,
         myPlayer?.weaponItemId,
         myPlayer?.wearableItemId,
+        token,
+        hasInitialized,
         save,
     ]);
-
-    const isFirstRender = useRef(true);
-
-    useAutosave(() => {
-        if (!isHydrated) return;
-        if (!myPlayer) return;
-        if (!token) return;
-        if (!hasInitialized) return;
-
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
-            return;
-        }
-
-        setSaveStatus("saving");
-        save();
-
-        setTimeout(() => setSaveStatus("idle"), 400);
-    }, 1200);
 
 
     // --- enemy snapshot for fluctuating enemies ---

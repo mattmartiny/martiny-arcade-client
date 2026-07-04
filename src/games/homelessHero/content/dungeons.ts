@@ -986,7 +986,7 @@ export const fh1B1: dungeonRoom = {
 };
 
 export const fhfl1: dungeonFloor = {
-  dungeon: neighborsCellar,
+  dungeon: fratHouseDung,
   floor: 1,
   rooms: 2,
   dungeonRooms: [fh1A1, fh1B1,],
@@ -1021,16 +1021,259 @@ export const fh1B2: dungeonRoom = {
 }
 
 export const fhfl2: dungeonFloor = {
-  dungeon: neighborsCellar,
-  floor: 1,
+  dungeon: fratHouseDung,
+  floor: 2,
   rooms: 2,
   dungeonRooms: [fh1A2, fh1B2,],
 };
-fratHouseDung.dungeonFloors = [fhfl1, fhfl1]
+fratHouseDung.dungeonFloors = [fhfl1, fhfl2]
 
 fh1A1.toTheNorth = fh1B1;
-fh1B1.toTheSouth =fh1A1;
-fh1B1.itemThatsRequired={details: i.fratKey, quantity: 1},
+fh1B1.toTheSouth = fh1A1;
+fh1B1.itemThatsRequired = { details: i.fratKey, quantity: 1 },
 fh1B1.toStairsUp = fh1A2;
 fh1A2.toTheNorth = fh1B2;
 fh1B2.toTheSouth = fh1A1;
+
+
+export const catacombsDung: dungeon = {
+  id: 10450,
+  name: 'Catacombs',
+  floors: 3,
+  insideDungeon: false,
+};
+
+export const ctb1A1: dungeonRoom = {
+  roomID: '1A1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 1,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: true,
+  exitLocation: l.catacombs,
+};
+
+export const ctb2A1: dungeonRoom = {
+  roomID: '2A1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 2,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb2B1: dungeonRoom = {
+  roomID: '2B1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 3,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb3B1: dungeonRoom = {
+  roomID: '3B1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 4,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb3C1: dungeonRoom = {
+  roomID: '3C1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 5,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb4C1: dungeonRoom = {
+  roomID: '4C1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 6,
+  enemyNumber: 4,
+  hasEnemy: true,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb4D1: dungeonRoom = {
+  roomID: '4D1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 7,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb5D1: dungeonRoom = {
+  roomID: '5D1',
+  dungeon: catacombsDung,
+  floor: 1,
+  roomNumber: 8,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: true,
+  exit: false,
+};
+
+export const ctbfl1: dungeonFloor = {
+  dungeon: catacombsDung,
+  floor: 1,
+  rooms: 8,
+  dungeonRooms: [ctb1A1, ctb2A1, ctb2B1, ctb3B1, ctb3C1, ctb4C1, ctb4D1, ctb5D1],
+};
+
+export const ctb1AB1: dungeonRoom = {
+  roomID: '1AB1',
+  dungeon: catacombsDung,
+  floor: 2,
+  roomNumber: 1,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: true,
+  stairsDown: false,
+  exit: false,
+};
+
+
+export const ctb1BB1: dungeonRoom = {
+  roomID: '1BB1',
+  dungeon: catacombsDung,
+  floor: 2,
+  roomNumber: 2,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: true,
+  exit: false,
+};
+
+export const ctb2BB1: dungeonRoom = {
+  roomID: '2BB1',
+  dungeon: catacombsDung,
+  floor: 2,
+  roomNumber: 3,
+  enemyNumber: 4,
+  hasEnemy: true,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const ctb2CB1: dungeonRoom = {
+  roomID: '2CB1',
+  dungeon: catacombsDung,
+  floor: 2,
+  roomNumber: 4,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: true,
+  exit: false,
+};
+
+export const ctbfl2: dungeonFloor = {
+  dungeon: catacombsDung,
+  floor: 2,
+  rooms: 4,
+  dungeonRooms: [ctb1AB1, ctb1BB1, ctb2BB1, ctb2CB1],
+};
+
+export const ctb1AB2: dungeonRoom = {
+  roomID: '1AB2',
+  dungeon: catacombsDung,
+  floor: 3,
+  roomNumber: 1,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: true,
+  stairsDown: false,
+  exit: true,
+  exitLocation: l.exitCave,
+};
+
+export const ctbfl3: dungeonFloor = {
+  dungeon: catacombsDung,
+  floor: 3,
+  rooms: 1,
+  dungeonRooms: [ctb1AB2],
+};
+
+
+
+catacombsDung.dungeonFloors = [ctbfl1, ctbfl2, ctbfl3];
+
+ctb1A1.toTheEast = ctb2A1;
+ctb2A1.toTheWest = ctb1A1;
+ctb2A1.toTheSouth = ctb2B1;
+ctb2B1.toTheNorth = ctb2A1;
+ctb2B1.toTheSouth = ctb3B1;
+ctb3B1.toTheNorth = ctb2B1;
+ctb3B1.toTheEast = ctb3C1;
+ctb3C1.toTheWest = ctb3B1;
+ctb3C1.toTheSouth = ctb4C1;
+ctb4C1.toTheNorth = ctb3C1;
+ctb4C1.toTheEast = ctb4D1;
+ctb4D1.toTheWest = ctb4C1;
+ctb4D1.toTheSouth = ctb5D1;
+ctb5D1.toTheNorth = ctb4D1;
+ctb5D1.toStairsDown = ctb1AB1;
+ctb1AB1.toStairsUp = ctb5D1;
+ctb1AB1.toTheSouth = ctb1BB1;
+ctb1BB1.toTheNorth = ctb1AB1;
+ctb1BB1.toTheEast = ctb2BB1;
+ctb2BB1.toTheWest = ctb1BB1;
+ctb2BB1.toTheSouth = ctb2CB1;
+ctb2CB1.toTheNorth = ctb2BB1;
+ctb2CB1.toStairsDown = ctb1AB2;
+ctb1AB2.toStairsUp = ctb2CB1;

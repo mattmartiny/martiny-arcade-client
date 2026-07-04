@@ -21,6 +21,6 @@ export const SanjayShop: shop = {
 
   export const glizzyShop: shop = {
     id: 6003,
-    shopName: "Gator's Glorious Glizzy's",
+    shopName: "Gator's Glorious Glizzys",
     shopInventory: [i.glizzy, i.mustard],
   }

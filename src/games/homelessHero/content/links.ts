@@ -34,6 +34,14 @@ export const laurConv: completeDialog[] = [
 
 ]
 
+export const georgeConvo: completeDialog[] = [
+    {NPCDetails: n.george, dialog: n.GeorgeConvo}
+]
+
+export const kendraConvo: completeDialog[] = [
+    {NPCDetails: n.Kendra, dialog: n.KendraConvo}
+]   
+
 //-------------------------Locations---------------------
 l.home.toTheNorth = 1002;
 l.home.toTheEast = 1003;
@@ -43,6 +51,9 @@ l.hussieHouse.toTheNorth = 1001;
 l.gasStation.toTheEast = 1001;
 l.park.toTheWest = 1006;
 l.gasStation.toTheNorth = 1006;
+l.gasStation.toTheWest = 1052;
+l.busStation2.toTheEast = 1004;
+l.busStation2.toTheSouth = 1041;
 l.womensShelter.toTheEast = 1002;
 l.womensShelter.toTheSouth = 1004;
 l.park.toTheSouth = 1001;
@@ -101,21 +112,46 @@ l.proShop.toTheEast = 1032;
 l.proShop.toTheSouth = 1031;
 l.pool.toTheWest = 1030;
 l.golfCourse.toTheNorth = 1030;
-l.golfCourse.toTheSouth = 1033,
-l.broBar.toTheNorth = 1031,
-l.broBar.toTheEast = 1034,
-l.fratHouse.toTheWest = 1033,
-l.fratHouse.dungeonThatsHere = d.fratHouseDung
-l.fratHouse.toTheSouth = 1035,
-l.calfCreek.toTheNorth = 1034,
-l.calfCreek.toTheSouth = 1036,
-l.freightYard.toTheNorth = 1035,
+l.golfCourse.toTheSouth = 1033;
+l.broBar.toTheNorth = 1031;
+l.broBar.toTheEast = 1034;
+l.fratHouse.toTheWest = 1033;
+l.fratHouse.dungeonThatsHere = d.fratHouseDung;
+l.fratHouse.toTheSouth = 1035;
+l.calfCreek.toTheNorth = 1034;
+l.calfCreek.toTheSouth = 1036;
+l.freightYard.toTheNorth = 1035;
 l.freightYard.toTheWest= 1037,
 l.hoboVillage.toTheEast = 1036,
 l.hoboVillage.toTheWest = 1038,
 l.shadyStreet.toTheEast = 1037,
 l.shadyStreet.toTheSouth = 1039,
 l.warehouse.toTheNorth = 1038,
+l.warehouse.toTheWest = 1040,
+l.factory.toTheEast = 1039,
+l.factory.toTheWest = 1041,
+l.busStation.toTheNorth = 1052,
+l.busStation.toTheSouth = 1042;
+l.busStation.toTheEast = 1040;
+l.interstateBridge.toTheNorth = 1041;
+l.interstateBridge.toTheSouth = 1043;
+l.hotDogStand.toTheNorth = 1042;
+l.hotDogStand.toTheEast = 1044;
+l.memorialGarden.toTheWest = 1043;
+l.memorialGarden.toTheSouth = 1045;
+l.cementary.toTheNorth = 1044;
+l.cementary.toTheEast = 1046;
+l.catacombs.toTheWest= 1045;
+l.catacombs.dungeonThatsHere = d.catacombsDung;
+l.exitCave.dungeonThatsHere = d.catacombsDung;
+l.exitCave.toTheEast = 1048;
+l.westOakMall.toTheWest = 1047;
+l.westOakMall.toTheSouth = 1049;
+l.pasture.toTheNorth = 1048;
+l.pasture.toTheEast = 1050;
+l.dirtRoad.toTheWest = 1049;
+l.dirtRoad.toTheEast = 1051;
+l.crashSite.toTheWest = 1050;
 
 //-------------------------Enemies-----------------
 l.neighbors.EnemyHere = Object.freeze([e.burgler]);
@@ -166,11 +202,20 @@ d.cbr2C1.Dialog = infConvo;
 l.broBar.NPCHere = n.Lauren;
 l.broBar.Dialog = laurConv;
 
+l.cementary.NPCHere = n.george;
+l.cementary.Dialog = georgeConvo;
+
+//shopping mall dungeon npcs (quests for ultimate items)
+
+
 
 //-------shop npc----------
 l.gasStation.NPCHere = n.Sanjay;
 l.stuffleStop.NPCHere =  n.Ryan;
 l.proShop.NPCHere = n.Chandler;
+l.hotDogStand.NPCHere = n.Diddy
+
+
 
 //-----------------regular npc--------------- ----
 l.boat.NPCHere = n.steve;

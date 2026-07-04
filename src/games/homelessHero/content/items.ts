@@ -455,42 +455,42 @@ export let ramen: item = {
   wearable: false,
 }
 
-export let glizzy: item ={
-id: 3040,
-name : 'Glizzy',
-price: 50,
-equippable: false,
-healing: true,
-healingStats: { amountHealed: 20},
-wearable: false,
+export let glizzy: item = {
+  id: 3040,
+  name: 'Glizzy',
+  price: 50,
+  equippable: false,
+  healing: true,
+  healingStats: { amountHealed: 20 },
+  wearable: false,
 }
 
-export let mustard: item={
-id: 3041,
-name: 'MUSTAAAARD',
-price: 40,
-equippable: false,
-healing: true,
-healingStats:{amountHealed:2},
-wearable: false,
+export let mustard: item = {
+  id: 3041,
+  name: 'MUSTAAAARD',
+  price: 40,
+  equippable: false,
+  healing: true,
+  healingStats: { amountHealed: 2 },
+  wearable: false,
 }
 
-export let pimpChain:item={
-id: 3042,
-name: 'Pimp Chain',
-price: 5,
-equippable: false,
-wearable: false,
-healing: false,
+export let pimpChain: item = {
+  id: 3042,
+  name: 'Pimp Chain',
+  price: 5,
+  equippable: false,
+  wearable: false,
+  healing: false,
 }
 
-export let gangstaHat:item={
-id:3043,
-name: 'Gangssta Hat',
-price: 85,
-equippable: false,
-wearable: true,
-healing: false,
+export let gangstaHat: item = {
+  id: 3043,
+  name: 'Gangsta Hat',
+  price: 85,
+  equippable: false,
+  wearable: true,
+  healing: false,
   wearableStats: {
     itemName: 'Gangsta Hat',
     attackBonus: 0,
@@ -498,12 +498,75 @@ healing: false,
     speedBonus: 1,
     equipped: false,
   },
-
-
-
-
 }
 
+
+export let catacombsKey: item = {
+  id: 3044,
+  name: 'Catacombs Key',
+  price: 0,
+  equippable: false,
+  wearable: false,
+  healing: false,
+}
+
+export let fancyPants: item = {
+  id: 3045,
+  name: 'Fancy Pants',  
+  price: 0,
+  equippable: false,  
+  wearable: true,
+  healing: false,
+  wearableStats: {
+    itemName: 'Fancy Pants',
+    attackBonus: 1,
+    defenseBonus: 14,
+    speedBonus: 5,
+    equipped: false,
+  },
+};
+
+export let wuhanSoup: item = {
+  id: 3046,
+  name: 'Wuhan Soup',
+  price: 30,
+  equippable: false,
+  healing: true,
+  healingStats: { amountHealed: 18 },
+  wearable: false,
+}
+
+export let prisonShank: item = {
+  id: 3047,
+  name: 'Prison Shank',
+  price: 75,
+  equippable: true,
+  healing: false,
+  wearable: false,  
+  equippableStats: {
+    itemName: 'Prison Shank',
+    attackBonus: 14,
+    defenseBonus: -1,
+    speedBonus: 2,
+    equipped: false,
+  },
+};
+
+export let furBoots: item = {
+  id: 3048,
+  name: 'Boots w/ the fur',
+  price: 80,
+  equippable: false,
+  healing: false,
+  wearable: true,
+  wearableStats: {
+    itemName: 'Boots w/ the fur',
+    attackBonus: 0,
+    defenseBonus: 11,
+    speedBonus: 4,
+    equipped: false,
+  },
+};
 
 export const allItems: item[] = [
   stick,
@@ -547,6 +610,12 @@ export const allItems: item[] = [
   glizzy,
   mustard,
   gangstaHat,
+  pimpChain,
+  catacombsKey,
+  fancyPants,
+  wuhanSoup,
+  prisonShank,
+  furBoots,
 ];
 
 export const itemMap: Record<number, item> =

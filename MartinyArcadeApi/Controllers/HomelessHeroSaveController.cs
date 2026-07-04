@@ -63,7 +63,8 @@ public class HomelessHeroSaveController : ControllerBase
             data = dto,
             backupData = backupDto,
             battleMessage = save.BattleMessage,
-            backupBattleMessage = save.BackupBattleMessage
+            backupBattleMessage = save.BackupBattleMessage,
+            updatedAt = save.UpdatedAt
         });
     }
 
@@ -85,7 +86,10 @@ public class HomelessHeroSaveController : ControllerBase
 
         _context.SaveChanges();
 
-        return Ok();
+        return Ok(new
+        {
+            updatedAt = save.UpdatedAt
+        });
     }
 
 
@@ -96,7 +100,7 @@ public class HomelessHeroSaveController : ControllerBase
     {
         public object? Data { get; set; }
         public string? BattleMessage { get; set; }
-        public DateTime? ClientUpdatedAt { get; set; }
+        public DateTime? LastKnownUpdatedAt { get; set; }
 
     }
 
@@ -114,9 +118,9 @@ public class HomelessHeroSaveController : ControllerBase
             .FirstOrDefault(s => s.UserId == userId && s.GameKey == "homeless-hero");
 
         // 🚨 BLOCK stale saves
-        if (existing != null && request.ClientUpdatedAt.HasValue)
+        if (existing != null && request.LastKnownUpdatedAt.HasValue)
         {
-            if (request.ClientUpdatedAt < existing.UpdatedAt)
+            if (request.LastKnownUpdatedAt.Value < existing.UpdatedAt)
             {
                 return Conflict("Stale save rejected"); // 🔥 KEY LINE
             }
@@ -148,6 +152,15 @@ public class HomelessHeroSaveController : ControllerBase
 
         _context.SaveChanges();
 
-        return Ok();
+        var updatedAt = existing?.UpdatedAt
+            ?? _context.HomelessHeroSaves
+                .Where(s => s.UserId == userId && s.GameKey == "homeless-hero")
+                .Select(s => s.UpdatedAt)
+                .First();
+
+        return Ok(new
+        {
+            updatedAt
+        });
     }
 }

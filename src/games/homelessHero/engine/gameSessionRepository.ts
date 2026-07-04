@@ -3,7 +3,7 @@ export async function submitGameSession(
     score: number,
     xpEarned: number
 ) {
-    const res = await fetch("/api/gamesession", {
+    const res = await fetch("/api/game/session", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

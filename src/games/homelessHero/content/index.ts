@@ -5,5 +5,4 @@ export * from "./dungeons";
 export * from "./quests";
 export * from "./npcs";
 export * from "./shops";
-//export * from "./dialogs";
 export * from "./links";
