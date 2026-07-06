@@ -9,7 +9,7 @@ export let beatSomePimps: quest = {
   rewardGold: 25,
   questCompletionItem: [{ details: i.pimpChain, quantity: 5 }
   ],
-  rewardItem:{details: i.pimpCane, quantity: 3},
+  rewardItem: { details: i.pimpCane, quantity: 3 },
   message: "Congrats! You've helped Cristie and got the pimp chains!",
 };
 export let PAAARTY: quest = {
@@ -21,7 +21,7 @@ export let PAAARTY: quest = {
   questCompletionItem: [
     { details: i.partyHat, quantity: 1 },
   ],
-  rewardItem: {details: i.partyHat, quantity:1},
+  rewardItem: { details: i.partyHat, quantity: 1 },
   message: "Congrats! You've gotten the party hat and showed it off!",
 };
 export let Mobbin: quest = {
@@ -103,7 +103,7 @@ export let toolshop: quest = {
 
 export let mustardQuest: quest = {
   id: 4008,
-  name: `Quest for Mustard`,      
+  name: `Quest for Mustard`,
   description: `Get the mustard for Mr. George.`,
   rewardXP: 10,
   rewardGold: 5,
@@ -123,10 +123,40 @@ export let fancyPantsQuest: quest = {
   rewardGold: 100,
   rewardItem: { details: i.fancyPants, quantity: 1 },
   questCompletionItem: [
-    { details: i.fancyPants, quantity: 1 }, { details: i.SteelToeBoots, quantity: 1 }, { details: i.gangstaHat, quantity: 1 }, { details: i.merFlippers, quantity: 1 }, { details: i.partyHat, quantity: 1 }, { details:i.trenchCoat, quantity: 1 }, { details:i.purpleDong, quantity: 1 }, { details:i.shoes, quantity: 1 }
+    { details: i.SteelToeBoots, quantity: 1 },
+    { details: i.gangstaHat, quantity: 1 },
+    { details: i.merFlippers, quantity: 1 },
+    { details: i.partyHat, quantity: 1 },
+    { details: i.trenchCoat, quantity: 1 },
+    { details: i.purpleDong, quantity: 1 },
+    { details: i.shoes, quantity: 1 },
+    { details: i.furBoots, quantity: 1 },
   ],
   message: `Congrats! You've gotten the ultimate wearable!`
 };
+
+export let ultimateWeapon: quest = {
+  id: 4010,
+  name: `The Ultimate Weapon`,
+  description: `Get every weapon and give to Langston`,
+  rewardXP: 100,
+  rewardGold: 100,
+  rewardItem: { details: i.jgrntSledge, quantity: 1 },
+  questCompletionItem: [
+    { details: i.stick, quantity: 1 },
+    { details: i.pimpCane, quantity: 1 },
+    { details: i.Spear, quantity: 1 },
+    { details: i.mallet, quantity: 1 },
+    { details: i.heavyBat, quantity: 1 },
+    { details: i.woodenWood, quantity: 1 },
+    { details: i.bigBertha, quantity: 1 },
+    { details: i.prisonShank, quantity: 1 },
+  ],
+  message: `Congrats! You've gotten the ultimate weapon!`
+};
+
+
+
 
 export const quests: quest[] = [
   beatSomePimps,
@@ -139,7 +169,7 @@ export const quests: quest[] = [
   toolshop,
   mustardQuest,
   fancyPantsQuest,
-
+  ultimateWeapon,
 
 
 ] 

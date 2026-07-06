@@ -15,7 +15,7 @@ export const SanjayShop: shop = {
   export const proShopStore: shop = {
     id: 6002,
     shopName: "Mission Bluffs Country Club Pro Shop",
-    shopInventory: [i.woodenWood],
+    shopInventory: [i.woodenWood, i.brew]
 
   }
 

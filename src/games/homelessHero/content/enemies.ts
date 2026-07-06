@@ -384,3 +384,36 @@ export const mtntBat: EnemyTemplate = Object.freeze({
     {details: i.wuhanSoup, chance: 450, isDefaultItem: true}
   ]
 })
+export const mansionGuard: EnemyTemplate = Object.freeze({
+  id: 2511,
+  name: "Mansion Guard",
+  description: "Protects the CEO's Mansion",
+  imgPath: 'mansionGuard',
+  fluctuating: true,
+  maxHp: 10,
+  attack: 12,
+  defense: 8,
+  speed: 3,
+  rewardXP: 45,
+  rewardGold: 40,
+  lootTable: [
+    { details: i.mansionKey, chance: 750, isDefaultItem: true },
+  ]
+});
+
+export const jonathan: EnemyTemplate = Object.freeze({
+  id: 2512,
+  name: "CEO Jonathan",
+  description: "Your former right hand man",
+  imgPath: 'jonathan',
+  fluctuating: true,
+  maxHp: 7,
+  attack: 15,
+  defense: 13,
+  speed: 7,
+  rewardXP: 100,
+  rewardGold: 150,
+  lootTable: [
+    { details: i.companyKey, chance: 1000, isDefaultItem: true },
+  ]
+})

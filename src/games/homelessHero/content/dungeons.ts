@@ -899,6 +899,7 @@ export const cbrfl4: dungeonFloor = {
   rooms: 2,
   dungeonRooms: [cbr1A4, cbr2A4],
 };
+
 casinodung.dungeonFloors = [cbrfl2, cbrfl1, cbrfl3, cbrfl4];
 cbr1A2.toTheSouth = cbr1B2;
 cbr1B2.toTheNorth = cbr1A2;
@@ -1249,10 +1250,7 @@ export const ctbfl3: dungeonFloor = {
   dungeonRooms: [ctb1AB2],
 };
 
-
-
 catacombsDung.dungeonFloors = [ctbfl1, ctbfl2, ctbfl3];
-
 ctb1A1.toTheEast = ctb2A1;
 ctb2A1.toTheWest = ctb1A1;
 ctb2A1.toTheSouth = ctb2B1;
@@ -1277,3 +1275,538 @@ ctb2BB1.toTheSouth = ctb2CB1;
 ctb2CB1.toTheNorth = ctb2BB1;
 ctb2CB1.toStairsDown = ctb1AB2;
 ctb1AB2.toStairsUp = ctb2CB1;
+
+
+export const Mall: dungeon = {
+  id: 10550,
+  name: 'West OakMall',
+  floors: 1,
+  insideDungeon: false,
+};
+
+export const mall1A1: dungeonRoom = {
+  roomID: '1A1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 1,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: true,
+  exitLocation: l.westOakMall,
+};
+
+export const mall2A1: dungeonRoom = {
+  roomID: '2A1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 2,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const mall3A1: dungeonRoom = {
+  roomID: '3A1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 3,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const mall3B1: dungeonRoom = {
+  roomID: '3B1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 4,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const mall3C1: dungeonRoom = {
+  roomID: '3C1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 5,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const mall2C1: dungeonRoom = {
+  roomID: '2C1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 6,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const mall1C1: dungeonRoom = {
+  roomID: '1C1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 7,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+export const mall1B1: dungeonRoom = {
+  roomID: '1B1',
+  dungeon: Mall,
+  floor: 1,
+  roomNumber: 8,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const mallfl1: dungeonFloor = {
+  dungeon: Mall,
+  floor: 1,
+  rooms: 8,
+  dungeonRooms: [mall1A1, mall2A1, mall3A1, mall3B1, mall3C1, mall2C1, mall1C1, mall1B1],
+};
+
+Mall.dungeonFloors = [mallfl1];
+
+mall1A1.toTheEast = mall2A1;
+mall2A1.toTheWest = mall1A1;
+mall2A1.toTheEast = mall3A1;
+mall3A1.toTheWest = mall2A1;
+mall3A1.toTheSouth = mall3B1;
+mall3B1.toTheNorth = mall3A1;
+mall3B1.toTheSouth = mall3C1;
+mall3C1.toTheNorth = mall3B1;
+mall3C1.toTheWest =  mall2C1;
+mall2C1.toTheEast = mall3C1;
+mall2C1.toTheWest = mall1C1;
+mall1C1.toTheEast = mall2C1;
+mall1C1.toTheNorth = mall1B1;
+mall1B1.toTheSouth = mall1C1;
+mall1B1.toTheNorth = mall1A1
+
+export const Mansion: dungeon = {
+  id: 10650,
+  name: 'Mansion',
+  floors: 1,
+  insideDungeon: false,
+};
+
+
+export const man1A1: dungeonRoom = {
+  roomID: '1A1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 1,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: true,
+  exitLocation: l.CEOManor,
+};
+
+export const man1B1: dungeonRoom = {
+  roomID: '1B1',
+  dungeon: Mansion, 
+  floor: 1,
+  roomNumber: 2,
+  enemyNumber: 0,
+  hasEnemy: false,
+  hasEntered: false,
+  itemRequired: true,
+    itemThatsRequired: { details: i.mansionKey, quantity: 1 },
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+const man2A1: dungeonRoom = {
+  roomID: '2A1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 3,
+  enemyNumber: 0,
+  hasEnemy: false,  
+  itemRequired: true,
+  itemThatsRequired: { details: i.mansionKey, quantity: 1 },
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man2B1: dungeonRoom = {
+  roomID: '2B1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 4,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired:false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+
+export const man3B1: dungeonRoom = {
+  roomID: '3B1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 5,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+export const  man3C1: dungeonRoom = {
+  roomID: '3C1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 6,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man3D1: dungeonRoom = {
+  roomID: '3D1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 7,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man2D1: dungeonRoom = {
+  roomID: '2D1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 8,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+export const man2E1: dungeonRoom = {
+  roomID: '2E1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 9,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};  
+
+export const man1D1: dungeonRoom = {
+  roomID: '1D1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 10,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man1E1: dungeonRoom = {
+  roomID: '1E1',
+  dungeon: Mansion, 
+  floor: 1,
+  roomNumber: 11,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man4B1 : dungeonRoom = {
+  roomID: '4B1',
+  dungeon: Mansion, 
+  floor: 1,
+  roomNumber: 12,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+export const man4C1 : dungeonRoom = {
+  roomID: '4C1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 13,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man4D1 : dungeonRoom = {
+  roomID: '4D1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 14,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man5B1 : dungeonRoom = {
+  roomID: '5B1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 15,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+
+export const man5C1 : dungeonRoom = {
+  roomID: '5C1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 16,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man5D1 : dungeonRoom = {
+  roomID: '5D1',
+  dungeon: Mansion, 
+  floor: 1,
+  roomNumber: 17,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man6B1 : dungeonRoom = {
+  roomID: '6B1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 18,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man6C1 : dungeonRoom = {
+  roomID: '6C1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 19,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+};
+
+export const man6D1 : dungeonRoom={
+   roomID: '6D1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 20,
+  enemyNumber: 0,
+  hasEnemy: false,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+
+}
+
+export const man7C1 : dungeonRoom = {
+ roomID: '7C1',
+  dungeon: Mansion,
+  floor: 1,
+  roomNumber: 21,
+  enemyNumber: 1,
+  hasEnemy: true,
+  itemRequired: false,
+  hasEntered: false,
+  stairsUp: false,
+  stairsDown: false,
+  exit: false,
+
+
+
+
+
+}
+
+
+export const manfl1: dungeonFloor = {
+  dungeon: Mansion,
+  floor: 1,
+  rooms: 3,
+  dungeonRooms: [man1A1, man1B1, man2A1, man2B1, man3B1, man3C1, man3D1, man2D1, man2E1, man1D1, man1E1, man3B1, man3C1, man3D1, man4B1, man4C1, man4D1, man5B1, man5C1, man5D1, man6B1, man6C1, man6D1,man7C1
+  ],
+};
+
+
+Mansion.dungeonFloors = [manfl1];
+
+
+man1A1.toTheNorth =man2A1;
+man1A1.toTheEast = man1B1;
+man2A1.toTheSouth =man1A1;
+man2A1.toTheEast = man2B1;
+man1B1.toTheWest = man1A1;
+man1B1.toTheNorth = man2B1;
+man2B1.toTheSouth = man1B1;
+man2B1.toTheNorth = man3B1;
+man2B1.toTheWest = man2A1;
+man3B1.toTheSouth = man2B1;
+man3B1.toTheEast = man3C1;
+man3B1.toTheNorth = man4B1;
+man3C1.toTheWest = man3B1;
+man3C1.toTheEast = man3D1;
+man3C1.toTheNorth = man4C1;
+man3D1.toTheWest = man3C1;
+man3D1.toTheNorth = man4D1;
+man3D1.toTheSouth = man2D1;
+man2D1.toTheNorth = man3D1;
+man2D1.toTheEast = man2E1;
+man2D1.toTheSouth = man1D1;
+man2E1.toTheWest = man2D1;
+man2E1.toTheSouth= man1E1;
+man1E1.toTheNorth = man2E1;
+man1E1.toTheWest = man1D1;
+man1D1.toTheEast = man1E1;
+man1D1.toTheNorth = man2D1;
+man4B1.toTheSouth = man3B1;
+man4B1.toTheEast = man4C1;
+man4B1.toTheNorth = man5B1;
+man4C1.toTheWest = man4B1;
+man4C1.toTheEast = man4D1;
+man4C1.toTheSouth = man3C1;
+man4C1.toTheNorth = man5C1;
+man4D1.toTheWest = man4C1;
+man4D1.toTheSouth = man3D1;
+man4D1.toTheNorth = man5D1;
+man5B1.toTheSouth = man4B1;
+man5B1.toTheEast = man5C1;
+man5B1.toTheNorth = man6B1;
+man5C1.toTheWest = man5B1;
+man5C1.toTheEast = man5D1;
+man5C1.toTheSouth = man4C1;
+man5C1.toTheNorth = man6C1;
+man5D1.toTheWest = man5C1;
+man5D1.toTheSouth = man4D1;
+man5D1.toTheNorth = man6D1;
+man6B1.toTheSouth = man5B1;
+man6B1.toTheEast = man6C1;
+man6C1.toTheWest = man6B1;
+man6C1.toTheEast = man6D1;
+man6C1.toTheSouth = man5C1;
+man6C1.toTheNorth = man7C1;
+man6D1.toTheWest = man6C1;
+man6D1.toTheSouth = man5D1;
+man7C1.toTheSouth = man6C1;

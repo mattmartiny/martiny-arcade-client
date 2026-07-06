@@ -279,7 +279,7 @@ export const Kendra:NPC={
   id: 5020,
   name: 'Kendra',
   optionPerson: true,
-  initialMessage:"I developed the ultimate wearable! To get my Fancy Pants,  I need a copy of piece of every wearable you can find. It's you're choice, but these pants are FANCY!",
+  initialMessage:"I developed the ultimate wearable! To get my Fancy Pants,  I need a copy of piece of every wearable you can find. It's your choice, but these pants are FANCY!",
   questGiven: { details: q.fancyPantsQuest, hasQuest: false, isComplete: false, },
   endChatMessage: "I guess you'll just have to wait.",
   inProgressMessage: "I still need a copy of every wearable.",
@@ -290,4 +290,30 @@ export const KendraConvo: dialogReplies = {
   NPCDetails: Kendra,
   playerResponse1: "Sure I will help you out.",
   playerEndChatResponse: "I'm going to pass.",
+}
+
+export const Langston:NPC={
+  id: 5021,
+  name: 'Langston',
+  optionPerson: true,
+  initialMessage:"I developed the ultimate weapon! To get my Juggernaut Sledge,  I need a piece of every weapon you can find. It's your choice, but this sledge is the ultimate weapon.",
+  questGiven: { details: q.ultimateWeapon, hasQuest: false, isComplete: false, },
+  endChatMessage: "I guess you'll just have to wait.",
+  inProgressMessage: "I still need a piece of every weapon.",
+  Dialog1: " Bring me back a piece of every weapon and I'll give you my Juggernaut Sledge.",
+  afterMessage: "Enjoy that Juggernaut Sledge! It's powerful and destructive!",
+}
+
+export const LangstonConvo: dialogReplies = {
+  NPCDetails: Langston,
+  playerResponse1: "Sure I will help you out.",
+  playerEndChatResponse: "I'm going to pass.",
+}
+
+export const wiseGuy3:NPC={
+  id: 5022,
+  name: 'Wise Old Guy',
+  optionPerson: false,
+  initialMessage: "Does this look familiar? You were driving the vehicle that hit the tree. You were the leader of a large corporation.  Your 2nd in command cut your brake lines to take over the company. Little did he know, you survived.  Now, take back what's yours.",
+  endChatMessage: 'End',
 }

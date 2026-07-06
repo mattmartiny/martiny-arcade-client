@@ -637,9 +637,9 @@ export const memorialGarden: Location = {
   hasEntered: false,
 }
 
-export const cementary: Location = {
+export const cementery: Location = {
   id: 1045,
-  name: 'Cemetary',
+  name: 'Cemetery',
   description: 'Cemetery with a massive mausoleum.',
   imgPath: 'cemetery',
   hasEnemy: false,
@@ -752,7 +752,19 @@ export const busStation2: Location = {
   hasEntered: false,
 }
 
-
+export const CEOManor: Location = {
+  id: 1053,
+  name: "CEO Manor",
+  description: "The CEO's Mansion.",
+  imgPath: "ceoManor",
+  hasEnemy: true,
+  NPC: false,
+  enemyNumber: 1,
+  itemRequired: false,
+  dungeonHere: true,
+  shop: false,
+  hasEntered: false,
+}
 
 
 
@@ -803,7 +815,7 @@ export const Locs: Location[] = [
   interstateBridge,
   hotDogStand,
   memorialGarden,
-  cementary,
+  cementery,
   catacombs,
   exitCave,
   westOakMall,
@@ -811,5 +823,5 @@ export const Locs: Location[] = [
   dirtRoad,
   crashSite,
   busStation2,
-
+  CEOManor
 ];

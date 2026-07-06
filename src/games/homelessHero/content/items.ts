@@ -568,6 +568,42 @@ export let furBoots: item = {
   },
 };
 
+export let jgrntSledge: item = {
+  id: 3049,
+  name: 'JUGGERNAUT Sledge',
+  price: 0,
+  equippable: true,
+  healing: false,
+  wearable: false,
+  equippableStats: {
+    itemName: 'JUGGERNAUT Sledge',
+    attackBonus: 17,
+    defenseBonus: 1,
+    speedBonus: 2,
+    equipped: false,
+  },
+};
+
+export let companyKey: item = {
+  id: 3050,
+  name: 'Company Key',
+  price: 0,
+  equippable: false,
+  healing: false,
+  wearable: false,
+};
+
+
+export let mansionKey: item = { 
+  id: 3051,
+  name: 'Mansion Key',
+  price: 0,
+  equippable: false,
+  healing: false,
+  wearable: false,
+};
+
+
 export const allItems: item[] = [
   stick,
   sodaPop,
@@ -616,6 +652,9 @@ export const allItems: item[] = [
   wuhanSoup,
   prisonShank,
   furBoots,
+  jgrntSledge,
+  companyKey,
+  mansionKey,
 ];
 
 export const itemMap: Record<number, item> =

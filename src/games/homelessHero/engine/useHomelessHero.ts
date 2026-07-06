@@ -267,10 +267,10 @@ export function useHomelessHero(mode: string | null) {
     useEffect(() => {
         if (!myPlayer) return;
 
-        if (myPlayer.stats.level >= 25) {
+        if (myPlayer.inventory.some(i => i.details.id === 3050)) {
             endGame();
         }
-    }, [myPlayer?.stats.level]);
+    }, [myPlayer?.inventory]);
 
     useEffect(() => {
         if (!initialSave) return;

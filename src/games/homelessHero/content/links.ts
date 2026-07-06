@@ -42,6 +42,11 @@ export const kendraConvo: completeDialog[] = [
     {NPCDetails: n.Kendra, dialog: n.KendraConvo}
 ]   
 
+
+export const langstonConvo: completeDialog[] = [
+    {NPCDetails: n.Langston, dialog: n.LangstonConvo}
+]
+
 //-------------------------Locations---------------------
 l.home.toTheNorth = 1002;
 l.home.toTheEast = 1003;
@@ -139,20 +144,23 @@ l.hotDogStand.toTheNorth = 1042;
 l.hotDogStand.toTheEast = 1044;
 l.memorialGarden.toTheWest = 1043;
 l.memorialGarden.toTheSouth = 1045;
-l.cementary.toTheNorth = 1044;
-l.cementary.toTheEast = 1046;
+l.cementery.toTheNorth = 1044;
+l.cementery.toTheEast = 1046;
 l.catacombs.toTheWest= 1045;
 l.catacombs.dungeonThatsHere = d.catacombsDung;
 l.exitCave.dungeonThatsHere = d.catacombsDung;
 l.exitCave.toTheEast = 1048;
 l.westOakMall.toTheWest = 1047;
 l.westOakMall.toTheSouth = 1049;
+l.westOakMall.dungeonThatsHere = d.Mall;
 l.pasture.toTheNorth = 1048;
 l.pasture.toTheEast = 1050;
 l.dirtRoad.toTheWest = 1049;
 l.dirtRoad.toTheEast = 1051;
 l.crashSite.toTheWest = 1050;
-
+l.crashSite.toTheSouth = 1053;
+l.CEOManor.toTheNorth = 1051;
+l.CEOManor.dungeonThatsHere = d.Mansion
 //-------------------------Enemies-----------------
 l.neighbors.EnemyHere = Object.freeze([e.burgler]);
 l.park.EnemyHere = Object.freeze([e.rat]);
@@ -175,6 +183,10 @@ d.fh1B2.EnemyHere=Object.freeze([e.brotherChadwick]);
 l.freightYard.EnemyHere=Object.freeze([e.cat]);
 l.shadyStreet.EnemyHere=Object.freeze([e.drifter]);
 l.hoboVillage.EnemyHere=Object.freeze([e.hobo]);
+d.ctb4C1.EnemyHere=Object.freeze([e.mutantRat]);
+d.ctb2BB1.EnemyHere=Object.freeze([e.mtntBat]);
+l.CEOManor.EnemyHere=Object.freeze([e.mansionGuard]);
+d.man7C1.EnemyHere = Object.freeze([e.jonathan])
 
 //------------------ NPC quest Dialog-------------------------
 
@@ -202,12 +214,15 @@ d.cbr2C1.Dialog = infConvo;
 l.broBar.NPCHere = n.Lauren;
 l.broBar.Dialog = laurConv;
 
-l.cementary.NPCHere = n.george;
-l.cementary.Dialog = georgeConvo;
+l.cementery.NPCHere = n.george;
+l.cementery.Dialog = georgeConvo;
 
 //shopping mall dungeon npcs (quests for ultimate items)
+d.mall2A1.NPCHere = n.Kendra;
+d.mall2A1.Dialog = kendraConvo;
 
-
+d.mall3B1.NPCHere = n.Langston;
+d.mall3B1.Dialog = langstonConvo;
 
 //-------shop npc----------
 l.gasStation.NPCHere = n.Sanjay;
@@ -223,4 +238,5 @@ d.lhrm4A.NPCHere = n.wiseGuy;
 l.forestLot.NPCHere = n.trucker;
 l.mBFountain.NPCHere = n.Charles;
 l.calfCreek.NPCHere =  n.Millie;
-l.warehouse.NPCHere = n.Neff;
+l.warehouse.NPCHere = n.wiseGuy2;
+l.crashSite.NPCHere = n.wiseGuy3;
