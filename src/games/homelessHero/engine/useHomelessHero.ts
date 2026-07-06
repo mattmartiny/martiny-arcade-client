@@ -217,8 +217,8 @@ export function useHomelessHero(mode: string | null) {
 
 
     const [battleMessage, setBattleMessage] = useState<string>(() => {
-       
-        
+
+
 
         return `You wake up in a strange alley-way, unsure of anything. You don't remember your name, your occupation, or anyone around you. You have no idea where you live, and for all you know, you are homeless. Everything seems new.... and scary. <br /><br /> `;
     });
@@ -226,9 +226,12 @@ export function useHomelessHero(mode: string | null) {
 
     const [myPlayer, setMyPlayer] = useState<player | null>(null);
     const isReady = !!myPlayer && isLoadedFromServer;
+    const hasCompletedGameRef = useRef(false);
 
     const endGame = useCallback(async () => {
-        if (!myPlayer || !token) return;
+        if (!myPlayer || !token || hasCompletedGameRef.current) return;
+
+        hasCompletedGameRef.current = true;
 
         try {
             const score = calculateScore(myPlayer);
@@ -267,10 +270,18 @@ export function useHomelessHero(mode: string | null) {
     useEffect(() => {
         if (!myPlayer) return;
 
-        if (myPlayer.inventory.some(i => i.details.id === 3050)) {
-            endGame();
+        const hasGoalItem = myPlayer.inventory.some(i => i.details.id === 3050);
+
+        if (hasGoalItem && !myPlayer.gameComplete) {
+            setMyPlayer(prev => prev ? { ...prev, gameComplete: true } : prev);
         }
     }, [myPlayer?.inventory]);
+
+    useEffect(() => {
+        if (!myPlayer || !myPlayer.gameComplete) return;
+
+        endGame();
+    }, [myPlayer?.gameComplete, endGame]);
 
     useEffect(() => {
         if (!initialSave) return;
@@ -345,6 +356,7 @@ export function useHomelessHero(mode: string | null) {
             },
             inventory: [],
             questList: [],
+            gameComplete: false,
             weaponItemId: undefined,
             wearableItemId: undefined,
         });
@@ -354,7 +366,7 @@ export function useHomelessHero(mode: string | null) {
 
 
     // useEffect(() => {
-      
+
     // }, [battleMessage]);
 
     useEffect(() => {

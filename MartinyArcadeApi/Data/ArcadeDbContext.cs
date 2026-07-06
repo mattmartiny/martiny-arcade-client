@@ -26,6 +26,9 @@ public class ArcadeDbContext : DbContext
 
     public DbSet<Game> Games => Set<Game>();
     public DbSet<GameLeaderboardEntry> GameLeaderboard => Set<GameLeaderboardEntry>();
+    public DbSet<ForumCategory> ForumCategories => Set<ForumCategory>();
+    public DbSet<ForumThread> ForumThreads => Set<ForumThread>();
+    public DbSet<ForumReply> ForumReplies => Set<ForumReply>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -100,6 +103,84 @@ public class ArcadeDbContext : DbContext
         modelBuilder.Entity<HomelessHeroSave>()
     .HasIndex(s => new { s.UserId, s.GameKey })
     .IsUnique();
+
+        modelBuilder.Entity<ForumCategory>()
+            .HasIndex(c => c.Slug)
+            .IsUnique();
+
+        modelBuilder.Entity<ForumCategory>()
+            .HasData(
+                new ForumCategory
+                {
+                    ForumCategoryId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    Name = "General",
+                    Slug = "general",
+                    Description = "Open discussion for the community.",
+                    SortOrder = 1
+                },
+                new ForumCategory
+                {
+                    ForumCategoryId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    Name = "Games",
+                    Slug = "games",
+                    Description = "Talk about arcade games, strategies, and updates.",
+                    SortOrder = 2
+                },
+                new ForumCategory
+                {
+                    ForumCategoryId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                    Name = "Community",
+                    Slug = "community",
+                    Description = "Meet other players and share community news.",
+                    SortOrder = 3
+                },
+                new ForumCategory
+                {
+                    ForumCategoryId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                    Name = "Suggestions",
+                    Slug = "suggestions",
+                    Description = "Share ideas and feedback for the site.",
+                    SortOrder = 4
+                });
+
+        modelBuilder.Entity<ForumCategory>()
+            .HasMany(c => c.Threads)
+            .WithOne(t => t.Category)
+            .HasForeignKey(t => t.ForumCategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ForumThread>()
+            .HasIndex(t => new { t.ForumCategoryId, t.LastActivityAt });
+
+        modelBuilder.Entity<ForumThread>()
+            .HasIndex(t => new { t.ForumCategoryId, t.CreatedAt });
+
+        modelBuilder.Entity<ForumThread>()
+            .HasIndex(t => t.AuthorId);
+
+        modelBuilder.Entity<ForumThread>()
+            .HasOne(t => t.Author)
+            .WithMany()
+            .HasForeignKey(t => t.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ForumReply>()
+            .HasIndex(r => new { r.ForumThreadId, r.CreatedAt });
+
+        modelBuilder.Entity<ForumReply>()
+            .HasIndex(r => r.AuthorId);
+
+        modelBuilder.Entity<ForumReply>()
+            .HasOne(r => r.Thread)
+            .WithMany(t => t.Replies)
+            .HasForeignKey(r => r.ForumThreadId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ForumReply>()
+            .HasOne(r => r.Author)
+            .WithMany()
+            .HasForeignKey(r => r.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
 
     }

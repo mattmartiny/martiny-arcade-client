@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MartinyArcadeApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+133947a39ec8a689f60f48050ed7572ccac9c234")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d11de28d0399a87458eb11b771ca14fe9f4c212e")]
 [assembly: System.Reflection.AssemblyProductAttribute("MartinyArcadeApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MartinyArcadeApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

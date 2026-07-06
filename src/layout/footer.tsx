@@ -30,6 +30,7 @@ export default function Footer() {
         {/* Center */}
         <div className="footer-links">
           <Link to="/leaderboard">Leaderboard</Link>
+          <Link to="/forum">Forum</Link>
 
           <Link to="/games">Games</Link>
         </div>

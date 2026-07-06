@@ -25,7 +25,7 @@ export interface player {
   };
 
   inventory: inventoryItem[];
-
+  gameComplete: boolean;
 
   weaponItemId?: number;
   wearableItemId?: number;

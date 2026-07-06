@@ -6,7 +6,6 @@ import Logo from "../assets/ArcadeLogo.png"
 
 
 export default function smallHeader (){
-<NavLink to="/games">Games</NavLink>
   const { level, xp} = useArcadeProfile(); 
   const { user, logout } = useAuth();
   
@@ -16,6 +15,7 @@ export default function smallHeader (){
   <nav className="arcade-nav2">
     <NavLink to="/">Home</NavLink>
     <NavLink to="/games">Games</NavLink>
+    <NavLink to="/forum">Forum</NavLink>
     
     <NavLink to="/leaderboard">Global Leaderboard</NavLink>
   </nav>

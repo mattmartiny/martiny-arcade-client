@@ -16,10 +16,13 @@ export const Player: player = {
     baseAttack: 1,
     baseDefense: 1,
     baseSpeed: 1,
-    baseMaxHp: 9
+    baseMaxHp: 9,
+
   },
+ 
   inventory: [],
   questList: [],
+   gameComplete:false,
   weapon: { itemName: "N/A", attackBonus: 0, defenseBonus: 0, speedBonus: 0, equipped: false },
   wearable: { itemName: "N/A", attackBonus: 0, defenseBonus: 0, speedBonus: 0, equipped: false },
 };

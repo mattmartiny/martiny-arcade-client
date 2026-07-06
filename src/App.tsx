@@ -21,6 +21,9 @@ import RpgGame from "./games/homelessHero/RpgGame";
 import RpgMenu from "./games/homelessHero/RpgMenu"
 import ProtectedRoute from "./components/ProtectedRoute";
 import RpgResults from "./games/homelessHero/RpgResults";
+import ForumIndex from "./pages/Forum/ForumIndex";
+import ForumCategoryPage from "./pages/Forum/ForumCategoryPage";
+import ForumThreadPage from "./pages/Forum/ForumThreadPage";
 
 export default function App() {
   return (
@@ -42,6 +45,9 @@ export default function App() {
               <Route path="/rpg/results" element={<ProtectedRoute><RpgResults /></ProtectedRoute>} />
               <Route path="/war" element={<War />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/forum" element={<ForumIndex />} />
+              <Route path="/forum/:categorySlug" element={<ForumCategoryPage />} />
+              <Route path="/forum/threads/:threadId" element={<ForumThreadPage />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/profile/:username" element={<PublicProfile />} />

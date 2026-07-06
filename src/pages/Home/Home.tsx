@@ -31,6 +31,13 @@ export default function Home() {
           to="/war"
           accent="blue"
         />
+
+        <GameCard
+          title="Forum"
+          description="Read community posts and join the conversation."
+          to="/forum"
+          accent="green"
+        />
       </section>
     </div>
   );
