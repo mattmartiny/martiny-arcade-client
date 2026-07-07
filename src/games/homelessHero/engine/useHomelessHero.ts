@@ -228,23 +228,89 @@ export function useHomelessHero(mode: string | null) {
     const isReady = !!myPlayer && isLoadedFromServer;
     const hasCompletedGameRef = useRef(false);
 
+    const save = useCallback(async (playerOverride?: player) => {
+        if (!myPlayer || !token) return;
+        const p = playerOverride ?? myPlayer;
+
+        if (!p) {
+            console.warn("Prevented save: player is null");
+            return;
+        }
+
+        if (p.stats.level === 1 && p.stats.experiencePoints === 0) {
+            console.warn("Prevented save: looks like default player");
+            return;
+        }
+
+        const data: SaveGameDTO = {
+            version: 1,
+            player: {
+                stats: {
+                    gold: p.stats.gold,
+                    currentHp: p.stats.currentHp,
+                    maxHp: p.stats.MaxHp,
+                    experiencePoints: p.stats.experiencePoints,
+                    level: p.stats.level,
+                    deathCount: p.stats.deathCount,
+                },
+                baseStats: {
+                    baseAttack: p.stats.baseAttack,
+                    baseDefense: p.stats.baseDefense,
+                    baseSpeed: p.stats.baseSpeed,
+                    baseMaxHp: p.stats.baseMaxHp,
+                },
+                gameComplete: p.gameComplete,
+            },
+            inventory: {
+                items: p.inventory.map(i => ({
+                    itemId: i.details.id,
+                    quantity: i.quantity,
+                })),
+            },
+            equipment: {
+                weaponItemId: p.weaponItemId,
+                wearableItemId: p.wearableItemId,
+            },
+            quests: p.questList.map(q => ({
+                questId: q.id,
+                completed: q.isComplete,
+            })),
+            location: {
+                locationId: currentLocation.id,
+                dungeonRoomId: currentDungeonRoom?.roomID,
+            },
+        };
+
+        try {
+            const response = await saveGame({
+                data,
+                battleMessage,
+                lastKnownUpdatedAt: lastKnownUpdatedAtRef.current
+            }, token);
+            setLastKnownUpdatedAt(response.updatedAt);
+        } catch (err) {
+            console.error("SAVE FAILED", err);
+            setSaveStatus("error");
+        }
+    }, [myPlayer, battleMessage, token, currentLocation.id, currentDungeonRoom?.roomID]);
+
     const endGame = useCallback(async () => {
         if (!myPlayer || !token || hasCompletedGameRef.current) return;
 
         hasCompletedGameRef.current = true;
 
         try {
-            const score = calculateScore(myPlayer);
+            const completedPlayer = { ...myPlayer, gameComplete: true };
+            setMyPlayer(completedPlayer);
+            await save(completedPlayer);
 
+            const score = calculateScore(completedPlayer);
             console.log("FINAL SCORE:", score);
 
-            // 🎯 XP bonus
             const bonusXP = Math.floor(score / 50);
 
-            // 🏆 Submit leaderboard
             await submitGameSession(token, score, bonusXP);
 
-            // ⚡ Fire XP event (goes to your Arcade system)
             window.dispatchEvent(new CustomEvent("arcade:xp", {
                 detail: {
                     gameId: "homeless-hero",
@@ -253,18 +319,13 @@ export function useHomelessHero(mode: string | null) {
                 }
             }));
 
-            // 💾 Optional: clear save (since run is over)
-            // await deleteSave(token);
-
-            // 🚀 Go to results screen
             navigate("/rpg/results", {
                 state: { score }
             });
-
         } catch (err) {
             console.error("END GAME FAILED", err);
         }
-    }, [myPlayer, token, navigate]);
+    }, [myPlayer, token, navigate, save]);
 
 
     useEffect(() => {
@@ -481,77 +542,6 @@ export function useHomelessHero(mode: string | null) {
 
     const isFluctuatingEnemy = !!(activeEnemy && activeEnemy.fluctuating === true);
     const isLoading = !token || !isLoadedFromServer || !myPlayer;
-    const save = useCallback(async (playerOverride?: player) => {
-        if (!myPlayer || !token) return;
-        const p = playerOverride ?? myPlayer;
-
-        // 🚨 HARD GUARD
-        if (!p) {
-            console.warn("Prevented save: player is null");
-            return;
-        }
-
-        // 🚨 OPTIONAL: guard against default state
-        if (p.stats.level === 1 && p.stats.experiencePoints === 0) {
-            console.warn("Prevented save: looks like default player");
-            return;
-        }
-
-        const data: SaveGameDTO = {
-            version: 1,
-
-            player: {
-                stats: {
-                    gold: p.stats.gold,
-                    currentHp: p.stats.currentHp,
-                    maxHp: p.stats.MaxHp,
-                    experiencePoints: p.stats.experiencePoints,
-                    level: p.stats.level,
-                    deathCount: p.stats.deathCount,
-                },
-                baseStats: {
-                    baseAttack: p.stats.baseAttack,
-                    baseDefense: p.stats.baseDefense,
-                    baseSpeed: p.stats.baseSpeed,
-                    baseMaxHp: p.stats.baseMaxHp,
-                },
-            },
-            inventory: {
-                items: p.inventory.map(i => ({
-                    itemId: i.details.id,
-                    quantity: i.quantity,
-                })),
-            },
-            equipment: {
-                weaponItemId: p.weaponItemId,
-                wearableItemId: p.wearableItemId,
-            },
-            quests: p.questList.map(q => ({
-                questId: q.id,
-                completed: q.isComplete,
-            })),
-            location: {
-                locationId: currentLocation.id,
-                dungeonRoomId: currentDungeonRoom?.roomID,
-            },
-
-        };
-
-
-        try {
-            const response = await saveGame({
-                data,
-                battleMessage,
-                lastKnownUpdatedAt: lastKnownUpdatedAtRef.current
-            }, token);
-            setLastKnownUpdatedAt(response.updatedAt);
-        } catch (err) {
-            console.error("SAVE FAILED", err);
-            setSaveStatus("error");
-        }
-
-    }, [myPlayer, battleMessage, token, currentLocation.id,
-        currentDungeonRoom?.roomID]);
 
 
 

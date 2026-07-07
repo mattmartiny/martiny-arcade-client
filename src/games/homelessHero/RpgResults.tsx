@@ -15,16 +15,15 @@ export default function RpgResults() {
             height: "100vh",
             gap: "12px"
         }}>
-            <h1>Run Complete</h1>
-
-            <h2>Score: {score}</h2>
-
+            <h2>The evil CEO has been defeated and you have regained your company!</h2>
+            <h4>Score: {score}</h4>
+            <h6>Game by Matt Martiny</h6>
             <button onClick={() => navigate("/homeless-hero")}>
                 Back to Menu
             </button>
 
             <button onClick={() => navigate("/homeless-hero/play?mode=new")}>
-                New Run
+                New Game
             </button>
         </div>
     );

@@ -30,6 +30,7 @@ export function buildSave(state: GameState): SaveGameDTO {
         baseSpeed: player.stats.baseSpeed,
         baseMaxHp: player.stats.baseMaxHp,
       },
+      gameComplete: player.gameComplete,
     },
 
     inventory: {
@@ -77,6 +78,7 @@ export function loadFromSave(dto: SaveGameDTO): player {
       defense: 0,
       speed: 0,
     },
+    gameComplete: dto.player.gameComplete ?? false,
 
     inventory: dto.inventory.items.map(i => ({
       details: dataFor.getItem(i.itemId),

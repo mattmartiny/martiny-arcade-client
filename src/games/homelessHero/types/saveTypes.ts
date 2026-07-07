@@ -17,6 +17,7 @@ export type SaveGameDTO = {
       baseSpeed: number;
       baseMaxHp: number;
     };
+    gameComplete?: boolean;
   };
 
   inventory: {

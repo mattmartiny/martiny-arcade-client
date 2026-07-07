@@ -26,6 +26,7 @@ export function createPlayer(): player {
     },
 
     inventory: [],
-    questList: []
+    questList: [],
+    gameComplete: false
   }
 }
